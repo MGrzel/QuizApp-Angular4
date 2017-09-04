@@ -1,0 +1,99 @@
+@import '../_mixins/_buttons.scss';
+
+.question {
+    margin-top: 3em;
+    cursor: normal;
+    white-space: normal;
+}
+
+.question-numerator {
+    margin-top: 1.5em;
+    text-align: center;
+}
+
+.question-numerator span {
+    display: inline-block;
+}
+
+.answer {
+    cursor: normal;
+}
+
+.change-question {
+    margin: 2em;
+}
+
+.change-question .btn {
+    cursor: pointer;
+}
+
+.correct-answer {
+    @include button-variant(white, green, green);
+}
+
+.wrong-answer {
+    @include button-variant(white, red, red);
+}
+
+.question-selector {
+    width: 25px;
+    height: 25px;
+    border: 1px solid dimgrey;
+    border-radius: 3px;
+    text-align: center;
+    margin: .1em;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.question-selector:hover {
+    color: white;
+    background-color: dimgray;
+    transition-duration: .5s;
+    cursor: pointer;
+}
+
+.question-selector-correct {
+    color: white;
+    background-color: green;
+    transition-duration: .5s;
+}
+
+.question-selector-wrong {
+    color: white;
+    background-color: red;
+    transition-duration: .5s;
+}
+
+.question-selector-expand {
+    cursor: pointer;
+}
+
+.question-selector-expand:hover {
+    opacity: 0.85;
+}
+
+.answer:active {
+    animation: shake 0.82s cubic-bezier(.36,.07,.19,.97) both;
+    transform: translate3d(0, 0, 0);
+    backface-visibility: hidden;
+    perspective: 1000px;
+  }
+
+  @keyframes shake {
+    10%, 90% {
+      transform: translate3d(-1px, 0, 0);
+    }
+
+    20%, 80% {
+      transform: translate3d(2px, 0, 0);
+    }
+
+    30%, 50%, 70% {
+      transform: translate3d(-4px, 0, 0);
+    }
+
+    40%, 60% {
+      transform: translate3d(4px, 0, 0);
+    }
+  }

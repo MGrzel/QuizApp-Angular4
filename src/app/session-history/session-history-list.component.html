@@ -1,0 +1,36 @@
+<div *ngIf="sessions" [@pageInOut]="pageAnimationState">
+    <div class="container" [@fadeInOut]="pageAnimationState">
+        <div class="row justify-content-around">
+
+            <h1>SESSION HISTORY:</h1>
+
+        </div>
+
+        <div class="row justify-content-around">
+            <div class="col-sm-12 m-sm-3 mx-5 my-3 session btn btn-outline-{{ session?.challenge?.color?.title }}" *ngFor="let session of sessions" (click)="sessionDetail(session.id)">
+                <div class="row">
+
+                    <div class="col">
+                        {{ session?.challenge?.title }}
+                    </div>
+
+                </div>
+                <div class="row">
+
+                    <div class="col">
+                        {{ session?.creationDate | date:'HH:mm:ss' }}
+                    </div>
+
+                </div>
+                <div class="row">
+
+                    <div class="col">
+                        {{ session?.creationDate | date:'fullDate' }}
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>

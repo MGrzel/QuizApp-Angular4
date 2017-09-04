@@ -1,0 +1,13 @@
+.breadcrumb {
+    background-color: inherit;
+    text-align: center;
+}
+
+.breadcrumb li {
+    display: inline-block;
+    float: none;
+}
+
+a.active {
+    color: grey;
+}

@@ -1,0 +1,15 @@
+<div [@pageInOut]="'in'">
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                <ul class="breadcrumb">
+                    <li class="breadcrumb-item active"><a routerLink="question-management" [routerLinkActive]="'active'">Questions</a></li>
+                    <li class="breadcrumb-item"><a routerLink="category-management" [routerLinkActive]="'active'">Categories</a></li>
+                    <li class="breadcrumb-item"><a routerLink="challenge-management" [routerLinkActive]="'active'">Challenges</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <router-outlet></router-outlet>
+</div>

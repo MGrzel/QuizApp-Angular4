@@ -1,0 +1,72 @@
+<div *ngIf="quizSession" [@pageInOut]="pageAnimationState">
+
+    <div class="container">
+        <div class="row question-numerator">
+            <div class="col-11">
+                <h2>Question <span [@pageInOut]="questionAnimationState">{{ currentAnswer + 1 }}</span> of {{ clientQuiz.length
+                    }}
+                </h2>
+            </div>
+
+            <div class="col-1 align-self-center question-selector-expand">
+                <i class="fa fa-bars fa-2x" aria-hidden="true" data-toggle="collapse" href="#questionSelector" aria-expanded="false" ngbTooltip="Show a list of questions" placement="right"></i>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="collapse" id="questionSelector">
+            <div class="card card-body">
+                <h4 class="card-title">Questions</h4>
+                <div class="row no-gutters card-text">
+                    <div (click)="moveToQuestion(i)" [ngClass]="{'question-selector-correct': quiz.isCorrect,'question-selector-wrong': !quiz.isCorrect && quiz.selectedAnswer != null }" class="question-selector"
+                        *ngFor="let quiz of clientQuiz; let i = index" ngbTooltip="{{ quiz.order }}">
+                        <span>{{ quiz.order }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="container" [@fadeInOut]="questionAnimationState">
+        <div class="row">
+
+            <div class="col-sm-12 btn btn-{{ color }} question">
+                {{ quizSession.clientQuiz[currentAnswer].question.title }}
+            </div>
+
+
+        </div>
+
+        <div class="row justify-content-around">
+            <div [ngClass]="{'correct-answer': clientQuiz[currentAnswer].isCorrect && clientQuiz[currentAnswer]?.selectedAnswer?.id === answer.id,'wrong-answer': !clientQuiz[currentAnswer].isCorrect && clientQuiz[currentAnswer]?.selectedAnswer?.id === answer.id  }"
+                class="col-sm-5 m-sm-3 mx-5 my-3 answer btn btn-outline-{{ color }}" *ngFor="let answer of clientQuiz[currentAnswer].question.answers">
+                <span class="row">
+                    <div class="col">
+                        {{ answer.title }}
+                    </div>
+                </span>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="container">
+        <div class="row change-question justify-content-around">
+            <div (click)="changeQuestion(-1)" class="col-4 btn btn-{{ color }}">BACK</div>
+            <div (click)="changeQuestion(1)" class="col-4 btn btn-{{ color }}">NEXT</div>
+        </div>
+    </div>
+
+    <div *ngIf="!clientQuiz[currentAnswer]?.selectedAnswer" [@pageInOut]="pageAnimationState">
+        <div class="row justify-content-around mt-5 mx-3">
+            <div class="col-sm-10">
+                <div class="alert alert-danger" role="alert">
+                    <h4 class="alert-heading">That's bad!</h4>
+                    <p>You did not choose any answer in this question!</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

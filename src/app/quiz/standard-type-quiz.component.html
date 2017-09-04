@@ -1,0 +1,70 @@
+<div *ngIf="quizSession" [@pageInOut]="pageAnimationState">
+
+    <div class="container">
+        <div class="row question-numerator">
+            <div class="col-10">
+                <h2>Question <span [@pageInOut]="questionAnimationState">{{ currentAnswer + 1 }}</span> of {{ quizSession.clientQuiz.length
+                    }}
+                </h2>
+            </div>
+
+            <div class="col-2 align-self-center question-selector-expand">
+                <i class="fa fa-bars fa-2x" aria-hidden="true" data-toggle="collapse" href="#questionSelector" aria-expanded="false" ngbTooltip="Show a list of questions" placement="right"></i>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="collapse" id="questionSelector">
+            <div class="card card-body">
+                <h4 class="card-title">Questions</h4>
+                <div class="row no-gutters card-text">
+                    <div (click)="moveToQuestion(i)" [ngClass]="{'question-selector-selected': quiz.selectedAnswer != null }" class="question-selector"
+                        *ngFor="let quiz of clientQuiz; let i = index" ngbTooltip="{{ quiz.order }}">
+                        <span>{{ quiz.order }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="container" [@fadeInOut]="questionAnimationState">
+        <div class="row">
+
+            <div class="col btn btn-{{ color }} question">
+                {{ clientQuiz[currentAnswer].question.title }}
+            </div>
+
+
+        </div>
+
+        <div class="row justify-content-around">
+            <div (click)="selectAnswer(answer)" [ngClass]="{'selected-answer': clientQuiz[currentAnswer].selectedAnswer === answer, 'select-answer-animation': answer.id === animatedAnswer }"
+                class="col-sm-5 m-sm-3 mx-5 my-3 answer btn btn-outline-{{ color }}" *ngFor="let answer of clientQuiz[currentAnswer].question.answers">
+                <span class="row">
+                    <div class="col">
+                        {{ answer.title }}
+                    </div>
+                </span>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="container" [@fadeInOut]="">
+
+        <div class="row change-question justify-content-around">
+            <div (click)="changeQuestion(-1)" class="col-4 btn btn-{{ color }}">BACK</div>
+            <div (click)="changeQuestion(1)" class="col-4 btn btn-{{ color }}">NEXT</div>
+        </div>
+
+        <div class="row align-items-center mt-5 mb-4 submit">
+            <div class="col">
+                <div (click)="submitQuiz()" class="col btn btn-orangered">SUBMIT</div>
+            </div>
+        </div>
+
+    </div>
+
+</div>

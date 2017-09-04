@@ -1,0 +1,76 @@
+<div *ngIf="quizSession" [@pageInOut]="pageAnimationState">
+
+            <div class="container">
+                <div class="row question-numerator">
+                    <div class="col">
+                        <h2>Question <span [@fadeInOut]="questionAnimationState">{{ currentAnswer + 1 }}</span> of {{ quizSession.clientQuiz.length }}</h2>
+                    </div>
+                </div>
+            </div>
+
+            <div *ngIf="noAnswer" [@pageInOut]="pageAnimationState">
+                <div class="row justify-content-around mt-5 mx-3">
+                    <div class="col-sm-10">
+                        <div class="alert alert-danger" role="alert">
+                            <h4 class="alert-heading">That's bad!</h4>
+                            <p>You did not choose any answer in this question!</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div *ngIf="wrongAnswer" [@pageInOut]="pageAnimationState">
+                <div class="row justify-content-around mt-5 mx-3">
+                    <div class="col-sm-10">
+                        <div class="alert alert-danger" role="alert">
+                            <h4 class="alert-heading">Sorry!</h4>
+                            <p>Your answer is not correct!</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div *ngIf="win" [@pageInOut]="pageAnimationState">
+                <div class="row justify-content-around mt-5 mx-3">
+                    <div class="col-sm-10">
+                        <div class="alert alert-success" role="alert">
+                            <h4 class="alert-heading">You won!</h4>
+                            <p>You answered successfully on all of the answers!</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="container" [@fadeInOut]="questionAnimationState">
+                <div class="row">
+
+                    <div class="col-sm-12 btn btn-{{ color }} question">
+                        {{ quizSession.clientQuiz[currentAnswer].question.title }}
+                    </div>
+
+
+                </div>
+
+                <div class="row justify-content-around">
+                    <div (click)="selectAnswer(answer)" [ngClass]="{'selected-answer': clientQuiz[currentAnswer].selectedAnswer === answer, 'select-answer-animation': answer.id === animatedAnswer, 'highlighted-answer': i === highlightedAnswer, 'correct-answer': clientQuiz[currentAnswer].isCorrect && clientQuiz[currentAnswer]?.selectedAnswer?.id === answer.id,'wrong-answer': wrongAnswer && clientQuiz[currentAnswer]?.selectedAnswer?.id === answer.id }"
+                        class="col-sm-5 m-sm-3 mx-5 my-3 answer btn btn-outline-{{ color }}" *ngFor="let answer of clientQuiz[currentAnswer].question.answers; let i = index">
+                        <span class="row">
+                            <div class="col">
+                                {{ answer.title }}
+                            </div>
+                        </span>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="container" [@fadeInOut]="">
+
+                <div class="row align-items-center mt-5 mb-4 submit">
+                    <div class="col">
+                        <div (click)="checkSingleAnswer(clientQuiz[currentAnswer])" class="col btn btn-orangered">SUBMIT</div>
+                    </div>
+                </div>
+
+            </div>
+        </div>

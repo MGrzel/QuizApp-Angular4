@@ -1,0 +1,255 @@
+<div *ngIf="challengeList" [@pageInOut]="'in'">
+    <div class="container">
+        <ngb-alert *ngIf="alert?.success" (close)="clearSucces()" type="success">
+            <strong>Success!</strong> {{ alert?.success }}
+        </ngb-alert>
+
+        <ngb-alert *ngIf="alert?.error" (close)="clearError()" type="danger">
+            <strong>Error!</strong> {{ alert?.error }}
+        </ngb-alert>
+
+        <ngb-tabset type="pills">
+            <ngb-tab title="ADD">
+                <ng-template ngbTabContent>
+                    <div [@elementInOut]="">
+                        <div class="row">
+                            <div class="col-12 my-2">
+                                <label for="newChallenge"><b>Insert challenge title</b></label>
+                                <input class="form-control" id="newChallenge" [(ngModel)]="newChallenge.title" placeholder="Challenge's title" ngbTooltip="Enter the title for a challenge!"
+                                    triggers="focusin:focusout" placement="bottom">
+                            </div>
+                        </div>
+
+                        <div *ngIf="quizTypeList">
+                            <div class="row">
+                                <div class="col-12 my-2">
+                                    <label for="chooseCategory"><b>Choose challenge type</b></label>
+                                    <select class="form-control" id="chooseCategory" [(ngModel)]="newChallenge.quizType">
+                                                <option  *ngFor="let quiz of quizTypeList" [ngValue]="quiz">
+                                                    #{{ quiz.id }} {{ quiz.title }}
+                                                </option>
+                                            </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div *ngIf="colorList">
+                            <div class="row">
+                                <div class="col-12 my-2">
+                                    <label for="chooseCategory"><b>Choose challenge color</b></label>
+                                    <select class="form-control" id="chooseCategory" [(ngModel)]="newChallenge.color">
+                                                        <option  *ngFor="let color of colorList" [ngValue]="color">
+                                                            #{{ color.id }} {{ color.title }}
+                                                        </option>
+                                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="row justify-content-around mt-2 mb-4">
+                                <div class="col-10 btn btn-outline-{{ newChallenge.color.title }}">COLOR PREVIEW</div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-sm-4">
+                                <h2>Max questions:</h2>
+                            </div>
+
+                            <div class="col-sm-8 align-self-center">
+                                <form>
+                                    <input class="form-control" [(ngModel)]="newChallenge.questionAmount" name="title" placeholder="Questions amount" ngbTooltip="Enter the maximum question amount!"
+                                        triggers="focusin:focusout" placement="bottom">
+                                </form>
+                            </div>
+                        </div>
+
+                        <div *ngIf="categoryList">
+                            <div class="row my-3">
+                                <div class="col-10 my-2">
+                                    <select class="form-control" id="category" [(ngModel)]="selectedCategory">
+                                                        <option  *ngFor="let category of categoryList" [ngValue]="category">
+                                                            #{{ category.id }} {{ category.title }}
+                                                        </option>
+                                                    </select>
+                                </div>
+                                <div class="col-2 my-2 align-self-center">
+                                    <i class="fa fa-plus fa-2x" aria-hidden="true" (click)="addCategory(newChallenge, selectedCategory)" ngbTooltip="Add a category!"
+                                        triggers="mouseenter:mouseleave"></i>
+                                </div>
+                            </div>
+
+                            <div class="row my-3">
+                                <div class="col-auto" *ngFor="let category of newChallenge.categoryList" [@elementInOut]="">
+                                    <h5><span class="badge badge-secondary">{{ category.title }} <i class="fa fa-times" aria-hidden="true" (click)="deleteCategory(newChallenge, category)"></i></span></h5>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row mx-3">
+                            <button class="col-12 btn btn-orangered" (click)="addChallenge()">
+                                        ADD
+                                    </button>
+                        </div>
+                    </div>
+                </ng-template>
+            </ngb-tab>
+
+            <ngb-tab title="EDIT">
+                <ng-template ngbTabContent>
+                    <div [@elementInOut]="">
+                        <div *ngIf="selectedChallenge">
+                            <div class="row">
+                                <div class="col-12 my-2">
+                                    <label for="chooseCategory"><b>Choose challenge for edit</b></label>
+                                    <select class="form-control" id="chooseCategory" [(ngModel)]="selectedChallenge">
+                                                <option  *ngFor="let challenge of challengeList" [ngValue]="challenge">
+                                                    #{{ challenge.id }} {{ challenge.title }}
+                                                </option>
+                                            </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div *ngIf="quizTypeList">
+                            <div class="row">
+                                <div class="col-12 my-2">
+                                    <label for="chooseCategory"><b>Choose challenge type</b></label>
+                                    <select class="form-control" id="chooseCategory" [(ngModel)]="selectedChallenge.quizType">
+                                                <option  *ngFor="let quiz of quizTypeList" [ngValue]="quiz">
+                                                    #{{ quiz.id }} {{ quiz.title }}
+                                                </option>
+                                            </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div *ngIf="colorList && selectedChallenge">
+                            <div class="row">
+                                <div class="col-12 my-2">
+                                    <label for="chooseCategory"><b>Choose challenge color</b></label>
+                                    <select class="form-control" id="chooseCategory" [(ngModel)]="selectedChallenge.color">
+                                                <option  *ngFor="let color of colorList" [ngValue]="color">
+                                                    #{{ color.id }} {{ color.title }}
+                                                </option>
+                                                <span class="badge badge-secondary"></span>
+                                            </select>
+                                </div>
+                            </div>
+
+                            <div class="row justify-content-around mt-2 mb-4">
+                                <div class="col-10 btn btn-outline-{{ selectedChallenge.color.title }} ">COLOR PREVIEW</div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-sm-4">
+                                    <h2>Title:</h2>
+                                </div>
+
+                                <div class="col-sm-8">
+                                    <form>
+                                        <input class="form-control" [(ngModel)]="selectedChallenge.title" name="title" ngbTooltip="Enter the title for a challenge!"
+                                            triggers="focusin:focusout" placement="bottom">
+                                    </form>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-sm-4">
+                                    <h2>Max questions:</h2>
+                                </div>
+
+                                <div class="col-sm-8 align-self-center">
+                                    <form>
+                                        <input class="form-control" [(ngModel)]="selectedChallenge.questionAmount" name="title" placeholder="Questions amount" ngbTooltip="Enter the maximum question amount!"
+                                            triggers="focusin:focusout" placement="bottom">
+                                    </form>
+                                </div>
+                            </div>
+
+                            <div class="row my-3">
+                                <div class="col-10 my-2">
+                                    <select class="form-control" id="category" [(ngModel)]="selectedCategory">
+                                                    <option  *ngFor="let category of categoryList" [ngValue]="category">
+                                                        #{{ category.id }} {{ category.title }}
+                                                    </option>
+                                                </select>
+                                </div>
+                                <div class="col-2 my-2 align-self-center">
+                                    <i class="fa fa-plus fa-2x" aria-hidden="true" (click)="addCategory(selectedChallenge, selectedCategory)"></i>
+                                </div>
+                            </div>
+
+                            <div class="row my-3">
+                                <div class="col-auto" *ngFor="let category of selectedChallenge.categoryList" [@elementInOut]="">
+                                    <h5><span class="badge badge-secondary">{{ category.title }} <i class="fa fa-times" aria-hidden="true" (click)="deleteCategory(selectedChallenge, category)" ngbTooltip="Add a category!" triggers="mouseenter:mouseleave"></i></span></h5>
+                                </div>
+                            </div>
+
+                            <div class="row mx-3">
+                                <button class="col-12 btn btn-orangered" (click)="updateChallenge()">
+                                                UPDATE
+                                            </button>
+                            </div>
+                        </div>
+                    </div>
+                </ng-template>
+            </ngb-tab>
+
+            <ngb-tab title="DELETE">
+                <ng-template ngbTabContent>
+                    <div [@elementInOut]="">
+                        <div *ngIf="selectedChallenge">
+                            <div class="row">
+                                <div class="col-12 my-2">
+                                    <label for="chooseQuestion"><b>Choose challenge to delete</b></label>
+                                    <select class="form-control" id="chooseQuestion" [(ngModel)]="selectedChallenge">
+                                                <option  *ngFor="let challenge of challengeList" [ngValue]="challenge">
+                                                    #{{ challenge.id }} {{ challenge.title }}
+                                                </option>
+                                            </select>
+                                </div>
+                            </div>
+                        </div>
+
+
+
+                        <div class="row mx-3 mt-5">
+
+                            <button class="col-12 btn btn-orangered" (click)="deleteChallenge()">
+                                        DELETE
+                                    </button>
+
+                        </div>
+                    </div>
+                </ng-template>
+            </ngb-tab>
+
+            <ngb-tab title="RESTORE">
+                <ng-template ngbTabContent>
+                    <div [@elementInOut]="">
+                        <div class="row">
+                            <div class="col-12 my-2">
+                                <label for="chooseQuestion"><b>Choose challenge to restore</b></label>
+                                <select class="form-control" id="chooseQuestion" [(ngModel)]="challengeToRestore">
+                                                <option  *ngFor="let challenge of deletedChallengeList" [ngValue]="challenge">
+                                                    #{{ challenge.id }} {{ challenge.title }}
+                                                </option>
+                                            </select>
+                            </div>
+                        </div>
+
+
+
+                        <div class="row mx-3 mt-5">
+
+                            <button class="col-12 btn btn-orangered" (click)="restoreChallenge()">
+                                            RESTORE
+                                        </button>
+
+                        </div>
+                    </div>
+                </ng-template>
+            </ngb-tab>
+        </ngb-tabset>
+    </div>
+</div>

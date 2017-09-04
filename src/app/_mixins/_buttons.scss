@@ -1,0 +1,47 @@
+@import '../../assets/scss/bootstrap.min.scss';
+@import '_colors.scss';
+@mixin button-outline-variant($color, $color-hover: #fff) {
+    color: $color;
+    background-image: none;
+    background-color: white; // transparent is better?
+    border-color: $color;
+    &:hover {
+        color: $color-hover;
+        background-color: $color;
+        border-color: $color;
+    }
+    &:focus,
+    &.focus {
+        color: $color-hover;
+        background-color: $color;
+        border-color: $color;
+    }
+}
+
+@mixin button-variant($color, $background, $border) {
+    color: $color;
+    background-color: $background;
+    border-color: $border;
+    &:focus,
+    &.focus {
+        color: $color;
+        background-color: darken($background, 10%);
+        border-color: darken($border, 25%);
+    }
+    &:hover {
+        color: $color;
+        background-color: darken($background, 10%);
+        border-color: darken($border, 12%);
+    }
+}
+
+@for $i from 1 through length($colors) {
+    $color_name: nth(nth($colors, $i), 1);
+    $color_value: nth(nth($colors, $i), 2);
+    .btn-outline-#{$color_name} {
+        @include button-outline-variant($color_value);
+    }
+    .btn-#{$color_name} {
+        @include button-variant(white, $color_value, $color_value);
+    }
+}

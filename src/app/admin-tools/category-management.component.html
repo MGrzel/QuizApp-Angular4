@@ -1,0 +1,129 @@
+<div *ngIf="categoryList" [@pageInOut]="'in'">
+    <div class="container">
+        <ngb-alert *ngIf="alert?.success" (close)="clearSucces()" type="success">
+            <strong>Success!</strong> {{ alert?.success }}
+        </ngb-alert>
+
+        <ngb-alert *ngIf="alert?.error" (close)="clearError()" type="danger">
+            <strong>Error!</strong> {{ alert?.error }}
+        </ngb-alert>
+
+        <ngb-tabset type="pills">
+            <ngb-tab title="ADD">
+                <ng-template ngbTabContent>
+                    <div [@elementInOut]="">
+                        <div class="row question">
+                            <div class="col-12 my-2">
+                                <label for="newCategory"><b>Insert category title</b></label>
+                                <input class="form-control" id="newCategory" [(ngModel)]="newCategory.title" placeholder="Category's title" ngbTooltip="Enter the title for a category!"
+                                    triggers="focusin:focusout" placement="bottom">
+                            </div>
+                        </div>
+
+                        <div class="row mx-3 mt-5">
+                            <button class="col-12 btn btn-orangered" (click)="addCategory()">
+                                ADD
+                            </button>
+                        </div>
+                    </div>
+                </ng-template>
+            </ngb-tab>
+
+            <ngb-tab title="EDIT">
+                <ng-template ngbTabContent>
+                    <div [@elementInOut]="">
+                        <div *ngIf="categoryList" [@pageInOut]="tabAnimationState">
+                            <div class="row">
+                                <div class="col-12 my-2">
+                                    <label for="chooseQuestion"><b>Choose category to edit</b></label>
+                                    <select class="form-control" id="chooseQuestion" [(ngModel)]="selectedCategory">
+                                        <option  *ngFor="let category of categoryList" [ngValue]="category">
+                                            #{{ category.id }} {{ category.title }}
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div *ngIf="selectedCategory">
+                                <div class="row">
+                                    <div class="col-sm-4">
+                                        <h2>Title:</h2>
+                                    </div>
+
+                                    <div class="col-sm-8">
+                                        <form>
+                                            <input class="form-control" [(ngModel)]="selectedCategory.title" name="title" ngbTooltip="Enter the title for a question!"
+                                                triggers="focusin:focusout" placement="bottom">
+                                        </form>
+                                    </div>
+                                </div>
+
+                                <div class="row mx-3 mt-5">
+
+                                    <button class="col-12 btn btn-orangered" (click)="updateCategory()">
+                                        UPDATE
+                                    </button>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </ng-template>
+            </ngb-tab>
+
+            <ngb-tab title="DELETE">
+                <ng-template ngbTabContent>
+                    <div [@elementInOut]="">
+                        <div *ngIf="categoryList">
+                            <div class="row">
+                                <div class="col-12 my-2">
+                                    <label for="chooseQuestion"><b>Choose category to delete</b></label>
+                                    <select class="form-control" id="chooseQuestion" [(ngModel)]="selectedCategory">
+                                        <option  *ngFor="let category of categoryList" [ngValue]="category">
+                                            #{{ category.id }} {{ category.title }}
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+
+
+
+                            <div class="row mx-3 mt-5">
+
+                                <button class="col-12 btn btn-orangered" (click)="deleteCategory()">
+                                    DELETE
+                                </button>
+
+                            </div>
+                        </div>
+                    </div>
+                </ng-template>
+            </ngb-tab>
+
+            <ngb-tab title="RESTORE">
+                <ng-template ngbTabContent>
+                    <div [@elementInOut]="">
+                        <div *ngIf="deletedCategoryList">
+                            <div class="row">
+                                <div class="col-12 my-2">
+                                    <label for="chooseQuestion"><b>Choose category to restore</b></label>
+                                    <select class="form-control" id="chooseQuestion" [(ngModel)]="categoryToRestore">
+                                        <option  *ngFor="let category of deletedCategoryList" [ngValue]="category">
+                                            #{{ category.id }} {{ category.title }}
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="row mx-3 mt-5">
+                                <button class="col-12 btn btn-orangered" (click)="restoreCategory()">
+                                    RESTORE
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </ng-template>
+            </ngb-tab>
+        </ngb-tabset>
+    </div>
+</div>

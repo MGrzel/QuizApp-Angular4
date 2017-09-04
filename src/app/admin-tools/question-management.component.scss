@@ -1,0 +1,12 @@
+i {
+    cursor: pointer;
+}
+
+.selected {
+    transition-duration: 1s;
+    background-color: red;
+}
+
+.input-group-addon {
+    cursor: pointer;
+}
