@@ -10144,16 +10144,16 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\grzel\\Documents\\Coding\\WebDev\\QuizApp\\QuizAppApi\\QuizAppApi.csproj",
+      "projectUniqueName": "C:\\Users\\grzel\\Documents\\Coding\\WebDev\\QuizApp\\QuizApp-Angular4\\API\\QuizAppApi.csproj",
       "projectName": "QuizAppApi",
-      "projectPath": "C:\\Users\\grzel\\Documents\\Coding\\WebDev\\QuizApp\\QuizAppApi\\QuizAppApi.csproj",
-      "outputPath": "C:\\Users\\grzel\\Documents\\Coding\\WebDev\\QuizApp\\QuizAppApi\\obj\\",
+      "projectPath": "C:\\Users\\grzel\\Documents\\Coding\\WebDev\\QuizApp\\QuizApp-Angular4\\API\\QuizAppApi.csproj",
+      "outputPath": "C:\\Users\\grzel\\Documents\\Coding\\WebDev\\QuizApp\\QuizApp-Angular4\\API\\obj\\",
       "projectStyle": "PackageReference",
       "originalTargetFrameworks": [
         "netcoreapp1.1"
       ],
       "files": {
-        "lib/netcoreapp1.1/QuizAppApi.dll": "C:\\Users\\grzel\\Documents\\Coding\\WebDev\\QuizApp\\QuizAppApi\\bin\\placeholder\\netcoreapp1.1\\QuizAppApi.dll"
+        "lib/netcoreapp1.1/QuizAppApi.dll": "C:\\Users\\grzel\\Documents\\Coding\\WebDev\\QuizApp\\QuizApp-Angular4\\API\\bin\\placeholder\\netcoreapp1.1\\QuizAppApi.dll"
       },
       "frameworks": {
         "netcoreapp1.1": {

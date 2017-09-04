@@ -17,11 +17,18 @@
       "test": "test.ts",
       "tsconfig": "tsconfig.app.json",
       "testTsconfig": "tsconfig.spec.json",
-      "prefix": "app",
+      "prefix": "quizapp",
       "styles": [
-        "styles.css"
+        "assets/scss/bootstrap.min.scss",
+        "assets/scss/font-awesome.min.scss",
+        "styles.scss"
       ],
-      "scripts": [],
+      "scripts": [
+        "assets/js/jquery-3.2.1.min.js",
+        "assets/js/popper.min.js",
+        "assets/js/bootstrap.min.js",
+        "assets/js/web-animations.min.js"
+      ],
       "environmentSource": "environments/environment.ts",
       "environments": {
         "dev": "environments/environment.ts",
@@ -54,7 +61,7 @@
     }
   },
   "defaults": {
-    "styleExt": "css",
+    "styleExt": "scss",
     "component": {}
   }
 }

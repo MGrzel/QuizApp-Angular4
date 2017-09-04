@@ -6,3 +6,11 @@ C:\Users\grzel\Documents\Coding\WebDev\QuizApp\QuizAppApi\bin\Debug\netcoreapp1.
 C:\Users\grzel\Documents\Coding\WebDev\QuizApp\QuizAppApi\obj\Debug\netcoreapp1.1\QuizAppApi.AssemblyInfo.cs
 C:\Users\grzel\Documents\Coding\WebDev\QuizApp\QuizAppApi\obj\Debug\netcoreapp1.1\QuizAppApi.dll
 C:\Users\grzel\Documents\Coding\WebDev\QuizApp\QuizAppApi\obj\Debug\netcoreapp1.1\QuizAppApi.pdb
+C:\Users\grzel\Documents\Coding\WebDev\QuizApp\QuizApp-Angular4\API\bin\Debug\netcoreapp1.1\QuizAppApi.deps.json
+C:\Users\grzel\Documents\Coding\WebDev\QuizApp\QuizApp-Angular4\API\bin\Debug\netcoreapp1.1\QuizAppApi.runtimeconfig.json
+C:\Users\grzel\Documents\Coding\WebDev\QuizApp\QuizApp-Angular4\API\bin\Debug\netcoreapp1.1\QuizAppApi.runtimeconfig.dev.json
+C:\Users\grzel\Documents\Coding\WebDev\QuizApp\QuizApp-Angular4\API\bin\Debug\netcoreapp1.1\QuizAppApi.dll
+C:\Users\grzel\Documents\Coding\WebDev\QuizApp\QuizApp-Angular4\API\bin\Debug\netcoreapp1.1\QuizAppApi.pdb
+C:\Users\grzel\Documents\Coding\WebDev\QuizApp\QuizApp-Angular4\API\obj\Debug\netcoreapp1.1\QuizAppApi.AssemblyInfo.cs
+C:\Users\grzel\Documents\Coding\WebDev\QuizApp\QuizApp-Angular4\API\obj\Debug\netcoreapp1.1\QuizAppApi.dll
+C:\Users\grzel\Documents\Coding\WebDev\QuizApp\QuizApp-Angular4\API\obj\Debug\netcoreapp1.1\QuizAppApi.pdb
