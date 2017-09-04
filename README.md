@@ -2,6 +2,9 @@
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 1.3.0.
 
+## How to use
+When in project root, go to `API` folder, open command line and type `dotnet run`. This will run the `API` server. Then go to project root, open command line and type `ng serve` or `npm start` to run the app server. `API` server listens on port `:5000`, while app server listens on port `:4200`. 
+
 ## Development server
 
 Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
