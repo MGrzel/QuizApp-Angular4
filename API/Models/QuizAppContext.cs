@@ -69,6 +69,10 @@ namespace QuizAppApi.Models
                 .WithOne()
                 .HasForeignKey<ClientQuiz>(ca => ca.SelectedAnswerId)
                 .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Question>()
+                .HasMany(q => q.Answers)
+                .WithOne(a => a.Question);
         }
     }
 }

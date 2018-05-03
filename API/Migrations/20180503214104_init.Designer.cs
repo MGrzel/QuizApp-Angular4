@@ -11,7 +11,7 @@ using System;
 namespace QuizAppApi.Migrations
 {
     [DbContext(typeof(QuizAppDb))]
-    [Migration("20180503201941_init")]
+    [Migration("20180503214104_init")]
     partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -344,8 +344,6 @@ namespace QuizAppApi.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CorrectAnswerId");
-
                     b.ToTable("Questions");
                 });
 
@@ -564,14 +562,6 @@ namespace QuizAppApi.Migrations
                         .WithOne()
                         .HasForeignKey("QuizAppApi.Models.CorrectAnswer", "QuestionId")
                         .OnDelete(DeleteBehavior.Restrict);
-                });
-
-            modelBuilder.Entity("QuizAppApi.Models.Question", b =>
-                {
-                    b.HasOne("QuizAppApi.Models.CorrectAnswer", "CorrectAnswer")
-                        .WithMany()
-                        .HasForeignKey("CorrectAnswerId")
-                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("QuizAppApi.Models.Session", b =>

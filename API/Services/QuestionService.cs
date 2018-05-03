@@ -235,7 +235,7 @@ namespace QuizAppApi.Services
                 }
             }
 
-            if (question.CorrectAnswer == null)
+            if (question.CorrectAnswerId == null)
             {
                 return false;
             }

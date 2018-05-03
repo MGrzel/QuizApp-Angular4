@@ -343,8 +343,6 @@ namespace QuizAppApi.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CorrectAnswerId");
-
                     b.ToTable("Questions");
                 });
 
@@ -563,14 +561,6 @@ namespace QuizAppApi.Migrations
                         .WithOne()
                         .HasForeignKey("QuizAppApi.Models.CorrectAnswer", "QuestionId")
                         .OnDelete(DeleteBehavior.Restrict);
-                });
-
-            modelBuilder.Entity("QuizAppApi.Models.Question", b =>
-                {
-                    b.HasOne("QuizAppApi.Models.CorrectAnswer", "CorrectAnswer")
-                        .WithMany()
-                        .HasForeignKey("CorrectAnswerId")
-                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("QuizAppApi.Models.Session", b =>

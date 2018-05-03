@@ -80,6 +80,22 @@ namespace QuizAppApi.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Questions",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(nullable: false),
+                    CorrectAnswerId = table.Column<Guid>(nullable: false),
+                    CreationDate = table.Column<DateTime>(nullable: true),
+                    DeletionDate = table.Column<DateTime>(nullable: true),
+                    IsDeleted = table.Column<bool>(nullable: false),
+                    Title = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Questions", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "QuizTypes",
                 columns: table => new
                 {
@@ -202,6 +218,55 @@ namespace QuizAppApi.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Answers",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(nullable: false),
+                    CreationDate = table.Column<DateTime>(nullable: true),
+                    DeletionDate = table.Column<DateTime>(nullable: true),
+                    IsDeleted = table.Column<bool>(nullable: false),
+                    QuestionId = table.Column<Guid>(nullable: false),
+                    Title = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Answers", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Answers_Questions_QuestionId",
+                        column: x => x.QuestionId,
+                        principalTable: "Questions",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "CategoryQuestions",
+                columns: table => new
+                {
+                    CategoryId = table.Column<Guid>(nullable: false),
+                    QuestionId = table.Column<Guid>(nullable: false),
+                    CreationDate = table.Column<DateTime>(nullable: true),
+                    DeletionDate = table.Column<DateTime>(nullable: true),
+                    IsDeleted = table.Column<bool>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CategoryQuestions", x => new { x.CategoryId, x.QuestionId });
+                    table.ForeignKey(
+                        name: "FK_CategoryQuestions_Categories_CategoryId",
+                        column: x => x.CategoryId,
+                        principalTable: "Categories",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_CategoryQuestions_Questions_QuestionId",
+                        column: x => x.QuestionId,
+                        principalTable: "Questions",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Challenges",
                 columns: table => new
                 {
@@ -229,6 +294,34 @@ namespace QuizAppApi.Migrations
                         principalTable: "QuizTypes",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "CorrectAnswers",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(nullable: false),
+                    AnswerId = table.Column<Guid>(nullable: false),
+                    CreationDate = table.Column<DateTime>(nullable: true),
+                    DeletionDate = table.Column<DateTime>(nullable: true),
+                    IsDeleted = table.Column<bool>(nullable: false),
+                    QuestionId = table.Column<Guid>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CorrectAnswers", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_CorrectAnswers_Answers_AnswerId",
+                        column: x => x.AnswerId,
+                        principalTable: "Answers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_CorrectAnswers_Questions_QuestionId",
+                        column: x => x.QuestionId,
+                        principalTable: "Questions",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -298,96 +391,21 @@ namespace QuizAppApi.Migrations
                 {
                     table.PrimaryKey("PK_ClientQuizes", x => x.Id);
                     table.ForeignKey(
+                        name: "FK_ClientQuizes_Questions_QuestionId",
+                        column: x => x.QuestionId,
+                        principalTable: "Questions",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_ClientQuizes_Answers_SelectedAnswerId",
+                        column: x => x.SelectedAnswerId,
+                        principalTable: "Answers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
                         name: "FK_ClientQuizes_Sessions_SessionId",
                         column: x => x.SessionId,
                         principalTable: "Sessions",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "CorrectAnswers",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(nullable: false),
-                    AnswerId = table.Column<Guid>(nullable: false),
-                    CreationDate = table.Column<DateTime>(nullable: true),
-                    DeletionDate = table.Column<DateTime>(nullable: true),
-                    IsDeleted = table.Column<bool>(nullable: false),
-                    QuestionId = table.Column<Guid>(nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_CorrectAnswers", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Questions",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(nullable: false),
-                    CorrectAnswerId = table.Column<Guid>(nullable: false),
-                    CreationDate = table.Column<DateTime>(nullable: true),
-                    DeletionDate = table.Column<DateTime>(nullable: true),
-                    IsDeleted = table.Column<bool>(nullable: false),
-                    Title = table.Column<string>(nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Questions", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Questions_CorrectAnswers_CorrectAnswerId",
-                        column: x => x.CorrectAnswerId,
-                        principalTable: "CorrectAnswers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Answers",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(nullable: false),
-                    CreationDate = table.Column<DateTime>(nullable: true),
-                    DeletionDate = table.Column<DateTime>(nullable: true),
-                    IsDeleted = table.Column<bool>(nullable: false),
-                    QuestionId = table.Column<Guid>(nullable: false),
-                    Title = table.Column<string>(nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Answers", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Answers_Questions_QuestionId",
-                        column: x => x.QuestionId,
-                        principalTable: "Questions",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "CategoryQuestions",
-                columns: table => new
-                {
-                    CategoryId = table.Column<Guid>(nullable: false),
-                    QuestionId = table.Column<Guid>(nullable: false),
-                    CreationDate = table.Column<DateTime>(nullable: true),
-                    DeletionDate = table.Column<DateTime>(nullable: true),
-                    IsDeleted = table.Column<bool>(nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_CategoryQuestions", x => new { x.CategoryId, x.QuestionId });
-                    table.ForeignKey(
-                        name: "FK_CategoryQuestions_Categories_CategoryId",
-                        column: x => x.CategoryId,
-                        principalTable: "Categories",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_CategoryQuestions_Questions_QuestionId",
-                        column: x => x.QuestionId,
-                        principalTable: "Questions",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -485,58 +503,13 @@ namespace QuizAppApi.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_Questions_CorrectAnswerId",
-                table: "Questions",
-                column: "CorrectAnswerId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Sessions_ChallengeId",
                 table: "Sessions",
                 column: "ChallengeId");
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_ClientQuizes_Questions_QuestionId",
-                table: "ClientQuizes",
-                column: "QuestionId",
-                principalTable: "Questions",
-                principalColumn: "Id",
-                onDelete: ReferentialAction.Cascade);
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_ClientQuizes_Answers_SelectedAnswerId",
-                table: "ClientQuizes",
-                column: "SelectedAnswerId",
-                principalTable: "Answers",
-                principalColumn: "Id",
-                onDelete: ReferentialAction.Restrict);
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_CorrectAnswers_Questions_QuestionId",
-                table: "CorrectAnswers",
-                column: "QuestionId",
-                principalTable: "Questions",
-                principalColumn: "Id",
-                onDelete: ReferentialAction.Restrict);
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_CorrectAnswers_Answers_AnswerId",
-                table: "CorrectAnswers",
-                column: "AnswerId",
-                principalTable: "Answers",
-                principalColumn: "Id",
-                onDelete: ReferentialAction.Restrict);
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropForeignKey(
-                name: "FK_Answers_Questions_QuestionId",
-                table: "Answers");
-
-            migrationBuilder.DropForeignKey(
-                name: "FK_CorrectAnswers_Questions_QuestionId",
-                table: "CorrectAnswers");
-
             migrationBuilder.DropTable(
                 name: "AspNetRoleClaims");
 
@@ -562,6 +535,9 @@ namespace QuizAppApi.Migrations
                 name: "ClientQuizes");
 
             migrationBuilder.DropTable(
+                name: "CorrectAnswers");
+
+            migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
@@ -574,22 +550,19 @@ namespace QuizAppApi.Migrations
                 name: "Sessions");
 
             migrationBuilder.DropTable(
+                name: "Answers");
+
+            migrationBuilder.DropTable(
                 name: "Challenges");
+
+            migrationBuilder.DropTable(
+                name: "Questions");
 
             migrationBuilder.DropTable(
                 name: "Colors");
 
             migrationBuilder.DropTable(
                 name: "QuizTypes");
-
-            migrationBuilder.DropTable(
-                name: "Questions");
-
-            migrationBuilder.DropTable(
-                name: "CorrectAnswers");
-
-            migrationBuilder.DropTable(
-                name: "Answers");
         }
     }
 }

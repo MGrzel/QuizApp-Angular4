@@ -16,8 +16,6 @@ namespace QuizAppApi.Models
         public DateTime? DeletionDate { get; set; }
         public bool IsDeleted { get; set; }
         public List<CategoryQuestion> CategoryList { get; set; }
-        [ForeignKey("CorrectAnswerId")]
-        public CorrectAnswer CorrectAnswer { get; set; }
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public Guid CorrectAnswerId { get; set; }
     }

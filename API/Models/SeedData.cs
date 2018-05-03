@@ -152,11 +152,7 @@ namespace QuizAppApi.Models
                     Title = "What is the color of the sky?",
                     Answers = answers1,
                     CategoryList = categories,
-                    CorrectAnswer = new CorrectAnswer
-                    {
-                        CreationDate = creationDate,
-                        Answer = answers1[0]
-                    }
+                    CorrectAnswerId = answers1[0].Id
                 });
 
                 answers2.Add(new Answer
@@ -190,11 +186,7 @@ namespace QuizAppApi.Models
                     Title = "In GoT series, John Snow 'formally' belongs to House ...?",
                     Answers = answers2,
                     CategoryList = categories,
-                    CorrectAnswer = new CorrectAnswer
-                    {
-                        CreationDate = creationDate,
-                        Answer = answers2[0]
-                    }
+                    CorrectAnswerId = answers2[0].Id
                 });
 
                 questionService.Add(questions[0]);

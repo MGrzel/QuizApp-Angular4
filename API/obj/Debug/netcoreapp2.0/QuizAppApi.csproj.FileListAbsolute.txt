@@ -3,7 +3,6 @@ C:\Users\grzel\Documents\Coding\WebDev\QuizApp\QuizApp-Angular4\API\bin\Debug\ne
 C:\Users\grzel\Documents\Coding\WebDev\QuizApp\QuizApp-Angular4\API\bin\Debug\netcoreapp2.0\QuizAppApi.runtimeconfig.dev.json
 C:\Users\grzel\Documents\Coding\WebDev\QuizApp\QuizApp-Angular4\API\bin\Debug\netcoreapp2.0\QuizAppApi.dll
 C:\Users\grzel\Documents\Coding\WebDev\QuizApp\QuizApp-Angular4\API\bin\Debug\netcoreapp2.0\QuizAppApi.pdb
-C:\Users\grzel\Documents\Coding\WebDev\QuizApp\QuizApp-Angular4\API\obj\Debug\netcoreapp2.0\QuizAppApi.csprojResolveAssemblyReference.cache
 C:\Users\grzel\Documents\Coding\WebDev\QuizApp\QuizApp-Angular4\API\obj\Debug\netcoreapp2.0\QuizAppApi.csproj.CoreCompileInputs.cache
 C:\Users\grzel\Documents\Coding\WebDev\QuizApp\QuizApp-Angular4\API\obj\Debug\netcoreapp2.0\QuizAppApi.AssemblyInfoInputs.cache
 C:\Users\grzel\Documents\Coding\WebDev\QuizApp\QuizApp-Angular4\API\obj\Debug\netcoreapp2.0\QuizAppApi.AssemblyInfo.cs
