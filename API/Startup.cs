@@ -87,7 +87,7 @@ namespace QuizAppApi
 
             var context = serviceProvider.GetRequiredService<QuizAppDb>();
             context.Database.Migrate();
-            //SeedData.Initialize(serviceProvider);
+            SeedData.Initialize(serviceProvider);
 
             if (env.IsDevelopment())
             {

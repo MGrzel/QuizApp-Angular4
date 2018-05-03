@@ -112,9 +112,9 @@ namespace QuizAppApi.Services
             foreach (var quiz in clientQuizes)
             {
                 quiz.Question = _context.Questions.Where(q => q.Id == quiz.Question.Id).Include("Answers").First();
-                if (quiz.SelectedAnswer != null)
+                if (quiz.SelectedAnswerId != null)
                 {
-                    if (correctAnswer.AnswerId == quiz.SelectedAnswer.Id)
+                    if (correctAnswer.AnswerId == quiz.SelectedAnswerId)
                     {
                         quiz.IsCorrect = true;
                     }
@@ -141,7 +141,7 @@ namespace QuizAppApi.Services
             //var newCategories = new List<Category>();
             //var newCategoryQuestion = new List<CategoryQuestion>();
             //var questionId = _context.Questions.Any() ? _context.Questions.Last().Id + 1 : 1;
-            //var date = DateTime.Now;
+            var date = DateTime.Now;
 
             //newCategories = question.CategoryList.ToList();
 
@@ -164,12 +164,12 @@ namespace QuizAppApi.Services
             //}
 
             //question.Id = questionId;
-            //question.CreationDate = date;
+            question.CreationDate = date;
 
             //_context.CategoryQuestions.AddRange(newCategoryQuestion);
             _context.Questions.Add(question);
 
-            //_context.SaveChanges();
+            _context.SaveChanges();
 
             //correctAnswer.CreationDate = date;
             //correctAnswer.AnswerId = _context.Answers.Where(a => a.QuestionId == questionId && a.Title == question.CorrectAnswer.Title).Select(a => a.Id).First();

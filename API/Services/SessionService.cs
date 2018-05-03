@@ -72,7 +72,7 @@ namespace QuizAppApi.Services
         {
             foreach (var q in session.ClientQuiz)
             {
-                if (_answerService.CheckAnswer(q.SelectedAnswer))
+                if (_answerService.CheckAnswer(q.QuestionId, q.SelectedAnswerId))
                 {
                     q.IsCorrect = true;
                 }

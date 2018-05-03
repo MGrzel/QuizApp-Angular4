@@ -51,6 +51,24 @@ namespace QuizAppApi.Models
                 .HasOne(c => c.Category)
                 .WithMany(c => c.ChallengeCategories)
                 .HasForeignKey(c => c.CategoryId);
+
+            modelBuilder.Entity<CorrectAnswer>()
+                .HasOne(ca => ca.Question)
+                .WithOne()
+                .HasForeignKey<CorrectAnswer>(ca => ca.QuestionId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<CorrectAnswer>()
+                .HasOne(ca => ca.Answer)
+                .WithOne()
+                .HasForeignKey<CorrectAnswer>(ca => ca.AnswerId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<ClientQuiz>()
+                .HasOne(ca => ca.SelectedAnswer)
+                .WithOne()
+                .HasForeignKey<ClientQuiz>(ca => ca.SelectedAnswerId)
+                .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

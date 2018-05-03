@@ -80,88 +80,180 @@ namespace QuizAppApi.Models
                 }
             }
 
-            if (categoryService.GetQuestionCategoriesList().Count() == 0)
-            {
-                string path = "CategoryQuestions.json".ToApplicationPath();
+            //if (categoryService.GetQuestionCategoriesList().Count() == 0)
+            //{
+            //    string path = "CategoryQuestions.json".ToApplicationPath();
 
-                GeoJson<CategoryQuestion> geoJson = JsonConvert.DeserializeObject<GeoJson<CategoryQuestion>>(File.ReadAllText(path));
+            //    GeoJson<CategoryQuestion> geoJson = JsonConvert.DeserializeObject<GeoJson<CategoryQuestion>>(File.ReadAllText(path));
 
-                foreach (var categoryJson in geoJson.Features)
-                {
-                    CategoryQuestion category = categoryJson.Properties;
-                    category.CreationDate = creationDate;
-                    categoryService.AddQuestionCategory(category);
-                }
-            }
+            //    foreach (var categoryJson in geoJson.Features)
+            //    {
+            //        CategoryQuestion category = categoryJson.Properties;
+            //        category.CreationDate = creationDate;
+            //        categoryService.AddQuestionCategory(category);
+            //    }
+            //}
 
-            if (categoryService.GetChallengeCategoriesList().Count() == 0)
-            {
-                string path = "ChallengeCategories.json".ToApplicationPath();
+            //if (categoryService.GetChallengeCategoriesList().Count() == 0)
+            //{
+            //    string path = "ChallengeCategories.json".ToApplicationPath();
 
-                GeoJson<ChallengeCategory> geoJson = JsonConvert.DeserializeObject<GeoJson<ChallengeCategory>>(File.ReadAllText(path));
+            //    GeoJson<ChallengeCategory> geoJson = JsonConvert.DeserializeObject<GeoJson<ChallengeCategory>>(File.ReadAllText(path));
 
-                foreach (var categoryJson in geoJson.Features)
-                {
-                    ChallengeCategory category = categoryJson.Properties;
-                    category.CreationDate = creationDate;
-                    categoryService.AddChallengeCategory(category);
-                }
-            }
+            //    foreach (var categoryJson in geoJson.Features)
+            //    {
+            //        ChallengeCategory category = categoryJson.Properties;
+            //        category.CreationDate = creationDate;
+            //        categoryService.AddChallengeCategory(category);
+            //    }
+            //}
 
             if (questionService.GetList().Count() == 0)
             {
-                string path = "Questions.json".ToApplicationPath();
-
-                GeoJson<Question> geoJson = JsonConvert.DeserializeObject<GeoJson<Question>>(File.ReadAllText(path));
-
-                foreach (var questionJson in geoJson.Features)
+                List<Question> questions = new List<Question>();
+                List<Answer> answers1 = new List<Answer>();
+                List<Answer> answers2 = new List<Answer>();
+                List<CategoryQuestion> categories = new List<CategoryQuestion>();
+                CategoryQuestion category = new CategoryQuestion
                 {
-                    Question question = questionJson.Properties;
-                    question.CreationDate = creationDate;
-                    questionService.AddToSeed(question);
-                }
+                    CreationDate = creationDate,
+                    Category = categoryService.GetList().FirstOrDefault()
+                };
+
+                categories.Add(category);
+
+                answers1.Add(new Answer
+                {
+                    CreationDate = creationDate,
+                    Title = "Blue"
+                });
+
+                answers1.Add(new Answer
+                {
+                    CreationDate = creationDate,
+                    Title = "Green"
+                });
+
+                answers1.Add(new Answer
+                {
+                    CreationDate = creationDate,
+                    Title = "Red"
+                });
+
+                answers1.Add(new Answer
+                {
+                    CreationDate = creationDate,
+                    Title = "Yellow"
+                });
+
+                questions.Add(new Question {
+                    CreationDate = creationDate,
+                    IsDeleted = false,
+                    Title = "What is the color of the sky?",
+                    Answers = answers1,
+                    CategoryList = categories,
+                    CorrectAnswer = new CorrectAnswer
+                    {
+                        CreationDate = creationDate,
+                        Answer = answers1[0]
+                    }
+                });
+
+                answers2.Add(new Answer
+                {
+                    CreationDate = creationDate,
+                    Title = "Stark"
+                });
+
+                answers2.Add(new Answer
+                {
+                    CreationDate = creationDate,
+                    Title = "Martell"
+                });
+
+                answers2.Add(new Answer
+                {
+                    CreationDate = creationDate,
+                    Title = "Lannister"
+                });
+
+                answers2.Add(new Answer
+                {
+                    CreationDate = creationDate,
+                    Title = "Tyrell"
+                });
+
+                questions.Add(new Question
+                {
+                    CreationDate = creationDate,
+                    IsDeleted = false,
+                    Title = "In GoT series, John Snow 'formally' belongs to House ...?",
+                    Answers = answers2,
+                    CategoryList = categories,
+                    CorrectAnswer = new CorrectAnswer
+                    {
+                        CreationDate = creationDate,
+                        Answer = answers2[0]
+                    }
+                });
+
+                questionService.Add(questions[0]);
+                questionService.Add(questions[1]);
             }
 
-            if (answerService.GetList().Count() == 0)
-            {
-                string path = "Answers.json".ToApplicationPath();
+            //if (answerService.GetList().Count() == 0)
+            //{
+            //    string path = "Answers.json".ToApplicationPath();
 
-                GeoJson<Answer> geoJson = JsonConvert.DeserializeObject<GeoJson<Answer>>(File.ReadAllText(path));
+            //    GeoJson<Answer> geoJson = JsonConvert.DeserializeObject<GeoJson<Answer>>(File.ReadAllText(path));
 
-                foreach (var answerJson in geoJson.Features)
-                {
-                    Answer answer = answerJson.Properties;
-                    answer.CreationDate = creationDate;
-                    answerService.AddToSeed(answer);
-                }
-            }
+            //    foreach (var answerJson in geoJson.Features)
+            //    {
+            //        Answer answer = answerJson.Properties;
+            //        answer.CreationDate = creationDate;
+            //        answerService.AddToSeed(answer);
+            //    }
+            //}
 
-            if (answerService.GetCorrectAnswersList().Count() == 0)
-            {
-                string path = "CorrectAnswers.json".ToApplicationPath();
+            //if (answerService.GetCorrectAnswersList().Count() == 0)
+            //{
+            //    string path = "CorrectAnswers.json".ToApplicationPath();
 
-                GeoJson<CorrectAnswer> geoJson = JsonConvert.DeserializeObject<GeoJson<CorrectAnswer>>(File.ReadAllText(path));
+            //    GeoJson<CorrectAnswer> geoJson = JsonConvert.DeserializeObject<GeoJson<CorrectAnswer>>(File.ReadAllText(path));
 
-                foreach (var answerJson in geoJson.Features)
-                {
-                    CorrectAnswer answer = answerJson.Properties;
-                    answer.CreationDate = creationDate;
-                    answerService.AddCorrectAnswer(answer);
-                }
-            }
+            //    foreach (var answerJson in geoJson.Features)
+            //    {
+            //        CorrectAnswer answer = answerJson.Properties;
+            //        answer.CreationDate = creationDate;
+            //        answerService.AddCorrectAnswer(answer);
+            //    }
+            //}
 
             if(challengeService.GetList().Count() == 0)
             {
-                string path = "Challenges.json".ToApplicationPath();
-
-                GeoJson<Challenge> geoJson = JsonConvert.DeserializeObject<GeoJson<Challenge>>(File.ReadAllText(path));
-
-                foreach(var challengeJson in geoJson.Features)
+                List<Question> questions = new List<Question>();
+                List<Answer> answers1 = new List<Answer>();
+                List<Answer> answers2 = new List<Answer>();
+                List<ChallengeCategory> categories = new List<ChallengeCategory>();
+                ChallengeCategory category = new ChallengeCategory
                 {
-                    Challenge challenge = challengeJson.Properties;
-                    challenge.CreationDate = creationDate;
-                    challengeService.AddToSeed(challenge);
-                }
+                    CreationDate = creationDate,
+                    Category = categoryService.GetList().FirstOrDefault()
+                };
+
+                categories.Add(category);
+
+                Challenge challenge = new Challenge
+                {
+                    CreationDate = creationDate,
+                    Color = colorService.GetList().FirstOrDefault(),
+                    QuestionAmount = 10,
+                    QuizType = quizTypeService.GetList().FirstOrDefault(),
+                    Title = "Default Quiz",
+                    CategoryList = categories
+                };
+
+                challengeService.Add(challenge);
             }
         }
 
