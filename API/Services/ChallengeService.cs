@@ -55,8 +55,16 @@ namespace QuizAppApi.Services
 
         public void AddToSeed(Challenge challenge)
         {
-            _context.Challenges.Add(challenge);
-            _context.SaveChanges();
+            using (var transaction = _context.Database.BeginTransaction())
+            {
+                _context.Challenges.Add(challenge);
+
+                _context.Database.ExecuteSqlCommand("SET IDENTITY_INSERT dbo.Challenges ON");
+                _context.SaveChanges();
+                _context.Database.ExecuteSqlCommand("SET IDENTITY_INSERT dbo.Challenges OFF");
+
+                transaction.Commit();
+            }
         }
 
         public void Add(Challenge challenge)
@@ -83,7 +91,9 @@ namespace QuizAppApi.Services
 
             _context.Challenges.Add(challenge);
             _context.ChallengeCategories.AddRange(challengeCategories);
+            _context.Database.ExecuteSqlCommand("SET IDENTITY_INSERT dbo.Challenges ON");
             _context.SaveChanges();
+            _context.Database.ExecuteSqlCommand("SET IDENTITY_INSERT dbo.Sessions OFF");
         }
 
         public void Update(Challenge challenge)

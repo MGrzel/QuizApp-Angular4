@@ -8,6 +8,7 @@
         {
             "type": "Feature",
             "properties": {
+                "Id":  1,
                 "Color": {
                     "Id": 63,
                     "CreationDate": "2017-08-11T14:57:32.8375298+02:00",
@@ -35,6 +36,7 @@
         {
             "type": "Feature",
             "properties": {
+                "Id": 2,
                 "Color": {
                     "Id": 22,
                     "CreationDate": "2017-08-11T14:57:32.8375298+02:00",
@@ -62,6 +64,7 @@
         {
             "type": "Feature",
             "properties": {
+                "Id": 3,
                 "Color": {
                     "Id": 23,
                     "CreationDate": "2017-08-11T14:57:32.8375298+02:00",

@@ -59,26 +59,40 @@ namespace QuizAppApi.Services
 
         public void SaveSession(Session quizSession)
         {
-            var sessionId = _context.Sessions.Any() ? _context.Sessions.Last().Id + 1 : 1;
-            var quizId = _context.ClientQuizes.Any() ? _context.ClientQuizes.Last().Id + 1 : 1;
-            var creationDate = DateTime.Now;
-
-            quizSession.Challenge = _context.Challenges.Where(c => c.Id == quizSession.Challenge.Id).Include("Color").Include("QuizType").FirstOrDefault();
-            quizSession.Id = sessionId;
-            quizSession.CreationDate = creationDate;
-
-            foreach (var quiz in quizSession.ClientQuiz)
+            using (var transaction = _context.Database.BeginTransaction())
             {
-                quiz.Id = quizId;
-                quiz.SessionId = quizSession.Id;
-                quiz.CreationDate = creationDate;
-                quiz.Question = _context.Questions.Where(c => c.Id == quiz.Question.Id).Include("Answers").FirstOrDefault();
-                quizId++;
-            }
+                var sessionId = _context.Sessions.Any() ? _context.Sessions.Last().Id + 1 : 1;
+                var quizId = _context.ClientQuizes.Any() ? _context.ClientQuizes.Last().Id + 1 : 1;
+                var creationDate = DateTime.Now;
 
-            quizSession.ClientQuiz = quizSession.ClientQuiz.ToList();
-            _context.Sessions.Add(quizSession);
-            _context.SaveChanges();
+                quizSession.Challenge = _context.Challenges.Where(c => c.Id == quizSession.Challenge.Id).Include("Color").Include("QuizType").FirstOrDefault();
+                quizSession.Id = sessionId;
+                quizSession.CreationDate = creationDate;
+
+                foreach (var quiz in quizSession.ClientQuiz)
+                {
+                    quiz.Id = quizId;
+                    quiz.SessionId = quizSession.Id;
+                    quiz.CreationDate = creationDate;
+                    quiz.Question = _context.Questions.Where(c => c.Id == quiz.Question.Id).Include("Answers").FirstOrDefault();
+                    quizId++;
+                }
+
+                _context.Database.OpenConnection();
+                List<ClientQuiz> clientQuizzes = quizSession.ClientQuiz;
+                quizSession.ClientQuiz = null;
+                _context.Sessions.Add(quizSession);
+                _context.Database.ExecuteSqlCommand("SET IDENTITY_INSERT dbo.Sessions ON");
+                _context.SaveChanges();
+                _context.Database.ExecuteSqlCommand("SET IDENTITY_INSERT dbo.Sessions OFF");
+
+                _context.ClientQuizes.AddRange(clientQuizzes);
+                _context.Database.ExecuteSqlCommand("SET IDENTITY_INSERT dbo.ClientQuizes ON");
+                _context.SaveChanges();
+                _context.Database.ExecuteSqlCommand("SET IDENTITY_INSERT dbo.ClientQuizes OFF");
+
+                transaction.Commit();
+            }
         }
 
         public Session CheckQuizAnswers(Session session)
