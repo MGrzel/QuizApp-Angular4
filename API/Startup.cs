@@ -15,6 +15,7 @@ using Microsoft.AspNetCore.Mvc.Cors.Internal;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Diagnostics;
 using QuizAppApi.Services;
+using Microsoft.AspNetCore.Identity;
 
 namespace QuizAppApi
 {
@@ -39,6 +40,18 @@ namespace QuizAppApi
 
             services.AddDbContext<QuizAppDb>
                 (options => options.UseSqlServer(Configuration.GetConnectionString("QuizAppDb")));
+
+            services.AddIdentity<User, IdentityRole>
+                (options =>
+                {
+                    options.Password.RequireLowercase = false;
+                    options.Password.RequireUppercase = false;
+                    options.Password.RequireNonAlphanumeric = false;
+                    options.Password.RequireDigit = false;
+                    options.Password.RequiredLength = 6;
+                })
+                .AddEntityFrameworkStores<QuizAppDb>()
+                .AddDefaultTokenProviders();
 
             services.AddScoped<IAnswerService, AnswerService>();
             services.AddScoped<ICategoryService, CategoryService>();
@@ -74,7 +87,7 @@ namespace QuizAppApi
 
             var context = serviceProvider.GetRequiredService<QuizAppDb>();
             context.Database.Migrate();
-            SeedData.Initialize(serviceProvider);
+            //SeedData.Initialize(serviceProvider);
 
             if (env.IsDevelopment())
             {

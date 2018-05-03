@@ -30,7 +30,7 @@ namespace QuizAppApi.Controllers
 
 
         [HttpPatch("questions/{id}")]
-        public void RestoreQuestion(int id, [FromBody]JObject question)
+        public void RestoreQuestion(Guid id, [FromBody]JObject question)
         {
             Question q = question.ToObject<Question>();
             _questionService.Restore(q);
@@ -38,7 +38,7 @@ namespace QuizAppApi.Controllers
 
 
         [HttpPatch("categories/{id}")]
-        public void RestoreCategory(int id, [FromBody]JObject category)
+        public void RestoreCategory(Guid id, [FromBody]JObject category)
         {
             Category c = category.ToObject<Category>();
             _categoryService.Restore(c);
@@ -46,7 +46,7 @@ namespace QuizAppApi.Controllers
 
 
         [HttpPatch("challenges/{id}")]
-        public void RestoreChallenge(int id, [FromBody]JObject challenge)
+        public void RestoreChallenge(Guid id, [FromBody]JObject challenge)
         {
             Challenge c = challenge.ToObject<Challenge>();
             _challengeService.Restore(c);

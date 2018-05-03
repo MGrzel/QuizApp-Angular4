@@ -17,20 +17,20 @@ namespace QuizAppApi.Services
         }
 
         ///Returns a category specified by the id
-        public Category GetById(int? categoryId)
+        public Category GetById(Guid? categoryId)
         {
             return _context.Categories.Where(c => categoryId == c.Id && !c.IsDeleted).FirstOrDefault();
         }
 
         ///Returns a list of categories specified by the challenge id
-        public List<Category> GetCategoriesByChallengeId(int challengeId)
+        public List<Category> GetCategoriesByChallengeId(Guid challengeId)
         {
             var categoryIds = _context.ChallengeCategories.Where(cc => cc.ChallengeId == challengeId && !cc.IsDeleted).Select(cc => cc.CategoryId).ToList();
             return _context.Categories.Where(c => categoryIds.Contains(c.Id) && !c.IsDeleted).ToList();
         }
 
         ///Returns a list of categories specified by the array of the challenge ids
-        public List<Category> GetCategoriesByQuestionId(int questionId)
+        public List<Category> GetCategoriesByQuestionId(Guid questionId)
         {
             var categoryIds = _context.CategoryQuestions.Where(cc => cc.QuestionId == questionId && !cc.IsDeleted).Select(cc => cc.CategoryId).ToList();
             return _context.Categories.Where(c => categoryIds.Contains(c.Id) && !c.IsDeleted).ToList();
@@ -54,7 +54,7 @@ namespace QuizAppApi.Services
         }
 
         ///Returns a list of categories specified by the array of the ids
-        public List<Category> GetListById(int[] categoryIds)
+        public List<Category> GetListById(Guid[] categoryIds)
         {
             return _context.Categories.Where(c => categoryIds.Contains(c.Id) && !c.IsDeleted).ToList();
         }
@@ -70,7 +70,7 @@ namespace QuizAppApi.Services
         }
 
         ///Returns a list of categories specified by the array of the challenge ids
-        public List<Category> GetListByChallengeId(int challengeId)
+        public List<Category> GetListByChallengeId(Guid challengeId)
         {
             var categoryIds = _context.ChallengeCategories.Where(cc => cc.ChallengeId == challengeId && !cc.IsDeleted).Select(cc => cc.CategoryId).ToList();
             return _context.Categories.Where(c => categoryIds.Contains(c.Id) && !c.IsDeleted).ToList();
@@ -79,62 +79,35 @@ namespace QuizAppApi.Services
 
         public void Add(Category category)
         {
-            var categoryId = _context.Categories.Any() ? _context.Categories.Last().Id + 1 : 1;
             var date = DateTime.Now;
 
-            category.Id = categoryId;
             category.CreationDate = date;
 
-            using (var transaction = _context.Database.BeginTransaction())
-            {
-                _context.Categories.Add(category);
+            _context.Categories.Add(category);
 
-                _context.Database.ExecuteSqlCommand("SET IDENTITY_INSERT dbo.Categories ON;");
-                _context.SaveChanges();
-                _context.Database.ExecuteSqlCommand("SET IDENTITY_INSERT dbo.Categories OFF;");
-
-                transaction.Commit();
-            }
+            _context.SaveChanges();
         }
 
         public void AddQuestionCategory(CategoryQuestion category)
         {
-            var categoryId = _context.CategoryQuestions.Any() ? _context.CategoryQuestions.Last().Id + 1 : 1;
             var date = DateTime.Now;
 
-            category.Id = categoryId;
             category.CreationDate = date;
 
-            using (var transaction = _context.Database.BeginTransaction())
-            {
-                _context.CategoryQuestions.Add(category);
+            _context.CategoryQuestions.Add(category);
 
-                _context.Database.ExecuteSqlCommand("SET IDENTITY_INSERT dbo.CategoryQuestions ON;");
-                _context.SaveChanges();
-                _context.Database.ExecuteSqlCommand("SET IDENTITY_INSERT dbo.CategoryQuestions OFF;");
-
-                transaction.Commit();
-            }
+            _context.SaveChanges();
         }
 
         public void AddChallengeCategory(ChallengeCategory category)
         {
-            var categoryId = _context.ChallengeCategories.Any() ? _context.ChallengeCategories.Last().Id + 1 : 1;
             var date = DateTime.Now;
 
-            category.Id = categoryId;
             category.CreationDate = date;
 
-            using (var transaction = _context.Database.BeginTransaction())
-            {
-                _context.ChallengeCategories.Add(category);
+            _context.ChallengeCategories.Add(category);
 
-                _context.Database.ExecuteSqlCommand("SET IDENTITY_INSERT dbo.ChallengeCategories ON;");
-                _context.SaveChanges();
-                _context.Database.ExecuteSqlCommand("SET IDENTITY_INSERT dbo.ChallengeCategories OFF;");
-
-                transaction.Commit();
-            }
+            _context.SaveChanges();
         }
 
         public void Update(Category category)
@@ -147,7 +120,7 @@ namespace QuizAppApi.Services
             _context.SaveChanges();
         }
 
-        public void Delete(int id)
+        public void Delete(Guid id)
         {
             var category = GetById(id);
             var date = DateTime.Now;

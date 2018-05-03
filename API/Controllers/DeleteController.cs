@@ -30,21 +30,21 @@ namespace QuizAppApi.Controllers
 
         // DELETE api/quizapp/5
         [HttpDelete("questions/{id}")]
-        public void DeleteQuestion(int id)
+        public void DeleteQuestion(Guid id)
         {
             _questionService.Delete(id);
         }
 
         // DELETE api/quizapp/5
         [HttpDelete("categories/{id}")]
-        public void DeleteCategory(int id)
+        public void DeleteCategory(Guid id)
         {
             _categoryService.Delete(id);
         }
 
         // DELETE api/quizapp/5
         [HttpDelete("challenges/{id}")]
-        public void DeleteChallenge(int id)
+        public void DeleteChallenge(Guid id)
         {
             _challengeService.Delete(id);
         }

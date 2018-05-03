@@ -44,27 +44,27 @@ namespace QuizAppApi.Services
             {
                 return false;
             }
-            List<int> correctAnswers = _context.CorrectAnswers.Where(ca => ca.QuestionId == answer.QuestionId).Select(ca => ca.AnswerId).ToList();
+            List<Guid> correctAnswers = _context.CorrectAnswers.Where(ca => ca.QuestionId == answer.QuestionId).Select(ca => ca.AnswerId).ToList();
             bool isCorrect = correctAnswers.Contains(answer.Id);
 
             return isCorrect;
         }
 
-        public List<Answer> GetListByQuestionId(int questionId)
+        public List<Answer> GetListByQuestionId(Guid questionId)
         {
             return _context.Answers.Where(c => c.QuestionId == questionId && !c.IsDeleted).ToList();
         }
 
-        public Answer GetCorrectByQuestionId(int questionId)
+        public Answer GetCorrectByQuestionId(Guid questionId)
         {
             var answerId = _context.CorrectAnswers.Where(ca => ca.QuestionId == questionId && !ca.IsDeleted).Select(ca => ca.AnswerId).FirstOrDefault();
 
             return _context.Answers.Where(a => a.Id == answerId && !a.IsDeleted).FirstOrDefault();
         }
 
-        public bool CheckAnswer(int questionId, int answerId)
+        public bool CheckAnswer(Guid questionId, Guid answerId)
         {
-            List<int> correctAnswers = _context.CorrectAnswers.Where(ca => ca.QuestionId == questionId).Select(ca => ca.AnswerId).ToList();
+            List<Guid> correctAnswers = _context.CorrectAnswers.Where(ca => ca.QuestionId == questionId).Select(ca => ca.AnswerId).ToList();
             bool isCorrect = correctAnswers.Contains(answerId);
 
             return isCorrect;

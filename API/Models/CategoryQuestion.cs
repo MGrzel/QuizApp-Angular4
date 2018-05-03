@@ -7,9 +7,14 @@ namespace QuizAppApi.Models
 {
     public class CategoryQuestion
     {
-        public int Id { get; set; }
-        public int QuestionId { get; set; }
-        public int CategoryId { get; set; }
+        [ForeignKey("QuestionId")]
+        public Question Question { get; set; }
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public Guid QuestionId { get; set; }
+        [ForeignKey("CategoryId")]
+        public Category Category { get; set; }
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public Guid CategoryId { get; set; }
         public DateTime? CreationDate { get; set; }
         public DateTime? DeletionDate { get; set; }
         public bool IsDeleted { get; set; }

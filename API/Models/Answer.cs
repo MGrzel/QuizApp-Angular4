@@ -8,8 +8,12 @@ namespace QuizAppApi.Models
 {
     public class Answer
     {
-        public int Id { get; set; }
-        public int QuestionId { get; set; }
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public Guid Id { get; set; }
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public Guid QuestionId { get; set; }
+        [ForeignKey("QuestionId")]
+        public Question Question { get; set; }
         public string Title { get; set; }
         public DateTime? CreationDate { get; set; }
         public DateTime? DeletionDate { get; set; }

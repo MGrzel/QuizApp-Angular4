@@ -22,13 +22,9 @@ namespace QuizAppApi.Services
         }
 
         ///Returns a question specified by the id
-        public Question GetById(int? questionId, bool admin = false)
+        public Question GetById(Guid? questionId, bool admin = false)
         {
             var question = _context.Questions.Where(q => q.Id == questionId && !q.IsDeleted).Include(q => q.Answers).FirstOrDefault();
-            if (admin)
-            {
-                question.CategoryList = _categoryService.GetCategoriesByQuestionId(question.Id);
-            }
 
             return question;
         }
@@ -43,19 +39,10 @@ namespace QuizAppApi.Services
         {
             var questions = _context.Questions.Where(q => !q.IsDeleted).Include(q => q.Answers).ToList();
 
-            if (admin)
-            {
-                foreach (var question in questions)
-                {
-                    question.CategoryList = _categoryService.GetCategoriesByQuestionId(question.Id);
-                    question.CorrectAnswer = GetCorrectAnswer(question.Id);
-                }
-            }
-
             return questions;
         }
 
-        public Answer GetCorrectAnswer(int questionId)
+        public Answer GetCorrectAnswer(Guid questionId)
         {
             var answerId = _context.CorrectAnswers.Where(ca => ca.QuestionId == questionId && !ca.IsDeleted).Select(ca => ca.AnswerId).FirstOrDefault();
 
@@ -68,13 +55,13 @@ namespace QuizAppApi.Services
         }
 
         ///Returns a list of questions specified by the array of the ids
-        public List<Question> GetListById(int[] questionIds)
+        public List<Question> GetListById(Guid[] questionIds)
         {
             return _context.Questions.Where(q => questionIds.Contains(q.Id) && !q.IsDeleted).Include(q => q.Answers).ToList();
         }
 
         ///Returns a list of questions specified by the array of the category ids
-        public List<Question> GetListByCategoryId(int[] categoryIds)
+        public List<Question> GetListByCategoryId(Guid[] categoryIds)
         {
             var questionIds = _context.CategoryQuestions.Where(cc => categoryIds.Contains(cc.CategoryId) && !cc.IsDeleted).Select(cc => cc.QuestionId).ToList();
             return _context.Questions.Where(q => questionIds.Contains(q.Id) && !q.IsDeleted).Include(q => q.Answers).Distinct().ToList();
@@ -89,35 +76,35 @@ namespace QuizAppApi.Services
             var clientQuizes = new List<ClientQuiz>();
             var date = DateTime.Now;
 
-            correctAnswer.CreationDate = date;
-            correctAnswer.AnswerId = question.CorrectAnswer.Id;
-            correctAnswer.QuestionId = question.CorrectAnswer.QuestionId;
-            correctAnswer.Id = _context.CorrectAnswers.Where(ca => ca.QuestionId == question.CorrectAnswer.QuestionId).Select(ca => ca.Id).FirstOrDefault();
+            //correctAnswer.CreationDate = date;
+            //correctAnswer.AnswerId = question.CorrectAnswer.Id;
+            //correctAnswer.QuestionId = question.CorrectAnswer.QuestionId;
+            //correctAnswer.Id = _context.CorrectAnswers.Where(ca => ca.QuestionId == question.CorrectAnswer.QuestionId).Select(ca => ca.Id).FirstOrDefault();
 
-            newCategories = question.CategoryList.ToList();
-            oldCategoryQuestion = _context.CategoryQuestions.Where(cq => cq.QuestionId == question.Id && cq.IsDeleted == false).ToList();
+            //newCategories = question.CategoryList.ToList();
+            //oldCategoryQuestion = _context.CategoryQuestions.Where(cq => cq.QuestionId == question.Id && cq.IsDeleted == false).ToList();
 
-            foreach (var cq in oldCategoryQuestion)
-            {
-                cq.IsDeleted = true;
-                cq.DeletionDate = date;
-            }
+            //foreach (var cq in oldCategoryQuestion)
+            //{
+            //    cq.IsDeleted = true;
+            //    cq.DeletionDate = date;
+            //}
 
-            foreach (var cat in newCategories)
-            {
-                var categoryQuestion = new CategoryQuestion
-                {
-                    CategoryId = cat.Id,
-                    QuestionId = question.Id,
-                    CreationDate = date
-                };
-                newCategoryQuestion.Add(categoryQuestion);
-            }
+            //foreach (var cat in newCategories)
+            //{
+            //    var categoryQuestion = new CategoryQuestion
+            //    {
+            //        CategoryId = cat.Id,
+            //        QuestionId = question.Id,
+            //        CreationDate = date
+            //    };
+            //    newCategoryQuestion.Add(categoryQuestion);
+            //}
 
-            _context.CategoryQuestions.UpdateRange(oldCategoryQuestion);
-            _context.CategoryQuestions.AddRange(newCategoryQuestion);
-            _context.CorrectAnswers.Update(correctAnswer);
-            _context.SaveChanges();
+            //_context.CategoryQuestions.UpdateRange(oldCategoryQuestion);
+            //_context.CategoryQuestions.AddRange(newCategoryQuestion);
+            //_context.CorrectAnswers.Update(correctAnswer);
+            //_context.SaveChanges();
             _context.Questions.Update(question);
             _context.SaveChanges();
 
@@ -143,63 +130,56 @@ namespace QuizAppApi.Services
 
         public void AddToSeed(Question question)
         {
-            using (var transaction = _context.Database.BeginTransaction())
-            {
-                _context.Questions.Add(question);
+            _context.Questions.Add(question);
 
-                _context.Database.ExecuteSqlCommand("SET IDENTITY_INSERT dbo.Questions ON;");
-                _context.SaveChanges();
-                _context.Database.ExecuteSqlCommand("SET IDENTITY_INSERT dbo.Questions OFF;");
-
-                transaction.Commit();
-            }
+            _context.SaveChanges();
         }
 
         public void Add(Question question)
         {
-            var correctAnswer = new CorrectAnswer();
-            var newCategories = new List<Category>();
-            var newCategoryQuestion = new List<CategoryQuestion>();
-            var questionId = _context.Questions.Any() ? _context.Questions.Last().Id + 1 : 1;
-            var date = DateTime.Now;
+            //var correctAnswer = new CorrectAnswer();
+            //var newCategories = new List<Category>();
+            //var newCategoryQuestion = new List<CategoryQuestion>();
+            //var questionId = _context.Questions.Any() ? _context.Questions.Last().Id + 1 : 1;
+            //var date = DateTime.Now;
 
-            newCategories = question.CategoryList.ToList();
+            //newCategories = question.CategoryList.ToList();
 
-            foreach (var cat in newCategories)
-            {
-                var categoryQuestion = new CategoryQuestion
-                {
-                    CategoryId = cat.Id,
-                    QuestionId = questionId,
-                    CreationDate = date
-                };
-                newCategoryQuestion.Add(categoryQuestion);
-            }
+            //foreach (var cat in newCategories)
+            //{
+            //    var categoryQuestion = new CategoryQuestion
+            //    {
+            //        CategoryId = cat.Id,
+            //        QuestionId = questionId,
+            //        CreationDate = date
+            //    };
+            //    newCategoryQuestion.Add(categoryQuestion);
+            //}
 
-            foreach (var answer in question.Answers)
-            {
-                answer.CreationDate = date;
-                answer.QuestionId = questionId;
-                answer.Id = 0;
-            }
+            //foreach (var answer in question.Answers)
+            //{
+            //    answer.CreationDate = date;
+            //    answer.QuestionId = questionId;
+            //    answer.Id = 0;
+            //}
 
-            question.Id = questionId;
-            question.CreationDate = date;
+            //question.Id = questionId;
+            //question.CreationDate = date;
 
-            _context.CategoryQuestions.AddRange(newCategoryQuestion);
+            //_context.CategoryQuestions.AddRange(newCategoryQuestion);
             _context.Questions.Add(question);
 
-            _context.SaveChanges();
+            //_context.SaveChanges();
 
-            correctAnswer.CreationDate = date;
-            correctAnswer.AnswerId = _context.Answers.Where(a => a.QuestionId == questionId && a.Title == question.CorrectAnswer.Title).Select(a => a.Id).First();
-            correctAnswer.QuestionId = questionId;
+            //correctAnswer.CreationDate = date;
+            //correctAnswer.AnswerId = _context.Answers.Where(a => a.QuestionId == questionId && a.Title == question.CorrectAnswer.Title).Select(a => a.Id).First();
+            //correctAnswer.QuestionId = questionId;
 
-            _context.CorrectAnswers.Add(correctAnswer);
-            _context.SaveChanges();
+            //_context.CorrectAnswers.Add(correctAnswer);
+            //_context.SaveChanges();
         }
 
-        public void Delete(int id)
+        public void Delete(Guid id)
         {
             var question = GetById(id);
             var date = DateTime.Now;

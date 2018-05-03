@@ -20,13 +20,10 @@ namespace QuizAppApi.Services
         }
 
         ///Returns a challenge specified by the id
-        public Challenge GetById(int? challengeId)
+        public Challenge GetById(Guid? challengeId)
         {
             var challenge = _context.Challenges.Where(c => c.Id == challengeId && !c.IsDeleted).Include("Color").Include("QuizType").FirstOrDefault();
-            if (challenge != null)
-            {
-                challenge.CategoryList = _categoryService.GetCategoriesByChallengeId(challenge.Id);
-            }
+
             return challenge;
         }
 
@@ -39,10 +36,6 @@ namespace QuizAppApi.Services
         public List<Challenge> GetList()
         {
             var challenges = _context.Challenges.Where(c => !c.IsDeleted).Include("Color").Include("QuizType").ToList();
-            foreach (var challenge in challenges)
-            {
-                challenge.CategoryList = _categoryService.GetCategoriesByChallengeId(challenge.Id);
-            }
 
             return challenges;
         }
@@ -55,45 +48,34 @@ namespace QuizAppApi.Services
 
         public void AddToSeed(Challenge challenge)
         {
-            using (var transaction = _context.Database.BeginTransaction())
-            {
-                _context.Challenges.Add(challenge);
+            _context.Challenges.Add(challenge);
 
-                _context.Database.ExecuteSqlCommand("SET IDENTITY_INSERT dbo.Challenges ON");
-                _context.SaveChanges();
-                _context.Database.ExecuteSqlCommand("SET IDENTITY_INSERT dbo.Challenges OFF");
-
-                transaction.Commit();
-            }
+            _context.SaveChanges();
         }
 
         public void Add(Challenge challenge)
         {
 
             var challengeCategories = new List<ChallengeCategory>();
-            var challengeId = _context.Challenges.Any() ? _context.Challenges.Last().Id + 1 : 1;
             var date = DateTime.Now;
-            challenge.QuizType = _context.QuizTypes.Where(qt => qt.Id == challenge.QuizType.Id).First();
-            challenge.Color = _context.Colors.Where(c => c.Id == challenge.Color.Id).First();
+            //challenge.QuizType = _context.QuizTypes.Where(qt => qt.Id == challenge.QuizType.Id).First();
+            //challenge.Color = _context.Colors.Where(c => c.Id == challenge.Color.Id).First();
             challenge.CreationDate = date;
-            challenge.Id = challengeId;
 
-            foreach (var cat in challenge.CategoryList)
-            {
-                var category = new ChallengeCategory
-                {
-                    CategoryId = cat.Id,
-                    ChallengeId = challengeId,
-                    CreationDate = date
-                };
-                challengeCategories.Add(category);
-            }
+            //foreach (var cat in challenge.CategoryList)
+            //{
+            //    var category = new ChallengeCategory
+            //    {
+            //        CategoryId = cat.Id,
+            //        ChallengeId = challengeId,
+            //        CreationDate = date
+            //    };
+            //    challengeCategories.Add(category);
+            //}
 
             _context.Challenges.Add(challenge);
-            _context.ChallengeCategories.AddRange(challengeCategories);
-            _context.Database.ExecuteSqlCommand("SET IDENTITY_INSERT dbo.Challenges ON");
+            //_context.ChallengeCategories.AddRange(challengeCategories);
             _context.SaveChanges();
-            _context.Database.ExecuteSqlCommand("SET IDENTITY_INSERT dbo.Sessions OFF");
         }
 
         public void Update(Challenge challenge)
@@ -102,36 +84,36 @@ namespace QuizAppApi.Services
             var oldChallengeCategories = new List<ChallengeCategory>();
             var date = DateTime.Now;
 
-            challenge.QuizType = _context.QuizTypes.Where(qt => qt.Id == challenge.QuizType.Id).First();
-            challenge.Color = _context.Colors.Where(c => c.Id == challenge.Color.Id).First();
+            //challenge.QuizType = _context.QuizTypes.Where(qt => qt.Id == challenge.QuizType.Id).First();
+            //challenge.Color = _context.Colors.Where(c => c.Id == challenge.Color.Id).First();
             challenge.CreationDate = date;
 
-            oldChallengeCategories = _context.ChallengeCategories.Where(cq => cq.ChallengeId == challenge.Id && cq.IsDeleted == false).ToList();
+            //oldChallengeCategories = _context.ChallengeCategories.Where(cq => cq.ChallengeId == challenge.Id && cq.IsDeleted == false).ToList();
 
-            foreach (var cq in oldChallengeCategories)
-            {
-                cq.IsDeleted = true;
-                cq.DeletionDate = date;
-            }
+            //foreach (var cq in oldChallengeCategories)
+            //{
+            //    cq.IsDeleted = true;
+            //    cq.DeletionDate = date;
+            //}
 
-            foreach (var cat in challenge.CategoryList)
-            {
-                var category = new ChallengeCategory
-                {
-                    CategoryId = cat.Id,
-                    ChallengeId = challenge.Id,
-                    CreationDate = date
-                };
-                newChallengeCategories.Add(category);
-            }
+            //foreach (var cat in challenge.CategoryList)
+            //{
+            //    var category = new ChallengeCategory
+            //    {
+            //        CategoryId = cat.Id,
+            //        ChallengeId = challenge.Id,
+            //        CreationDate = date
+            //    };
+            //    newChallengeCategories.Add(category);
+            //}
 
             _context.Challenges.Update(challenge);
-            _context.ChallengeCategories.UpdateRange(oldChallengeCategories);
-            _context.ChallengeCategories.AddRange(newChallengeCategories);
+            //_context.ChallengeCategories.UpdateRange(oldChallengeCategories);
+            //_context.ChallengeCategories.AddRange(newChallengeCategories);
             _context.SaveChanges();
         }
 
-        public void Delete(int id)
+        public void Delete(Guid id)
         {
             var challenge = GetById(id);
             var date = DateTime.Now;

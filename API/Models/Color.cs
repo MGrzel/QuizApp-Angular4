@@ -7,7 +7,8 @@ namespace QuizAppApi.Models
 {
     public class Color
     {
-        public int Id { get; set; }
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public Guid Id { get; set; }
         public string Value { get; set; }
         public string Title { get; set; }
         public DateTime? CreationDate { get; set; }

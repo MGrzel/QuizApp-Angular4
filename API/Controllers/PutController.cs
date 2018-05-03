@@ -30,7 +30,7 @@ namespace QuizAppApi.Controllers
 
         // PUT api/quizapp
         [HttpPut("questions/{id?}")]
-        public object UpdateQuestion(int? id, [FromBody]JObject question)
+        public object UpdateQuestion(Guid? id, [FromBody]JObject question)
         {
             if (id.HasValue)
             {
@@ -48,7 +48,7 @@ namespace QuizAppApi.Controllers
 
         // PUT api/quizapp
         [HttpPut("challenges/{id?}")]
-        public object UpdateChallenge(int? id, [FromBody]JObject challenge)
+        public object UpdateChallenge(Guid? id, [FromBody]JObject challenge)
         {
             if (id.HasValue)
             {
@@ -66,7 +66,7 @@ namespace QuizAppApi.Controllers
 
         // PUT api/quizapp
         [HttpPut("categories/{id?}")]
-        public object UpdateCategory(int? id, [FromBody]JObject category)
+        public object UpdateCategory(Guid? id, [FromBody]JObject category)
         {
             if (id.HasValue)
             {

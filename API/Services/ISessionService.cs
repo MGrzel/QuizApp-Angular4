@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using QuizAppApi.Models;
 
@@ -7,7 +8,7 @@ namespace QuizAppApi.Services
     {
         Session CheckQuizAnswers(Session session);
         Session GetActive();
-        Session GetById(int? sessionId);
+        Session GetById(Guid? sessionId);
         List<Session> GetList();
         void SaveSession(Session quizSession);
     }

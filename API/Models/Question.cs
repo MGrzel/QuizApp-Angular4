@@ -8,19 +8,17 @@ namespace QuizAppApi.Models
 {
     public class Question
     {
-        public int Id { get; set; }
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public Guid Id { get; set; }
         public string Title { get; set; }
-
-        [ForeignKey("QuestionId")]
         public List<Answer> Answers { get; set; }
         public DateTime? CreationDate { get; set; }
         public DateTime? DeletionDate { get; set; }
         public bool IsDeleted { get; set; }
-
-        [NotMapped]
-        public List<Category> CategoryList { get; set; }
-
-        [NotMapped]
-        public Answer CorrectAnswer { get; set; }
+        public List<CategoryQuestion> CategoryList { get; set; }
+        [ForeignKey("CorrectAnswerId")]
+        public CorrectAnswer CorrectAnswer { get; set; }
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public Guid CorrectAnswerId { get; set; }
     }
 }

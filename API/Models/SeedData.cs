@@ -34,7 +34,6 @@ namespace QuizAppApi.Models
             {
                 QuizType standard = new QuizType
                 {
-                    Id = 1,
                     CreationDate = creationDate,
                     Description = "In standard quiz you have access to all of the questions immediately. Submiting the quiz means checking all the answers and ending the session.",
                     Title = "standard",
@@ -43,7 +42,6 @@ namespace QuizAppApi.Models
 
                 QuizType millionaires = new QuizType
                 {
-                    Id = 2,
                     CreationDate = creationDate,
                     Description = "In millionaires quiz you go answer by answer to the last question. You check your answer every step and the wrong one disqualifies you.",
                     Title = "millionaires",

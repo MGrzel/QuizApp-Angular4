@@ -17,7 +17,7 @@ namespace QuizAppApi.Services
         }
 
         ///Returns a color specified by the id
-        public Color GetById(int? id)
+        public Color GetById(Guid? id)
         {
             return _context.Colors.Where(c => c.Id == id && !c.IsDeleted).FirstOrDefault();
         }
@@ -36,17 +36,9 @@ namespace QuizAppApi.Services
 
         public void Add(Color color)
         {
+            _context.Colors.Add(color);
 
-            using (var transaction = _context.Database.BeginTransaction())
-            {
-                _context.Colors.Add(color);
-
-                _context.Database.ExecuteSqlCommand("SET IDENTITY_INSERT dbo.Colors ON;");
-                _context.SaveChanges();
-                _context.Database.ExecuteSqlCommand("SET IDENTITY_INSERT dbo.Colors OFF;");
-
-                transaction.Commit();
-            }
+            _context.SaveChanges();
         }
     }
 }

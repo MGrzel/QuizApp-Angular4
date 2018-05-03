@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using QuizAppApi.Models;
 
@@ -7,6 +8,6 @@ namespace QuizAppApi.Services
     {
         void Add(QuizType quizType);
         List<QuizType> GetList();
-        QuizType GetById(int id);
+        QuizType GetById(Guid id);
     }
 }

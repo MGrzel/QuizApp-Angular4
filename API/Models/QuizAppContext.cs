@@ -1,9 +1,10 @@
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System.Data;
 
 namespace QuizAppApi.Models
 {
-    public class QuizAppDb : DbContext
+    public class QuizAppDb : IdentityDbContext<User>
     {
         public QuizAppDb(DbContextOptions<QuizAppDb> options) : base(options)
         { }
@@ -18,6 +19,38 @@ namespace QuizAppApi.Models
         public DbSet<ClientQuiz> ClientQuizes { get; set; }
         public DbSet<QuizType> QuizTypes { get; set; }
         public DbSet<ChallengeCategory> ChallengeCategories { get; set; } 
-        public DbSet<CategoryQuestion> CategoryQuestions { get; set; } 
+        public DbSet<CategoryQuestion> CategoryQuestions { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<CategoryQuestion>()
+                .HasKey(c => new { c.CategoryId, c.QuestionId });
+
+            modelBuilder.Entity<CategoryQuestion>()
+                .HasOne(c => c.Question)
+                .WithMany(c => c.CategoryList)
+                .HasForeignKey(c => c.QuestionId);
+
+            modelBuilder.Entity<CategoryQuestion>()
+                .HasOne(c => c.Category)
+                .WithMany(c => c.CategoryQuestions)
+                .HasForeignKey(c => c.CategoryId);
+
+
+            modelBuilder.Entity<ChallengeCategory>()
+                .HasKey(c => new { c.CategoryId, c.ChallengeId });
+
+            modelBuilder.Entity<ChallengeCategory>()
+                .HasOne(c => c.Challenge)
+                .WithMany(c => c.CategoryList)
+                .HasForeignKey(c => c.ChallengeId);
+
+            modelBuilder.Entity<ChallengeCategory>()
+                .HasOne(c => c.Category)
+                .WithMany(c => c.ChallengeCategories)
+                .HasForeignKey(c => c.CategoryId);
+        }
     }
 }

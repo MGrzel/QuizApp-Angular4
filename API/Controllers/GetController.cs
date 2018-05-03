@@ -38,7 +38,7 @@ namespace QuizAppApi.Controllers
 
         // GET api/quizapp/get/categories/id?
         [HttpGet("categories/{id?}")]
-        public object GetCategories(int? id)
+        public object GetCategories(Guid? id)
         {
             if (id.HasValue)
             {
@@ -56,14 +56,14 @@ namespace QuizAppApi.Controllers
 
         // GET api/quizapp/get/categories/id?
         [HttpGet("correctanswer/{questionId}/{answerId}")]
-        public object CheckSingleAnswer(int questionId, int answerId)
+        public object CheckSingleAnswer(Guid questionId, Guid answerId)
         {
             return _answerService.CheckAnswer(questionId, answerId);
         }
 
         // GET api/quizapp/get/challenges/id?
         [HttpGet("challenges/{id?}")]
-        public object GetChallenges(int? id)
+        public object GetChallenges(Guid? id)
         {
             if (id.HasValue)
             {
@@ -88,7 +88,7 @@ namespace QuizAppApi.Controllers
 
         // GET api/quizapp/get/colors/id?
         [HttpGet("colors/{id?}")]
-        public object GetColors(int? id)
+        public object GetColors(Guid? id)
         {
             if (id.HasValue)
             {
@@ -99,7 +99,7 @@ namespace QuizAppApi.Controllers
 
         // GET api/quizapp/get/questions/id?
         [HttpGet("questions/{id?}")]
-        public object GetQuestions(int? id)
+        public object GetQuestions(Guid? id)
         {
             if (id.HasValue)
             {
@@ -117,7 +117,7 @@ namespace QuizAppApi.Controllers
 
         // GET api/quizapp/get/questions/id?
         [HttpGet("admin/questions/{id?}")]
-        public object GetQuestionsAsAdmin(int? id)
+        public object GetQuestionsAsAdmin(Guid? id)
         {
             if (id.HasValue)
             {
@@ -135,7 +135,7 @@ namespace QuizAppApi.Controllers
 
         // GET api/quizapp/get/correctanswer/id?
         [HttpGet("correctanswer/{id}")]
-        public object GetCorrectAnswer(int id)
+        public object GetCorrectAnswer(Guid id)
         {
             return _answerService.GetCorrectByQuestionId(id);
         }
@@ -143,7 +143,7 @@ namespace QuizAppApi.Controllers
 
         // GET api/quizapp/get/sessions/id?
         [HttpGet("sessions/{id?}")]
-        public object GetSessions(int? id)
+        public object GetSessions(Guid? id)
         {
             if (id.HasValue)
             {
@@ -161,7 +161,7 @@ namespace QuizAppApi.Controllers
 
         // GET api/quizapp/get/quiz/id
         [HttpGet("quiz/{id}")]
-        public object GetQuiz(int id)
+        public object GetQuiz(Guid id)
         {
             Session session = new Session();
             var challenge = _challengeService.GetById(id);

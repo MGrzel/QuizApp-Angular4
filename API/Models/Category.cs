@@ -7,10 +7,13 @@ namespace QuizAppApi.Models
 {
     public class Category
     {
-        public int Id { get; set; }
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public Guid Id { get; set; }
         public string Title { get; set; }
         public DateTime? CreationDate { get; set; }
         public DateTime? DeletionDate { get; set; }
         public bool IsDeleted { get; set; }
+        public List<ChallengeCategory> ChallengeCategories { get; set; }
+        public List<CategoryQuestion> CategoryQuestions { get; set; }
     }
 }

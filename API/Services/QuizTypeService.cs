@@ -20,22 +20,16 @@ namespace QuizAppApi.Services
             return _context.QuizTypes.Where(qt => !qt.IsDeleted).ToList();
         }
 
-        public QuizType GetById(int id)
+        public QuizType GetById(Guid id)
         {
             return _context.QuizTypes.Where(qt => qt.Id == id).FirstOrDefault();
         }
 
         public void Add(QuizType quizType)
         {
-            using (var transaction = _context.Database.BeginTransaction())
-            {
-                _context.QuizTypes.Add(quizType);
-                _context.Database.ExecuteSqlCommand("SET IDENTITY_INSERT dbo.QuizTypes ON;");
-                _context.SaveChanges();
-                _context.Database.ExecuteSqlCommand("SET IDENTITY_INSERT dbo.QuizTypes OFF;");
+            _context.QuizTypes.Add(quizType);
 
-                transaction.Commit();
-            }
+            _context.SaveChanges();
         }
     }
 }

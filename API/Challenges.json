@@ -8,9 +8,7 @@
         {
             "type": "Feature",
             "properties": {
-                "Id":  1,
                 "Color": {
-                    "Id": 63,
                     "CreationDate": "2017-08-11T14:57:32.8375298+02:00",
                     "DeletionDate": null,
                     "IsDeleted": 0,
@@ -22,7 +20,6 @@
                 "IsDeleted": 0,
                 "QuestionAmount": 10,
                 "QuizType": {
-                    "Id": 1,
                     "CreationDate": "2017-08-11 14:57:32.8375298",
                     "DeletionDate": null,
                     "Description": "In standard quiz you have access to all of the questions immediately. Submiting the quiz means checking all the answers and ending the session.",
@@ -36,9 +33,7 @@
         {
             "type": "Feature",
             "properties": {
-                "Id": 2,
                 "Color": {
-                    "Id": 22,
                     "CreationDate": "2017-08-11T14:57:32.8375298+02:00",
                     "DeletionDate": null,
                     "IsDeleted": 0,
@@ -50,7 +45,6 @@
                 "IsDeleted": 0,
                 "QuestionAmount": 10,
                 "QuizType": {
-                    "Id": 1,
                     "CreationDate": "2017-08-11 14:57:32.8375298",
                     "DeletionDate": null,
                     "Description": "In standard quiz you have access to all of the questions immediately. Submiting the quiz means checking all the answers and ending the session.",
@@ -64,9 +58,7 @@
         {
             "type": "Feature",
             "properties": {
-                "Id": 3,
                 "Color": {
-                    "Id": 23,
                     "CreationDate": "2017-08-11T14:57:32.8375298+02:00",
                     "DeletionDate": null,
                     "IsDeleted": 0,
@@ -78,7 +70,6 @@
                 "IsDeleted": 0,
                 "QuestionAmount": 5,
                 "QuizType": {
-                    "Id": 2,
                     "CreationDate": "2017-08-11T14:57:32.8375298+02:00",
                     "DeletionDate": null,
                     "Description": "In millionaires quiz you go answer by answer to the last question. You check your answer every step and the wrong one disqualifies you.",
