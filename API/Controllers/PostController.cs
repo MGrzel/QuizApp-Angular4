@@ -17,19 +17,30 @@ namespace QuizAppApi.Controllers
 
     public class PostController : Controller
     {
-        QuizAppDb QuizDb = new QuizAppDb();
+        private readonly IQuestionService _questionService;
+        private readonly IChallengeService _challengeService;
+        private readonly ICategoryService _categoryService;
+        private readonly ISessionService _sessionService;
 
-        // PUT api/quizapp
+        public PostController(IQuestionService questionService, IChallengeService challengeService, ICategoryService categoryService, ISessionService sessionService)
+        {
+            _questionService = questionService;
+            _challengeService = challengeService;
+            _categoryService = categoryService;
+            _sessionService = sessionService;
+        }
+
+
         [HttpPost("challenges")]
         public object AddChallenge([FromBody]JObject challenge)
         {
             Challenge c = challenge.ToObject<Challenge>();
-            if(ChallengeService.CheckIfExists(c) || !ChallengeService.Validate(c))
+            if(_challengeService.CheckIfExists(c) || !_challengeService.Validate(c))
             {
                 return BadRequest();
             }
 
-            ChallengeService.Add(c);
+            _challengeService.Add(c);
             return challenge;
         }
 
@@ -38,12 +49,12 @@ namespace QuizAppApi.Controllers
         public object AddQuestion([FromBody]JObject question)
         {
             Question q = question.ToObject<Question>();
-            if(QuestionService.CheckIfExists(q) || !QuestionService.Validate(q))
+            if(_questionService.CheckIfExists(q) || !_questionService.Validate(q))
             {
                 return BadRequest();
             }
 
-            QuestionService.Add(q);
+            _questionService.Add(q);
             return question;
         }
 
@@ -52,12 +63,12 @@ namespace QuizAppApi.Controllers
         public object AddCategory([FromBody]JObject category)
         {
             Category c = category.ToObject<Category>();
-            if(CategoryService.CheckIfExists(c) || !CategoryService.Validate(c))
+            if(_categoryService.CheckIfExists(c) || !_categoryService.Validate(c))
             {
                 return BadRequest();
             }
 
-            CategoryService.Add(c);
+            _categoryService.Add(c);
             return category;
         }
 
@@ -66,8 +77,8 @@ namespace QuizAppApi.Controllers
         public object CreateSession([FromBody]JObject session)
         {
             Session quiz = session.ToObject<Session>();
-            quiz = SessionService.CheckQuizAnswers(quiz);
-            SessionService.SaveSession(quiz);
+            quiz = _sessionService.CheckQuizAnswers(quiz);
+            _sessionService.SaveSession(quiz);
             return quiz;
         }
     }

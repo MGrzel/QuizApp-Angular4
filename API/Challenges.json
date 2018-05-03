@@ -1,0 +1,90 @@
+{
+    "type": "FeatureCollection",
+    "crs": {
+        "type": "name",
+        "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" }
+    },
+    "features": [
+        {
+            "type": "Feature",
+            "properties": {
+                "Color": {
+                    "Id": 63,
+                    "CreationDate": "2017-08-11T14:57:32.8375298+02:00",
+                    "DeletionDate": null,
+                    "IsDeleted": 0,
+                    "Title": "khaki",
+                    "Value": "#f0e68c"
+                },
+                "CreationDate": "2017-09-04 19:48:38.2251049",
+                "DeletionDate": null,
+                "IsDeleted": 0,
+                "QuestionAmount": 10,
+                "QuizType": {
+                    "Id": 1,
+                    "CreationDate": "2017-08-11 14:57:32.8375298",
+                    "DeletionDate": null,
+                    "Description": "In standard quiz you have access to all of the questions immediately. Submiting the quiz means checking all the answers and ending the session.",
+                    "IsDeleted": 0,
+                    "Title": "standard"
+                },
+                "Title": "Standard quiz"
+            },
+            "geometry": null
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Color": {
+                    "Id": 22,
+                    "CreationDate": "2017-08-11T14:57:32.8375298+02:00",
+                    "DeletionDate": null,
+                    "IsDeleted": 0,
+                    "Title": "darkcyan",
+                    "Value": "#008b8b"
+                },
+                "CreationDate": "2017-08-11T14:57:32.8375298+02:00",
+                "DeletionDate": null,
+                "IsDeleted": 0,
+                "QuestionAmount": 10,
+                "QuizType": {
+                    "Id": 1,
+                    "CreationDate": "2017-08-11 14:57:32.8375298",
+                    "DeletionDate": null,
+                    "Description": "In standard quiz you have access to all of the questions immediately. Submiting the quiz means checking all the answers and ending the session.",
+                    "IsDeleted": 0,
+                    "Title": "standard"
+                },
+                "Title": "Physics quiz"
+            },
+            "geometry": null
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "Color": {
+                    "Id": 23,
+                    "CreationDate": "2017-08-11T14:57:32.8375298+02:00",
+                    "DeletionDate": null,
+                    "IsDeleted": 0,
+                    "Title": "darkblue",
+                    "Value": "#00008b"
+                },
+                "CreationDate": "2017-09-04 17:13:11.6470791",
+                "DeletionDate": null,
+                "IsDeleted": 0,
+                "QuestionAmount": 5,
+                "QuizType": {
+                    "Id": 2,
+                    "CreationDate": "2017-08-11T14:57:32.8375298+02:00",
+                    "DeletionDate": null,
+                    "Description": "In millionaires quiz you go answer by answer to the last question. You check your answer every step and the wrong one disqualifies you.",
+                    "IsDeleted": 0,
+                    "Title": "millionaires"
+                },
+                "Title": "Millionaires"
+            },
+            "geometry": null
+        }
+    ]
+}

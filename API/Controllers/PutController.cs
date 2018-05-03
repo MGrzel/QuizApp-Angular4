@@ -17,7 +17,16 @@ namespace QuizAppApi.Controllers
 
     public class PutController : Controller
     {
-        QuizAppDb QuizDb = new QuizAppDb();
+        private readonly IQuestionService _questionService;
+        private readonly IChallengeService _challengeService;
+        private readonly ICategoryService _categoryService;
+
+        public PutController(IQuestionService questionService, IChallengeService challengeService, ICategoryService categoryService)
+        {
+            _questionService = questionService;
+            _challengeService = challengeService;
+            _categoryService = categoryService;
+        }
 
         // PUT api/quizapp
         [HttpPut("questions/{id?}")]
@@ -26,12 +35,12 @@ namespace QuizAppApi.Controllers
             if (id.HasValue)
             {
                 Question q = question.ToObject<Question>();
-                if (!QuestionService.CheckIfExists(q) || !QuestionService.Validate(q))
+                if (!_questionService.CheckIfExists(q) || !_questionService.Validate(q))
                 {
                     return BadRequest();
                 }
 
-                QuestionService.Update(q);
+                _questionService.Update(q);
                 return question;
             }
             return question;
@@ -44,12 +53,12 @@ namespace QuizAppApi.Controllers
             if (id.HasValue)
             {
                 Challenge c = challenge.ToObject<Challenge>();
-                if (!ChallengeService.CheckIfExists(c) || !ChallengeService.Validate(c))
+                if (!_challengeService.CheckIfExists(c) || !_challengeService.Validate(c))
                 {
                     return BadRequest();
                 }
 
-                ChallengeService.Update(c);
+                _challengeService.Update(c);
                 return challenge;
             }
             return challenge;
@@ -62,12 +71,12 @@ namespace QuizAppApi.Controllers
             if (id.HasValue)
             {
                 Category c = category.ToObject<Category>();
-                if (!CategoryService.CheckIfExists(c) || !CategoryService.Validate(c))
+                if (!_categoryService.CheckIfExists(c) || !_categoryService.Validate(c))
                 {
                     return BadRequest();
                 }
 
-                CategoryService.Update(c);
+                _categoryService.Update(c);
                 return category;
             }
             return category;

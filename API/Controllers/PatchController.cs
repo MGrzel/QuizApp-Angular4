@@ -17,30 +17,39 @@ namespace QuizAppApi.Controllers
 
     public class PatchController : Controller
     {
-        QuizAppDb QuizDb = new QuizAppDb();
+        private readonly IQuestionService _questionService;
+        private readonly IChallengeService _challengeService;
+        private readonly ICategoryService _categoryService;
 
-        // DELETE api/quizapp/5
+        public PatchController(IQuestionService questionService, IChallengeService challengeService, ICategoryService categoryService)
+        {
+            _questionService = questionService;
+            _challengeService = challengeService;
+            _categoryService = categoryService;
+        }
+
+
         [HttpPatch("questions/{id}")]
         public void RestoreQuestion(int id, [FromBody]JObject question)
         {
             Question q = question.ToObject<Question>();
-            QuestionService.Restore(q);
+            _questionService.Restore(q);
         }
 
-        // DELETE api/quizapp/5
+
         [HttpPatch("categories/{id}")]
         public void RestoreCategory(int id, [FromBody]JObject category)
         {
             Category c = category.ToObject<Category>();
-            CategoryService.Restore(c);
+            _categoryService.Restore(c);
         }
 
-        // DELETE api/quizapp/5
+
         [HttpPatch("challenges/{id}")]
         public void RestoreChallenge(int id, [FromBody]JObject challenge)
         {
             Challenge c = challenge.ToObject<Challenge>();
-            ChallengeService.Restore(c);
+            _challengeService.Restore(c);
         }
     }
 }

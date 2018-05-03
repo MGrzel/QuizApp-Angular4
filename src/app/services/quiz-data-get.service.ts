@@ -20,45 +20,47 @@ export class QuizDataGetService {
     constructor(
         private http: Http,
         router: Router
-    ) {}
+    ) { }
+
+    port: number = 61337;
 
     getChallengeList(): Promise<Challenge[]> {
-        return this.http.get(`http://localhost:5000/quizapp/get/challenges/`)
+        return this.http.get(`http://localhost:${this.port}/quizapp/get/challenges/`)
             .toPromise()
             .then(response => response.json() as Challenge[])
             .catch(this.handleError);
     }
 
     getDeletedChallengeList(): Promise<Challenge[]> {
-        return this.http.get(`http://localhost:5000/quizapp/get/deleted/challenges/`)
+        return this.http.get(`http://localhost:${this.port}/quizapp/get/deleted/challenges/`)
             .toPromise()
             .then(response => response.json() as Challenge[])
             .catch(this.handleError);
     }
 
     getQuizById(id: number): Promise<Session> {
-        return this.http.get(`http://localhost:5000/quizapp/get/quiz/${ id }`)
+        return this.http.get(`http://localhost:${this.port}/quizapp/get/quiz/${ id }`)
             .toPromise()
             .then(response => response.json() as Session)
             .catch(this.handleError);
     }
 
     getCategoryList(): Promise<Category[]> {
-        return this.http.get(`http://localhost:5000/quizapp/get/categories`)
+        return this.http.get(`http://localhost:${this.port}/quizapp/get/categories`)
             .toPromise()
             .then(response => response.json() as Category[])
             .catch(this.handleError);
     }
 
     getDeletedCategoryList(): Promise<Category[]> {
-        return this.http.get(`http://localhost:5000/quizapp/get/deleted/categories`)
+        return this.http.get(`http://localhost:${this.port}/quizapp/get/deleted/categories`)
             .toPromise()
             .then(response => response.json() as Category[])
             .catch(this.handleError);
     }
 
     checkSingleAnswer(questionId: number, answerId: number): Promise<boolean> {
-        return this.http.get(`http://localhost:5000/quizapp/get/correctanswer/${ questionId }/${ answerId }`)
+        return this.http.get(`http://localhost:${this.port}/quizapp/get/correctanswer/${ questionId }/${ answerId }`)
         .toPromise()
         .then(response => response.json() as boolean)
         .catch(this.handleError);
@@ -66,7 +68,7 @@ export class QuizDataGetService {
 
     getSessionById(id: number): Promise<Session> {
         return this.http
-            .get(`http://localhost:5000/quizapp/get/sessions/${ id }`)
+            .get(`http://localhost:${this.port}/quizapp/get/sessions/${ id }`)
             .toPromise()
             .then(response => response.json() as Session)
             .catch(this.handleError);
@@ -74,7 +76,7 @@ export class QuizDataGetService {
 
     getSessionList(): Promise<Session[]> {
         return this.http
-            .get(`http://localhost:5000/quizapp/get/sessions`)
+            .get(`http://localhost:${this.port}/quizapp/get/sessions`)
             .toPromise()
             .then(response => response.json() as Session[])
             .catch(this.handleError);
@@ -82,7 +84,7 @@ export class QuizDataGetService {
 
     getQuestionList(): Promise<Question[]> {
         return this.http
-            .get(`http://localhost:5000/quizapp/get/questions`)
+            .get(`http://localhost:${this.port}/quizapp/get/questions`)
             .toPromise()
             .then(response => response.json() as Question[])
             .catch(this.handleError);
@@ -90,7 +92,7 @@ export class QuizDataGetService {
 
     getDeletedQuestionList(): Promise<Question[]> {
         return this.http
-            .get(`http://localhost:5000/quizapp/get/deleted/questions`)
+            .get(`http://localhost:${this.port}/quizapp/get/deleted/questions`)
             .toPromise()
             .then(response => response.json() as Question[])
             .catch(this.handleError);
@@ -98,7 +100,7 @@ export class QuizDataGetService {
 
     getQuizTypeList(): Promise<QuizType[]> {
         return this.http
-            .get(`http://localhost:5000/quizapp/get/quiztypes`)
+            .get(`http://localhost:${this.port}/quizapp/get/quiztypes`)
             .toPromise()
             .then(response => response.json() as QuizType[])
             .catch(this.handleError);
@@ -106,7 +108,7 @@ export class QuizDataGetService {
 
     getColorList(): Promise<Color[]> {
         return this.http
-            .get(`http://localhost:5000/quizapp/get/colors`)
+            .get(`http://localhost:${this.port}/quizapp/get/colors`)
             .toPromise()
             .then(response => response.json() as Color[])
             .catch(this.handleError);
@@ -114,7 +116,7 @@ export class QuizDataGetService {
 
     getQuestionListAsAdmin(): Promise<Question[]> {
         return this.http
-            .get(`http://localhost:5000/quizapp/get/admin/questions`)
+            .get(`http://localhost:${this.port}/quizapp/get/admin/questions`)
             .toPromise()
             .then(response => response.json() as Question[])
             .catch(this.handleError);

@@ -7,32 +7,45 @@ using QuizAppApi.Models;
 
 namespace QuizAppApi.Services
 {
-    public class ColorService
+    public class ColorService : IColorService
     {
-        ///Returns a color specified by the id
-        public static Color GetById(int? id)
+        private readonly QuizAppDb _context;
+
+        public ColorService(QuizAppDb context)
         {
-            using (var db = new QuizAppDb())
-            {
-                return db.Colors.Where(c => c.Id == id && !c.IsDeleted).FirstOrDefault();
-            }
+            _context = context;
+        }
+
+        ///Returns a color specified by the id
+        public Color GetById(int? id)
+        {
+            return _context.Colors.Where(c => c.Id == id && !c.IsDeleted).FirstOrDefault();
         }
 
         ///Returns a color specified by the name
-        public static Color GetByName(string colorName)
+        public Color GetByName(string colorName)
         {
-            using (var db = new QuizAppDb())
-            {
-                return db.Colors.Where(c => c.Title == colorName && !c.IsDeleted).FirstOrDefault();
-            }
+            return _context.Colors.Where(c => c.Title == colorName && !c.IsDeleted).FirstOrDefault();
         }
 
         ///Returns a list of all colors
-        public static List<Color> GetList()
+        public List<Color> GetList()
         {
-            using (var db = new QuizAppDb())
+            return _context.Colors.Where(c => !c.IsDeleted).ToList();
+        }
+
+        public void Add(Color color)
+        {
+
+            using (var transaction = _context.Database.BeginTransaction())
             {
-                return db.Colors.Where(c => !c.IsDeleted).ToList();
+                _context.Colors.Add(color);
+
+                _context.Database.ExecuteSqlCommand("SET IDENTITY_INSERT dbo.Colors ON;");
+                _context.SaveChanges();
+                _context.Database.ExecuteSqlCommand("SET IDENTITY_INSERT dbo.Colors OFF;");
+
+                transaction.Commit();
             }
         }
     }

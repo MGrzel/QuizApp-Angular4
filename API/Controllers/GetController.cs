@@ -17,7 +17,24 @@ namespace QuizAppApi.Controllers
 
     public class GetController : Controller
     {
-        QuizAppDb QuizDb = new QuizAppDb();
+        private readonly IAnswerService _answerService;
+        private readonly IQuestionService _questionService;
+        private readonly ISessionService _sessionService;
+        private readonly IChallengeService _challengeService;
+        private readonly ICategoryService _categoryService;
+        private readonly IColorService _colorService;
+        private readonly IQuizTypeService _quizTypeService;
+
+        public GetController(IAnswerService answerService, IQuestionService questionService, ISessionService sessionService, IChallengeService challengeService, ICategoryService categoryService, IColorService colorService, IQuizTypeService quizTypeService)
+        {
+            _answerService = answerService;
+            _questionService = questionService;
+            _sessionService = sessionService;
+            _challengeService = challengeService;
+            _categoryService = categoryService;
+            _colorService = colorService;
+            _quizTypeService = quizTypeService;
+        }
 
         // GET api/quizapp/get/categories/id?
         [HttpGet("categories/{id?}")]
@@ -25,23 +42,23 @@ namespace QuizAppApi.Controllers
         {
             if (id.HasValue)
             {
-                return CategoryService.GetById(id);
+                return _categoryService.GetById(id);
             }
-            return CategoryService.GetList();
+            return _categoryService.GetList();
         }
 
         // GET api/quizapp/get/categories/id?
         [HttpGet("deleted/categories")]
         public object GetDeletedCategories()
         {
-            return CategoryService.GetDeletedList();
+            return _categoryService.GetDeletedList();
         }
 
         // GET api/quizapp/get/categories/id?
         [HttpGet("correctanswer/{questionId}/{answerId}")]
         public object CheckSingleAnswer(int questionId, int answerId)
         {
-            return AnswerService.CheckAnswer(questionId, answerId);
+            return _answerService.CheckAnswer(questionId, answerId);
         }
 
         // GET api/quizapp/get/challenges/id?
@@ -50,23 +67,23 @@ namespace QuizAppApi.Controllers
         {
             if (id.HasValue)
             {
-                return ChallengeService.GetById(id);
+                return _challengeService.GetById(id);
             }
-            return ChallengeService.GetList();
+            return _challengeService.GetList();
         }
 
         // GET api/quizapp/get/challenges/id?
         [HttpGet("deleted/challenges/")]
         public object GetDeletedChallenges()
         {
-                return ChallengeService.GetDeletedList();
+                return _challengeService.GetDeletedList();
         }
 
         // GET api/quizapp/get/colors/name
         [HttpGet("colors/{name}")]
         public object GetColorsByName(string name)
         {
-            return ColorService.GetByName(name);
+            return _colorService.GetByName(name);
         }
 
         // GET api/quizapp/get/colors/id?
@@ -75,9 +92,9 @@ namespace QuizAppApi.Controllers
         {
             if (id.HasValue)
             {
-                return ColorService.GetById(id);
+                return _colorService.GetById(id);
             }
-            return ColorService.GetList();
+            return _colorService.GetList();
         }
 
         // GET api/quizapp/get/questions/id?
@@ -86,16 +103,16 @@ namespace QuizAppApi.Controllers
         {
             if (id.HasValue)
             {
-                return QuestionService.GetById(id);
+                return _questionService.GetById(id);
             }
-            return QuestionService.GetList();
+            return _questionService.GetList();
         }
 
         // GET api/quizapp/get/questions/id?
         [HttpGet("deleted/questions/")]
         public object GetDeletedQuestions()
         {
-                return QuestionService.GetDeletedList();
+                return _questionService.GetDeletedList();
         }
 
         // GET api/quizapp/get/questions/id?
@@ -104,23 +121,23 @@ namespace QuizAppApi.Controllers
         {
             if (id.HasValue)
             {
-                return QuestionService.GetById(id, true);
+                return _questionService.GetById(id, true);
             }
-            return QuestionService.GetList(true);
+            return _questionService.GetList(true);
         }
 
         // GET api/quizapp/get/questions/id?
         [HttpGet("quiztypes")]
         public object GetQuizTypeList()
         {
-            return QuizTypeService.GetList();
+            return _quizTypeService.GetList();
         }
 
         // GET api/quizapp/get/correctanswer/id?
         [HttpGet("correctanswer/{id}")]
         public object GetCorrectAnswer(int id)
         {
-            return AnswerService.GetCorrectByQuestionId(id);
+            return _answerService.GetCorrectByQuestionId(id);
         }
 
 
@@ -130,16 +147,16 @@ namespace QuizAppApi.Controllers
         {
             if (id.HasValue)
             {
-                return SessionService.GetById(id);
+                return _sessionService.GetById(id);
             }
-            return SessionService.GetList();
+            return _sessionService.GetList();
         }
 
         // GET api/quizapp/get/session/id?
         [HttpGet("session-active")]
         public object GetActiveSession()
         {
-            return SessionService.GetActive();
+            return _sessionService.GetActive();
         }
 
         // GET api/quizapp/get/quiz/id
@@ -147,9 +164,9 @@ namespace QuizAppApi.Controllers
         public object GetQuiz(int id)
         {
             Session session = new Session();
-            var challenge = ChallengeService.GetById(id);
-            var categoryIds = CategoryService.GetListByChallengeId(id).Select(c => c.Id).ToArray();
-            var questions = QuestionService.GetListByCategoryId(categoryIds).ToList();
+            var challenge = _challengeService.GetById(id);
+            var categoryIds = _categoryService.GetListByChallengeId(id).Select(c => c.Id).ToArray();
+            var questions = _questionService.GetListByCategoryId(categoryIds).ToList();
 
             Random rnd = new Random();
             if (questions.Count() > challenge.QuestionAmount)

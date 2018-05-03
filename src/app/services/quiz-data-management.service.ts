@@ -16,11 +16,13 @@ export class QuizDataManagementService {
 
     constructor(
         private http: Http
-    ) {}
+    ) { }
+
+    port: number = 61337;
 
     updateQuestion(question: Question): Promise<Question> {
         return this.http
-            .put(`http://localhost:5000/quizapp/put/questions/${ question.id }`, JSON.stringify(question), { headers: this.headers })
+            .put(`http://localhost:${this.port}/quizapp/put/questions/${ question.id }`, JSON.stringify(question), { headers: this.headers })
             .toPromise()
             .then(response => response.json() as Question)
             .catch(this.handleError);
@@ -28,7 +30,7 @@ export class QuizDataManagementService {
 
     updateCategory(category: Category): Promise<Category> {
         return this.http
-            .put(`http://localhost:5000/quizapp/put/categories/${ category.id }`, JSON.stringify(category), { headers: this.headers })
+            .put(`http://localhost:${this.port}/quizapp/put/categories/${ category.id }`, JSON.stringify(category), { headers: this.headers })
             .toPromise()
             .then(response => response.json() as Category)
             .catch(this.handleError);
@@ -36,7 +38,7 @@ export class QuizDataManagementService {
 
     updateChallenge(challenge: Challenge): Promise<Challenge> {
         return this.http
-            .put(`http://localhost:5000/quizapp/put/challenges/${ challenge.id }`, JSON.stringify(challenge), { headers: this.headers })
+            .put(`http://localhost:${this.port}/quizapp/put/challenges/${ challenge.id }`, JSON.stringify(challenge), { headers: this.headers })
             .toPromise()
             .then(response => response.json() as Challenge)
             .catch(this.handleError);
@@ -44,7 +46,7 @@ export class QuizDataManagementService {
 
     addQuestion(question: Question): Promise<Question> {
         return this.http
-            .post(`http://localhost:5000/quizapp/post/questions`, JSON.stringify(question), { headers: this.headers })
+            .post(`http://localhost:${this.port}/quizapp/post/questions`, JSON.stringify(question), { headers: this.headers })
             .toPromise()
             .then(response => response.json() as Question)
             .catch(this.handleError);
@@ -52,7 +54,7 @@ export class QuizDataManagementService {
 
     addCategory(category: Category): Promise<Category> {
         return this.http
-            .post(`http://localhost:5000/quizapp/post/categories`, JSON.stringify(category), { headers: this.headers })
+            .post(`http://localhost:${this.port}/quizapp/post/categories`, JSON.stringify(category), { headers: this.headers })
             .toPromise()
             .then(response => response.json() as Category)
             .catch(this.handleError);
@@ -60,14 +62,14 @@ export class QuizDataManagementService {
 
     addChallenge(challenge: Challenge): Promise<Challenge> {
         return this.http
-            .post(`http://localhost:5000/quizapp/post/challenges`, JSON.stringify(challenge), { headers: this.headers })
+            .post(`http://localhost:${this.port}/quizapp/post/challenges`, JSON.stringify(challenge), { headers: this.headers })
             .toPromise()
             .then(response => response.json() as Challenge)
             .catch(this.handleError);
     }
 
     submitQuiz(quiz: Session): Promise<Session> {
-        return this.http.post(`http://localhost:5000/quizapp/post/sessions`, JSON.stringify(quiz), { headers: this.headers })
+        return this.http.post(`http://localhost:${this.port}/quizapp/post/sessions`, JSON.stringify(quiz), { headers: this.headers })
         .toPromise()
         .then(response => response.json() as Session)
         .catch(this.handleError);
@@ -75,21 +77,21 @@ export class QuizDataManagementService {
 
     deleteQuestion(question: Question): Promise<Question> {
         return this.http
-            .delete(`http://localhost:5000/quizapp/delete/questions/${ question.id }`)
+            .delete(`http://localhost:${this.port}/quizapp/delete/questions/${ question.id }`)
             .toPromise()
             .catch(this.handleError);
     }
 
     deleteCategory(category: Category): Promise<Category> {
         return this.http
-            .delete(`http://localhost:5000/quizapp/delete/categories/${ category.id }`)
+            .delete(`http://localhost:${this.port}/quizapp/delete/categories/${ category.id }`)
             .toPromise()
             .catch(this.handleError);
     }
 
     deleteChallenge(challenge: Challenge): Promise<Challenge> {
         return this.http
-            .delete(`http://localhost:5000/quizapp/delete/challenges/${ challenge.id }`)
+            .delete(`http://localhost:${this.port}/quizapp/delete/challenges/${ challenge.id }`)
             .toPromise()
             .catch(this.handleError);
     }
@@ -97,21 +99,21 @@ export class QuizDataManagementService {
 
     restoreQuestion(question: Question): Promise<Question> {
         return this.http
-            .patch(`http://localhost:5000/quizapp/patch/questions/${ question.id }`, JSON.stringify(question), { headers: this.headers })
+            .patch(`http://localhost:${this.port}/quizapp/patch/questions/${ question.id }`, JSON.stringify(question), { headers: this.headers })
             .toPromise()
             .catch(this.handleError);
     }
 
     restoreCategory(category: Category): Promise<Category> {
         return this.http
-            .patch(`http://localhost:5000/quizapp/patch/categories/${ category.id }`, JSON.stringify(category), { headers: this.headers })
+            .patch(`http://localhost:${this.port}/quizapp/patch/categories/${ category.id }`, JSON.stringify(category), { headers: this.headers })
             .toPromise()
             .catch(this.handleError);
     }
 
     restoreChallenge(challenge: Challenge): Promise<Challenge> {
         return this.http
-            .patch(`http://localhost:5000/quizapp/patch/challenges/${ challenge.id }`, JSON.stringify(challenge), { headers: this.headers })
+            .patch(`http://localhost:${this.port}/quizapp/patch/challenges/${ challenge.id }`, JSON.stringify(challenge), { headers: this.headers })
             .toPromise()
             .catch(this.handleError);
     }

@@ -7,60 +7,77 @@ using QuizAppApi.Models;
 
 namespace QuizAppApi.Services
 {
-    public class AnswerService
+    public class AnswerService : IAnswerService
     {
-        public static List<Answer> GetListByQuestionId(int questionId)
+        private readonly QuizAppDb _context;
+
+        public AnswerService(QuizAppDb context)
         {
-            using (var db = new QuizAppDb())
-            {
-                return db.Answers.Where(c => c.QuestionId == questionId && !c.IsDeleted).ToList();
-            }
+            _context = context;
         }
 
-        public static Answer GetCorrectByQuestionId(int questionId)
+        public List<Answer> GetList()
         {
-            using (var db = new QuizAppDb())
-            {
-                var answerId = db.CorrectAnswers.Where(ca => ca.QuestionId == questionId && !ca.IsDeleted).Select(ca => ca.AnswerId).FirstOrDefault();
-
-                return db.Answers.Where(a => a.Id == answerId && !a.IsDeleted).FirstOrDefault();
-            }
+            return _context.Answers.ToList();
         }
 
-        public static bool CheckAnswer(Answer answer)
+        public List<CorrectAnswer> GetCorrectAnswersList()
         {
-            using (var db = new QuizAppDb())
-            {
-                if (answer == null)
-                {
-                    return false;
-                }
-                List<int> correctAnswers = db.CorrectAnswers.Where(ca => ca.QuestionId == answer.QuestionId).Select(ca => ca.AnswerId).ToList();
-                bool isCorrect = correctAnswers.Contains(answer.Id);
-
-                return isCorrect;
-            }
+            return _context.CorrectAnswers.ToList();
         }
 
-        public static bool CheckAnswer(int questionId, int answerId)
+        public void AddCorrectAnswer(CorrectAnswer correctAnswer)
         {
-            using (var db = new QuizAppDb())
-            {
-                List<int> correctAnswers = db.CorrectAnswers.Where(ca => ca.QuestionId == questionId).Select(ca => ca.AnswerId).ToList();
-                bool isCorrect = correctAnswers.Contains(answerId);
-
-                return isCorrect;
-            }
+            _context.CorrectAnswers.Add(correctAnswer);
+            _context.SaveChanges();
         }
 
-        public static bool Validate(Answer answer)
+        public void AddToSeed(Answer answer)
+        {
+            _context.Answers.Add(answer);
+            _context.SaveChanges();
+        }
+
+        public bool CheckAnswer(Answer answer)
+        {
+            if (answer == null)
+            {
+                return false;
+            }
+            List<int> correctAnswers = _context.CorrectAnswers.Where(ca => ca.QuestionId == answer.QuestionId).Select(ca => ca.AnswerId).ToList();
+            bool isCorrect = correctAnswers.Contains(answer.Id);
+
+            return isCorrect;
+        }
+
+        public List<Answer> GetListByQuestionId(int questionId)
+        {
+            return _context.Answers.Where(c => c.QuestionId == questionId && !c.IsDeleted).ToList();
+        }
+
+        public Answer GetCorrectByQuestionId(int questionId)
+        {
+            var answerId = _context.CorrectAnswers.Where(ca => ca.QuestionId == questionId && !ca.IsDeleted).Select(ca => ca.AnswerId).FirstOrDefault();
+
+            return _context.Answers.Where(a => a.Id == answerId && !a.IsDeleted).FirstOrDefault();
+        }
+
+        public bool CheckAnswer(int questionId, int answerId)
+        {
+            List<int> correctAnswers = _context.CorrectAnswers.Where(ca => ca.QuestionId == questionId).Select(ca => ca.AnswerId).ToList();
+            bool isCorrect = correctAnswers.Contains(answerId);
+
+            return isCorrect;
+        }
+
+        public bool Validate(Answer answer)
         {
             if(answer == null)
             {
                 return false;
             }
 
-            if (answer.Title.Trim() == "" || answer.Title == null)
+            if (answer.Title == null || answer.Title.Trim() == "")
             {
                 return false;
             }

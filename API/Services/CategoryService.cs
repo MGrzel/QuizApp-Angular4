@@ -7,173 +7,195 @@ using QuizAppApi.Models;
 
 namespace QuizAppApi.Services
 {
-    public class CategoryService
+    public class CategoryService : ICategoryService
     {
-        ///Returns a category specified by the id
-        public static Category GetById(int? categoryId)
+        private readonly QuizAppDb _context;
+
+        public CategoryService(QuizAppDb context)
         {
-            using (var db = new QuizAppDb())
-            {
-                return db.Categories.Where(c => categoryId == c.Id && !c.IsDeleted).FirstOrDefault();
-            }
+            _context = context;
         }
 
-        public static Category GetByName(string title)
+        ///Returns a category specified by the id
+        public Category GetById(int? categoryId)
         {
-            using (var db = new QuizAppDb())
-            {
-                return db.Categories.Where(c => c.Title.Trim().ToLower() == title.Trim().ToLower() && !c.IsDeleted).FirstOrDefault();
-            }
+            return _context.Categories.Where(c => categoryId == c.Id && !c.IsDeleted).FirstOrDefault();
         }
 
         ///Returns a list of categories specified by the challenge id
-        public static List<Category> GetByChallengeId(int challengeId)
+        public List<Category> GetCategoriesByChallengeId(int challengeId)
         {
-            using (var db = new QuizAppDb())
-            {
-                var categoryIds = db.ChallengeCategories.Where(cc => cc.ChallengeId == challengeId && !cc.IsDeleted).Select(cc => cc.CategoryId).ToList();
-                return db.Categories.Where(c => categoryIds.Contains(c.Id) && !c.IsDeleted).ToList();
-            }
+            var categoryIds = _context.ChallengeCategories.Where(cc => cc.ChallengeId == challengeId && !cc.IsDeleted).Select(cc => cc.CategoryId).ToList();
+            return _context.Categories.Where(c => categoryIds.Contains(c.Id) && !c.IsDeleted).ToList();
+        }
+
+        ///Returns a list of categories specified by the array of the challenge ids
+        public List<Category> GetCategoriesByQuestionId(int questionId)
+        {
+            var categoryIds = _context.CategoryQuestions.Where(cc => cc.QuestionId == questionId && !cc.IsDeleted).Select(cc => cc.CategoryId).ToList();
+            return _context.Categories.Where(c => categoryIds.Contains(c.Id) && !c.IsDeleted).ToList();
+        }
+
+        public Category GetByName(string title)
+        {
+            return _context.Categories.Where(c => c.Title.Trim().ToLower() == title.Trim().ToLower() && !c.IsDeleted).FirstOrDefault();
         }
 
         ///Returns a list of all categories
-        public static List<Category> GetList()
+        public List<Category> GetList()
         {
-            using (var db = new QuizAppDb())
-            {
-                return db.Categories.Where(c => !c.IsDeleted).ToList();
-            }
+            return _context.Categories.Where(c => !c.IsDeleted).ToList();
         }
 
         ///Returns a list of all categories
-        public static List<Category> GetDeletedList()
+        public List<Category> GetDeletedList()
         {
-            using (var db = new QuizAppDb())
-            {
-                return db.Categories.Where(c => c.IsDeleted).ToList();
-            }
+            return _context.Categories.Where(c => c.IsDeleted).ToList();
         }
 
         ///Returns a list of categories specified by the array of the ids
-        public static List<Category> GetListById(int[] categoryIds)
+        public List<Category> GetListById(int[] categoryIds)
         {
-            using (var db = new QuizAppDb())
-            {
-                return db.Categories.Where(c => categoryIds.Contains(c.Id) && !c.IsDeleted).ToList();
-            }
+            return _context.Categories.Where(c => categoryIds.Contains(c.Id) && !c.IsDeleted).ToList();
+        }
+
+        public List<CategoryQuestion> GetQuestionCategoriesList()
+        {
+            return _context.CategoryQuestions.ToList();
+        }
+
+        public List<ChallengeCategory> GetChallengeCategoriesList()
+        {
+            return _context.ChallengeCategories.ToList();
         }
 
         ///Returns a list of categories specified by the array of the challenge ids
-        public static List<Category> GetListByChallengeId(int challengeId)
+        public List<Category> GetListByChallengeId(int challengeId)
         {
-            using (var db = new QuizAppDb())
-            {
-                var categoryIds = db.ChallengeCategories.Where(cc => cc.ChallengeId == challengeId && !cc.IsDeleted).Select(cc => cc.CategoryId).ToList();
-                return db.Categories.Where(c => categoryIds.Contains(c.Id) && !c.IsDeleted).ToList();
-            }
-        }
-
-        ///Returns a list of categories specified by the array of the challenge ids
-        public static List<Category> GetListByQuestionId(int questionId)
-        {
-            using (var db = new QuizAppDb())
-            {
-                var categoryIds = db.CategoryQuestions.Where(cc => cc.QuestionId == questionId && !cc.IsDeleted).Select(cc => cc.CategoryId).ToList();
-                return db.Categories.Where(c => categoryIds.Contains(c.Id) && !c.IsDeleted).ToList();
-            }
+            var categoryIds = _context.ChallengeCategories.Where(cc => cc.ChallengeId == challengeId && !cc.IsDeleted).Select(cc => cc.CategoryId).ToList();
+            return _context.Categories.Where(c => categoryIds.Contains(c.Id) && !c.IsDeleted).ToList();
         }
 
 
-        public static void Add(Category category)
+        public void Add(Category category)
         {
-            using (var db = new QuizAppDb())
+            var categoryId = _context.Categories.Any() ? _context.Categories.Last().Id + 1 : 1;
+            var date = DateTime.Now;
+
+            category.Id = categoryId;
+            category.CreationDate = date;
+
+            using (var transaction = _context.Database.BeginTransaction())
             {
-                var categoryId = db.Categories.Any() ? db.Categories.Last().Id + 1 : 1;
-                var date = DateTime.Now;
+                _context.Categories.Add(category);
 
-                category.Id = categoryId;
-                category.CreationDate = date;
+                _context.Database.ExecuteSqlCommand("SET IDENTITY_INSERT dbo.Categories ON;");
+                _context.SaveChanges();
+                _context.Database.ExecuteSqlCommand("SET IDENTITY_INSERT dbo.Categories OFF;");
 
-                db.Categories.Add(category);
-                db.SaveChanges();
+                transaction.Commit();
             }
         }
 
-        public static void Update(Category category)
+        public void AddQuestionCategory(CategoryQuestion category)
         {
-            using (var db = new QuizAppDb())
+            var categoryId = _context.CategoryQuestions.Any() ? _context.CategoryQuestions.Last().Id + 1 : 1;
+            var date = DateTime.Now;
+
+            category.Id = categoryId;
+            category.CreationDate = date;
+
+            using (var transaction = _context.Database.BeginTransaction())
             {
-                var date = DateTime.Now;
+                _context.CategoryQuestions.Add(category);
 
-                category.CreationDate = date;
+                _context.Database.ExecuteSqlCommand("SET IDENTITY_INSERT dbo.CategoryQuestions ON;");
+                _context.SaveChanges();
+                _context.Database.ExecuteSqlCommand("SET IDENTITY_INSERT dbo.CategoryQuestions OFF;");
 
-                db.Categories.Update(category);
-                db.SaveChanges();
+                transaction.Commit();
             }
         }
 
-        public static void Delete(int id)
+        public void AddChallengeCategory(ChallengeCategory category)
         {
-            using (var db = new QuizAppDb())
+            var categoryId = _context.ChallengeCategories.Any() ? _context.ChallengeCategories.Last().Id + 1 : 1;
+            var date = DateTime.Now;
+
+            category.Id = categoryId;
+            category.CreationDate = date;
+
+            using (var transaction = _context.Database.BeginTransaction())
             {
-                var category = GetById(id);
-                var date = DateTime.Now;
+                _context.ChallengeCategories.Add(category);
 
-                category.IsDeleted = true;
-                category.DeletionDate = date;
+                _context.Database.ExecuteSqlCommand("SET IDENTITY_INSERT dbo.ChallengeCategories ON;");
+                _context.SaveChanges();
+                _context.Database.ExecuteSqlCommand("SET IDENTITY_INSERT dbo.ChallengeCategories OFF;");
 
-                db.Categories.Update(category);
-                db.SaveChanges();
+                transaction.Commit();
             }
         }
 
-        public static void Restore(Category category)
+        public void Update(Category category)
         {
-            using (var db = new QuizAppDb())
-            {
-                category.IsDeleted = false;
-                category.DeletionDate = null;
+            var date = DateTime.Now;
 
-                db.Categories.Update(category);
-                db.SaveChanges();
-            }
+            category.CreationDate = date;
+
+            _context.Categories.Update(category);
+            _context.SaveChanges();
         }
 
-        public static bool CheckIfExists(Category category)
+        public void Delete(int id)
         {
-            using (var db = new QuizAppDb())
-            {
-                if (GetByName(category.Title) != null)
-                {
-                    return true;
-                }
+            var category = GetById(id);
+            var date = DateTime.Now;
 
-                if (GetById(category.Id) != null)
-                {
-                    return true;
-                }
+            category.IsDeleted = true;
+            category.DeletionDate = date;
 
-                return false;
-            }
+            _context.Categories.Update(category);
+            _context.SaveChanges();
         }
 
-        public static bool Validate(Category category)
+        public void Restore(Category category)
         {
-            using (var db = new QuizAppDb())
+            category.IsDeleted = false;
+            category.DeletionDate = null;
+
+            _context.Categories.Update(category);
+            _context.SaveChanges();
+        }
+
+        public bool CheckIfExists(Category category)
+        {
+            if (GetByName(category.Title) != null)
             {
-                if (category == null)
-                {
-                    return false;
-                }
-
-                if (category.Title.Trim() == "" || category.Title == null)
-                {
-                    return false;
-                }
-
-
                 return true;
             }
+
+            if (GetById(category.Id) != null)
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        public bool Validate(Category category)
+        {
+            if (category == null)
+            {
+                return false;
+            }
+
+            if (category.Title.Trim() == "" || category.Title == null)
+            {
+                return false;
+            }
+
+            return true;
         }
     }
 }

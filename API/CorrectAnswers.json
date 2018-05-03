@@ -1,0 +1,14 @@
+{
+"type": "FeatureCollection",
+"crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
+"features": [
+{ "type": "Feature", "properties": { "AnswerId": 1, "CreationDate": "2017-09-04 00:02:07.5688385", "DeletionDate": null, "IsDeleted": 0, "QuestionId": 1 }, "geometry": null },
+{ "type": "Feature", "properties": { "AnswerId": 5, "CreationDate": "2017-08-11T14:57:32.8375298+02:00", "DeletionDate": null, "IsDeleted": 0, "QuestionId": 2 }, "geometry": null },
+{ "type": "Feature", "properties": { "AnswerId": 9, "CreationDate": "2017-08-11T14:57:32.8375298+02:00", "DeletionDate": null, "IsDeleted": 0, "QuestionId": 3 }, "geometry": null },
+{ "type": "Feature", "properties": { "AnswerId": 14, "CreationDate": "2017-09-03 22:59:07.3039703", "DeletionDate": null, "IsDeleted": 0, "QuestionId": 4 }, "geometry": null },
+{ "type": "Feature", "properties": { "AnswerId": 18, "CreationDate": "2017-09-04 00:02:01.2821852", "DeletionDate": null, "IsDeleted": 0, "QuestionId": 5 }, "geometry": null },
+{ "type": "Feature", "properties": { "AnswerId": 22, "CreationDate": "2017-09-04 00:07:54.7446985", "DeletionDate": null, "IsDeleted": 0, "QuestionId": 6 }, "geometry": null },
+{ "type": "Feature", "properties": { "AnswerId": 28, "CreationDate": "2017-09-04 14:42:48.6236108", "DeletionDate": null, "IsDeleted": 0, "QuestionId": 7 }, "geometry": null },
+{ "type": "Feature", "properties": { "AnswerId": 30, "CreationDate": "2017-09-04 15:47:16.4272909", "DeletionDate": null, "IsDeleted": 0, "QuestionId": 8 }, "geometry": null }
+]
+}

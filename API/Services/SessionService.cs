@@ -8,14 +8,20 @@ using QuizAppApi.Services;
 
 namespace QuizAppApi.Services
 {
-    public class SessionService
+    public class SessionService : ISessionService
     {
-        ///Returns a session specified by the id
-        public static Session GetById(int? sessionId)
+        private readonly QuizAppDb _context;
+        private readonly IAnswerService _answerService;
+
+        public SessionService(QuizAppDb context, IAnswerService answerService)
         {
-            using (var db = new QuizAppDb())
-            {
-                var session = db.Sessions
+            _context = context;
+            _answerService = answerService;
+        }
+        ///Returns a session specified by the id
+        public Session GetById(int? sessionId)
+        {
+            var session = _context.Sessions
                     .Where(s => s.Id == sessionId && !s.IsDeleted)
                     .Include(s => s.Challenge.Color)
                     .Include(s => s.Challenge.QuizType)
@@ -24,72 +30,62 @@ namespace QuizAppApi.Services
                             .ThenInclude(q => q.Answers)
                     .FirstOrDefault();
 
-                session.ClientQuiz = db.ClientQuizes
-                    .Where(s => s.SessionId == sessionId && !s.IsDeleted)
-                    .OrderBy(cq => cq.Order)
-                    .Include(c => c.Question)
-                        .ThenInclude(q => q.Answers).ToList();
+            session.ClientQuiz = _context.ClientQuizes
+                .Where(s => s.SessionId == sessionId && !s.IsDeleted)
+                .OrderBy(cq => cq.Order)
+                .Include(c => c.Question)
+                    .ThenInclude(q => q.Answers).ToList();
 
-                return session;
-            }
+            return session;
         }
 
         ///Returns an active session specified by the id
-        public static Session GetActive()
+        public Session GetActive()
         {
-            using (var db = new QuizAppDb())
-            {
-                return db.Sessions.Where(s => s.IsActive == true && !s.IsDeleted).FirstOrDefault();
-            }
+            return _context.Sessions.Where(s => s.IsActive == true && !s.IsDeleted).FirstOrDefault();
         }
 
         ///Returns a list of all session
-        public static List<Session> GetList()
+        public List<Session> GetList()
         {
-            using (var db = new QuizAppDb())
-            {
-                return db.Sessions
+            return _context.Sessions
                     .Where(s => !s.IsDeleted)
                     .Include(s => s.Challenge.Color)
                     .Include(s => s.Challenge.QuizType)
                     .Include(s => s.ClientQuiz)
                     .OrderByDescending(s => s.CreationDate)
                     .ToList();
-            }
         }
 
-        public static void SaveSession(Session quizSession)
+        public void SaveSession(Session quizSession)
         {
-            using (var db = new QuizAppDb())
+            var sessionId = _context.Sessions.Any() ? _context.Sessions.Last().Id + 1 : 1;
+            var quizId = _context.ClientQuizes.Any() ? _context.ClientQuizes.Last().Id + 1 : 1;
+            var creationDate = DateTime.Now;
+
+            quizSession.Challenge = _context.Challenges.Where(c => c.Id == quizSession.Challenge.Id).Include("Color").Include("QuizType").FirstOrDefault();
+            quizSession.Id = sessionId;
+            quizSession.CreationDate = creationDate;
+
+            foreach (var quiz in quizSession.ClientQuiz)
             {
-                var sessionId = db.Sessions.Any() ? db.Sessions.Last().Id + 1 : 1;
-                var quizId = db.ClientQuizes.Any() ? db.ClientQuizes.Last().Id + 1 : 1;
-                var creationDate = DateTime.Now;
-
-                quizSession.Challenge = db.Challenges.Where(c => c.Id == quizSession.Challenge.Id).Include("Color").Include("QuizType").FirstOrDefault();
-                quizSession.Id = sessionId;
-                quizSession.CreationDate = creationDate;
-
-                foreach (var quiz in quizSession.ClientQuiz)
-                {
-                    quiz.Id = quizId;
-                    quiz.SessionId = quizSession.Id;
-                    quiz.CreationDate = creationDate;
-                    quiz.Question = db.Questions.Where(c => c.Id == quiz.Question.Id).Include("Answers").FirstOrDefault();
-                    quizId++;
-                }
-
-                quizSession.ClientQuiz = quizSession.ClientQuiz.ToList();
-                db.Sessions.Add(quizSession);
-                db.SaveChanges();
+                quiz.Id = quizId;
+                quiz.SessionId = quizSession.Id;
+                quiz.CreationDate = creationDate;
+                quiz.Question = _context.Questions.Where(c => c.Id == quiz.Question.Id).Include("Answers").FirstOrDefault();
+                quizId++;
             }
+
+            quizSession.ClientQuiz = quizSession.ClientQuiz.ToList();
+            _context.Sessions.Add(quizSession);
+            _context.SaveChanges();
         }
 
-        public static Session CheckQuizAnswers(Session session)
+        public Session CheckQuizAnswers(Session session)
         {
             foreach (var q in session.ClientQuiz)
             {
-                if (AnswerService.CheckAnswer(q.SelectedAnswer))
+                if (_answerService.CheckAnswer(q.SelectedAnswer))
                 {
                     q.IsCorrect = true;
                 }

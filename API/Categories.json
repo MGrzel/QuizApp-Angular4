@@ -1,0 +1,12 @@
+{
+"type": "FeatureCollection",
+"crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
+"features": [
+{ "type": "Feature", "properties": { "CreationDate": "2017-08-11T14:57:32.8375298+02:00", "DeletionDate": null, "IsDeleted": 0, "Title": "General" }, "geometry": null },
+{ "type": "Feature", "properties": { "CreationDate": "2017-08-11T14:57:32.8375298+02:00", "DeletionDate": null, "IsDeleted": 0, "Title": "Poland" }, "geometry": null },
+{ "type": "Feature", "properties": { "CreationDate": "2017-08-11T14:57:32.8375298+02:00", "DeletionDate": null, "IsDeleted": 0, "Title": "Physics" }, "geometry": null },
+{ "type": "Feature", "properties": { "CreationDate": "2017-09-04 00:00:53.7506834", "DeletionDate": null, "IsDeleted": 0, "Title": "Geography" }, "geometry": null },
+{ "type": "Feature", "properties": { "CreationDate": "2017-09-04 00:04:49.8566503", "DeletionDate": null, "IsDeleted": 0, "Title": "TV Series" }, "geometry": null },
+{ "type": "Feature", "properties": { "CreationDate": "2017-09-04 14:41:36.265237", "DeletionDate": null, "IsDeleted": 0, "Title": "IT" }, "geometry": null }
+]
+}

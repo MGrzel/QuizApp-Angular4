@@ -5,6 +5,9 @@ namespace QuizAppApi.Models
 {
     public class QuizAppDb : DbContext
     {
+        public QuizAppDb(DbContextOptions<QuizAppDb> options) : base(options)
+        { }
+
         public DbSet<Question> Questions { get; set; }
         public DbSet<Answer> Answers { get; set; } 
         public DbSet<Category> Categories { get; set; }  
@@ -16,10 +19,5 @@ namespace QuizAppApi.Models
         public DbSet<QuizType> QuizTypes { get; set; }
         public DbSet<ChallengeCategory> ChallengeCategories { get; set; } 
         public DbSet<CategoryQuestion> CategoryQuestions { get; set; } 
-        
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            optionsBuilder.UseSqlite("Filename=./QuizApp.db");
-        }
     }
 }

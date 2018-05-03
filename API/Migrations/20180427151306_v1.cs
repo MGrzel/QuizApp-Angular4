@@ -1,10 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
+using System;
+using System.Collections.Generic;
 
 namespace QuizAppApi.Migrations
 {
-    public partial class Addeddescription : Migration
+    public partial class v1 : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -13,7 +14,7 @@ namespace QuizAppApi.Migrations
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     CreationDate = table.Column<DateTime>(nullable: true),
                     DeletionDate = table.Column<DateTime>(nullable: true),
                     IsDeleted = table.Column<bool>(nullable: false),
@@ -29,7 +30,7 @@ namespace QuizAppApi.Migrations
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     CategoryId = table.Column<int>(nullable: false),
                     CreationDate = table.Column<DateTime>(nullable: true),
                     DeletionDate = table.Column<DateTime>(nullable: true),
@@ -46,7 +47,7 @@ namespace QuizAppApi.Migrations
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     CategoryId = table.Column<int>(nullable: false),
                     ChallengeId = table.Column<int>(nullable: false),
                     CreationDate = table.Column<DateTime>(nullable: true),
@@ -63,7 +64,7 @@ namespace QuizAppApi.Migrations
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     CreationDate = table.Column<DateTime>(nullable: true),
                     DeletionDate = table.Column<DateTime>(nullable: true),
                     IsDeleted = table.Column<bool>(nullable: false),
@@ -80,7 +81,7 @@ namespace QuizAppApi.Migrations
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     AnswerId = table.Column<int>(nullable: false),
                     CreationDate = table.Column<DateTime>(nullable: true),
                     DeletionDate = table.Column<DateTime>(nullable: true),
@@ -97,7 +98,7 @@ namespace QuizAppApi.Migrations
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     CreationDate = table.Column<DateTime>(nullable: true),
                     DeletionDate = table.Column<DateTime>(nullable: true),
                     IsDeleted = table.Column<bool>(nullable: false),
@@ -113,7 +114,7 @@ namespace QuizAppApi.Migrations
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     CreationDate = table.Column<DateTime>(nullable: true),
                     DeletionDate = table.Column<DateTime>(nullable: true),
                     Description = table.Column<string>(nullable: true),
@@ -130,7 +131,7 @@ namespace QuizAppApi.Migrations
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     CreationDate = table.Column<DateTime>(nullable: true),
                     DeletionDate = table.Column<DateTime>(nullable: true),
                     IsDeleted = table.Column<bool>(nullable: false),
@@ -153,7 +154,7 @@ namespace QuizAppApi.Migrations
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     ColorId = table.Column<int>(nullable: true),
                     CreationDate = table.Column<DateTime>(nullable: true),
                     DeletionDate = table.Column<DateTime>(nullable: true),
@@ -184,7 +185,7 @@ namespace QuizAppApi.Migrations
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     ChallengeId = table.Column<int>(nullable: true),
                     CreationDate = table.Column<DateTime>(nullable: true),
                     DeletionDate = table.Column<DateTime>(nullable: true),
@@ -207,7 +208,7 @@ namespace QuizAppApi.Migrations
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     CreationDate = table.Column<DateTime>(nullable: true),
                     DeletionDate = table.Column<DateTime>(nullable: true),
                     IsCorrect = table.Column<bool>(nullable: false),
