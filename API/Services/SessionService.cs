@@ -12,11 +12,15 @@ namespace QuizAppApi.Services
     {
         private readonly QuizAppDb _context;
         private readonly IAnswerService _answerService;
+        private readonly IChallengeService _challengeService;
+        private readonly IQuestionService _questionService;
 
-        public SessionService(QuizAppDb context, IAnswerService answerService)
+        public SessionService(QuizAppDb context, IAnswerService answerService, IChallengeService challengeService, IQuestionService questionService)
         {
             _context = context;
             _answerService = answerService;
+            _challengeService = challengeService;
+            _questionService = questionService;
         }
         ///Returns a session specified by the id
         public Session GetById(Guid? sessionId)
@@ -63,25 +67,24 @@ namespace QuizAppApi.Services
 
             quizSession.CreationDate = creationDate;
 
+            quizSession.ChallengeId = Guid.Empty;
+            quizSession.Challenge = _challengeService.GetById(quizSession.Challenge.Id);
+            foreach(ClientQuiz quiz in quizSession.ClientQuiz)
+            {
+                quiz.Id = Guid.Empty;
+                quiz.CreationDate = creationDate;
+                quiz.QuestionId = Guid.Empty;
+                quiz.Question = _questionService.GetById(quiz.Question.Id);
+                quiz.SelectedAnswerId = null;
+                if(quiz.SelectedAnswer != null)
+                {
+                    quiz.SelectedAnswer = _answerService.GetList().Where(a => a.Id == quiz.SelectedAnswer.Id).FirstOrDefault();
+                }
+            }
+
             _context.Sessions.Add(quizSession);
 
             _context.SaveChanges();
-        }
-
-        public Session CheckQuizAnswers(Session session)
-        {
-            foreach (var q in session.ClientQuiz)
-            {
-                if (_answerService.CheckAnswer(q.QuestionId, q.SelectedAnswerId))
-                {
-                    q.IsCorrect = true;
-                }
-                else
-                {
-                    q.IsCorrect = false;
-                }
-            }
-            return session;
         }
     }
 }

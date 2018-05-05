@@ -22,7 +22,7 @@ namespace QuizAppApi.Services
         ///Returns a challenge specified by the id
         public Challenge GetById(Guid? challengeId)
         {
-            var challenge = _context.Challenges.Where(c => c.Id == challengeId && !c.IsDeleted).Include("Color").Include("QuizType").FirstOrDefault();
+            var challenge = _context.Challenges.Where(c => c.Id == challengeId && !c.IsDeleted).Include("Color").Include("QuizType").Include(c => c.CategoryList).ThenInclude(c => c.Category).FirstOrDefault();
 
             return challenge;
         }
@@ -35,7 +35,7 @@ namespace QuizAppApi.Services
         ///Returns a list of all challenges
         public List<Challenge> GetList()
         {
-            var challenges = _context.Challenges.Where(c => !c.IsDeleted).Include("Color").Include("QuizType").ToList();
+            var challenges = _context.Challenges.Where(c => !c.IsDeleted).Include("Color").Include("QuizType").Include(c => c.CategoryList).ThenInclude(c => c.Category).ToList();
 
             return challenges;
         }
@@ -55,62 +55,51 @@ namespace QuizAppApi.Services
 
         public void Add(Challenge challenge)
         {
-
-            var challengeCategories = new List<ChallengeCategory>();
             var date = DateTime.Now;
-            //challenge.QuizType = _context.QuizTypes.Where(qt => qt.Id == challenge.QuizType.Id).First();
-            //challenge.Color = _context.Colors.Where(c => c.Id == challenge.Color.Id).First();
+            challenge.QuizType = _context.QuizTypes.Where(qt => qt.Id == challenge.QuizType.Id).First();
+            challenge.Color = _context.Colors.Where(c => c.Id == challenge.Color.Id).First();
             challenge.CreationDate = date;
 
-            //foreach (var cat in challenge.CategoryList)
-            //{
-            //    var category = new ChallengeCategory
-            //    {
-            //        CategoryId = cat.Id,
-            //        ChallengeId = challengeId,
-            //        CreationDate = date
-            //    };
-            //    challengeCategories.Add(category);
-            //}
+            foreach (ChallengeCategory cat in challenge.CategoryList)
+            {
+                cat.CategoryId = Guid.Empty;
+                cat.ChallengeId = Guid.Empty;
+                cat.Category = _categoryService.GetById(cat.Category.Id);
+            }
 
             _context.Challenges.Add(challenge);
-            //_context.ChallengeCategories.AddRange(challengeCategories);
             _context.SaveChanges();
         }
 
-        public void Update(Challenge challenge)
+        public void Update(Challenge newChallenge)
         {
-            var newChallengeCategories = new List<ChallengeCategory>();
-            var oldChallengeCategories = new List<ChallengeCategory>();
             var date = DateTime.Now;
 
-            //challenge.QuizType = _context.QuizTypes.Where(qt => qt.Id == challenge.QuizType.Id).First();
-            //challenge.Color = _context.Colors.Where(c => c.Id == challenge.Color.Id).First();
+            Challenge challenge = GetById(newChallenge.Id);
+
+            challenge.QuizType = _context.QuizTypes.Where(qt => qt.Id == newChallenge.QuizType.Id).First();
+            challenge.Color = _context.Colors.Where(c => c.Id == newChallenge.Color.Id).First();
             challenge.CreationDate = date;
+            challenge.QuestionAmount = newChallenge.QuestionAmount;
+            challenge.Title = newChallenge.Title;
 
-            //oldChallengeCategories = _context.ChallengeCategories.Where(cq => cq.ChallengeId == challenge.Id && cq.IsDeleted == false).ToList();
-
-            //foreach (var cq in oldChallengeCategories)
-            //{
-            //    cq.IsDeleted = true;
-            //    cq.DeletionDate = date;
-            //}
-
-            //foreach (var cat in challenge.CategoryList)
-            //{
-            //    var category = new ChallengeCategory
-            //    {
-            //        CategoryId = cat.Id,
-            //        ChallengeId = challenge.Id,
-            //        CreationDate = date
-            //    };
-            //    newChallengeCategories.Add(category);
-            //}
+            List<ChallengeCategory> newCategories = newChallenge.CategoryList;
+            challenge.CategoryList = null;
 
             _context.Challenges.Update(challenge);
-            //_context.ChallengeCategories.UpdateRange(oldChallengeCategories);
-            //_context.ChallengeCategories.AddRange(newChallengeCategories);
             _context.SaveChanges();
+
+            foreach (ChallengeCategory category in newCategories)
+            {
+                _context.ChallengeCategories.Add(new ChallengeCategory
+                {
+                    CreationDate = date,
+                    Category = _categoryService.GetById(category.Category.Id),
+                    Challenge = challenge
+                });
+
+                _context.SaveChanges();
+            }
         }
 
         public void Delete(Guid id)

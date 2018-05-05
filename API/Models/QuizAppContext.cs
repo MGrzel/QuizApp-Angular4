@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System.Data;
+using QuizAppApi.Models;
 
 namespace QuizAppApi.Models
 {
@@ -13,7 +14,6 @@ namespace QuizAppApi.Models
         public DbSet<Answer> Answers { get; set; } 
         public DbSet<Category> Categories { get; set; }  
         public DbSet<Color> Colors { get; set; } 
-        public DbSet<CorrectAnswer> CorrectAnswers { get; set; } 
         public DbSet<Challenge> Challenges { get; set; } 
         public DbSet<Session> Sessions { get; set; }
         public DbSet<ClientQuiz> ClientQuizes { get; set; }
@@ -52,27 +52,17 @@ namespace QuizAppApi.Models
                 .WithMany(c => c.ChallengeCategories)
                 .HasForeignKey(c => c.CategoryId);
 
-            modelBuilder.Entity<CorrectAnswer>()
-                .HasOne(ca => ca.Question)
-                .WithOne()
-                .HasForeignKey<CorrectAnswer>(ca => ca.QuestionId)
-                .OnDelete(DeleteBehavior.Restrict);
-
-            modelBuilder.Entity<CorrectAnswer>()
-                .HasOne(ca => ca.Answer)
-                .WithOne()
-                .HasForeignKey<CorrectAnswer>(ca => ca.AnswerId)
-                .OnDelete(DeleteBehavior.Restrict);
-
-            modelBuilder.Entity<ClientQuiz>()
-                .HasOne(ca => ca.SelectedAnswer)
-                .WithOne()
-                .HasForeignKey<ClientQuiz>(ca => ca.SelectedAnswerId)
-                .OnDelete(DeleteBehavior.Restrict);
+            //modelBuilder.Entity<ClientQuiz>()
+            //    .HasOne(ca => ca.SelectedAnswer)
+            //    .WithOne()
+            //    .HasForeignKey<ClientQuiz>(ca => ca.SelectedAnswerId)
+            //    .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<Question>()
                 .HasMany(q => q.Answers)
                 .WithOne(a => a.Question);
         }
+
+        public DbSet<QuizAppApi.Models.User> User { get; set; }
     }
 }

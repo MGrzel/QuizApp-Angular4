@@ -24,7 +24,7 @@ namespace QuizAppApi.Services
         ///Returns a question specified by the id
         public Question GetById(Guid? questionId, bool admin = false)
         {
-            var question = _context.Questions.Where(q => q.Id == questionId && !q.IsDeleted).Include(q => q.Answers).FirstOrDefault();
+            var question = _context.Questions.Where(q => q.Id == questionId && !q.IsDeleted).Include(q => q.Answers).Include(q => q.CategoryList).ThenInclude(cq => cq.Category).Include(q => q.CategoryList).ThenInclude(cq => cq.Question).FirstOrDefault();
 
             return question;
         }
@@ -37,16 +37,14 @@ namespace QuizAppApi.Services
         ///Returns a list of all questions
         public List<Question> GetList(bool admin = false)
         {
-            var questions = _context.Questions.Where(q => !q.IsDeleted).Include(q => q.Answers).ToList();
+            var questions = _context.Questions.Where(q => !q.IsDeleted).Include(q => q.Answers).Include(q => q.CategoryList).ThenInclude(cq => cq.Category).Include(q => q.CategoryList).ThenInclude(cq => cq.Question).ToList();
 
             return questions;
         }
 
         public Answer GetCorrectAnswer(Guid questionId)
         {
-            var answerId = _context.CorrectAnswers.Where(ca => ca.QuestionId == questionId && !ca.IsDeleted).Select(ca => ca.AnswerId).FirstOrDefault();
-
-            return _context.Answers.Where(a => a.Id == answerId && !a.IsDeleted).FirstOrDefault();
+            return _answerService.GetCorrectByQuestionId(questionId);
         }
 
         public List<Question> GetDeletedList()
@@ -67,116 +65,86 @@ namespace QuizAppApi.Services
             return _context.Questions.Where(q => questionIds.Contains(q.Id) && !q.IsDeleted).Include(q => q.Answers).Distinct().ToList();
         }
 
-        public void Update(Question question)
+        public void Update(Question newQuestion)
         {
-            var correctAnswer = new CorrectAnswer();
-            var newCategories = new List<Category>();
-            var oldCategoryQuestion = new List<CategoryQuestion>();
-            var newCategoryQuestion = new List<CategoryQuestion>();
-            var clientQuizes = new List<ClientQuiz>();
             var date = DateTime.Now;
+            Question question = GetById(newQuestion.Id);
 
-            //correctAnswer.CreationDate = date;
-            //correctAnswer.AnswerId = question.CorrectAnswer.Id;
-            //correctAnswer.QuestionId = question.CorrectAnswer.QuestionId;
-            //correctAnswer.Id = _context.CorrectAnswers.Where(ca => ca.QuestionId == question.CorrectAnswer.QuestionId).Select(ca => ca.Id).FirstOrDefault();
+            question.CreationDate = date;
+            question.Title = newQuestion.Title;
 
-            //newCategories = question.CategoryList.ToList();
-            //oldCategoryQuestion = _context.CategoryQuestions.Where(cq => cq.QuestionId == question.Id && cq.IsDeleted == false).ToList();
+            Guid correctAnswerId = newQuestion.Answers.Where(a => a.IsCorrect).Select(a => a.Id).Single();
 
-            //foreach (var cq in oldCategoryQuestion)
-            //{
-            //    cq.IsDeleted = true;
-            //    cq.DeletionDate = date;
-            //}
+            foreach (Answer answer in question.Answers)
+            {
+                if (answer.Id == correctAnswerId)
+                {
+                    answer.IsCorrect = true;
+                }
+                else
+                {
+                    answer.IsCorrect = false;
+                }
+            }
 
-            //foreach (var cat in newCategories)
-            //{
-            //    var categoryQuestion = new CategoryQuestion
-            //    {
-            //        CategoryId = cat.Id,
-            //        QuestionId = question.Id,
-            //        CreationDate = date
-            //    };
-            //    newCategoryQuestion.Add(categoryQuestion);
-            //}
+            List<CategoryQuestion> newCategories = newQuestion.CategoryList;
+            List<CategoryQuestion> oldCategories = question.CategoryList;
+            question.CategoryList = null;
 
-            //_context.CategoryQuestions.UpdateRange(oldCategoryQuestion);
-            //_context.CategoryQuestions.AddRange(newCategoryQuestion);
-            //_context.CorrectAnswers.Update(correctAnswer);
-            //_context.SaveChanges();
             _context.Questions.Update(question);
             _context.SaveChanges();
 
-            clientQuizes = _context.ClientQuizes.Include(cq => cq.Question).ThenInclude(q => q.Answers).Where(cq => cq.Question.Id == correctAnswer.QuestionId).ToList();
-            foreach (var quiz in clientQuizes)
+            foreach (CategoryQuestion cat in newCategories)
             {
-                quiz.Question = _context.Questions.Where(q => q.Id == quiz.Question.Id).Include("Answers").First();
-                if (quiz.SelectedAnswerId != null)
+                _context.CategoryQuestions.Add(new CategoryQuestion
                 {
-                    if (correctAnswer.AnswerId == quiz.SelectedAnswerId)
-                    {
-                        quiz.IsCorrect = true;
-                    }
-                    else
-                    {
-                        quiz.IsCorrect = false;
-                    }
-                }
+                    CreationDate = date,
+                    Category = _categoryService.GetById(cat.Category.Id),
+                    Question = question
+                });
+                _context.SaveChanges();
             }
-            _context.ClientQuizes.UpdateRange(clientQuizes);
-            _context.SaveChanges();
         }
 
-        public void AddToSeed(Question question)
+        public bool CheckIfHasCategory(List<CategoryQuestion> categories, CategoryQuestion category)
         {
-            _context.Questions.Add(question);
+            foreach (CategoryQuestion cat in categories)
+            {
+                if (cat.Category.Id == category.Category.Id)
+                    return true;
+            }
+
+            return false;
+        }
+
+        public void AddToSeed(Question newQuestion)
+        {
+            _context.Questions.Add(newQuestion);
 
             _context.SaveChanges();
         }
 
         public void Add(Question question)
         {
-            //var correctAnswer = new CorrectAnswer();
-            //var newCategories = new List<Category>();
-            //var newCategoryQuestion = new List<CategoryQuestion>();
-            //var questionId = _context.Questions.Any() ? _context.Questions.Last().Id + 1 : 1;
             var date = DateTime.Now;
 
-            //newCategories = question.CategoryList.ToList();
-
-            //foreach (var cat in newCategories)
-            //{
-            //    var categoryQuestion = new CategoryQuestion
-            //    {
-            //        CategoryId = cat.Id,
-            //        QuestionId = questionId,
-            //        CreationDate = date
-            //    };
-            //    newCategoryQuestion.Add(categoryQuestion);
-            //}
-
-            //foreach (var answer in question.Answers)
-            //{
-            //    answer.CreationDate = date;
-            //    answer.QuestionId = questionId;
-            //    answer.Id = 0;
-            //}
-
-            //question.Id = questionId;
             question.CreationDate = date;
+            question.Id = Guid.Empty;
+            foreach (Answer answer in question.Answers)
+            {
+                answer.Id = Guid.Empty;
+            }
 
-            //_context.CategoryQuestions.AddRange(newCategoryQuestion);
+            foreach (CategoryQuestion cat in question.CategoryList)
+            {
+                cat.CategoryId = Guid.Empty;
+                cat.QuestionId = Guid.Empty;
+                cat.Category = _categoryService.GetById(cat.Category.Id);
+            }
+
             _context.Questions.Add(question);
 
             _context.SaveChanges();
-
-            //correctAnswer.CreationDate = date;
-            //correctAnswer.AnswerId = _context.Answers.Where(a => a.QuestionId == questionId && a.Title == question.CorrectAnswer.Title).Select(a => a.Id).First();
-            //correctAnswer.QuestionId = questionId;
-
-            //_context.CorrectAnswers.Add(correctAnswer);
-            //_context.SaveChanges();
         }
 
         public void Delete(Guid id)
@@ -235,7 +203,7 @@ namespace QuizAppApi.Services
                 }
             }
 
-            if (question.CorrectAnswerId == null)
+            if (question.Answers.Where(a => a.IsCorrect).FirstOrDefault() == null)
             {
                 return false;
             }

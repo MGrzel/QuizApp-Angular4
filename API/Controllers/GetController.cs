@@ -9,7 +9,7 @@ using System.Collections.Generic;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Cors;
 using Newtonsoft.Json.Linq;
-
+using Microsoft.AspNetCore.Authorization;
 
 namespace QuizAppApi.Controllers
 {
@@ -38,6 +38,7 @@ namespace QuizAppApi.Controllers
 
         // GET api/quizapp/get/categories/id?
         [HttpGet("categories/{id?}")]
+        [Authorize]
         public object GetCategories(Guid? id)
         {
             if (id.HasValue)
@@ -187,7 +188,6 @@ namespace QuizAppApi.Controllers
                 question.Answers = question.Answers.OrderBy(q => Guid.NewGuid()).ToList();
                 clientQuiz.Question = question;
                 clientQuiz.Order = count;
-                clientQuiz.IsCorrect = false;
                 clientQuizes.Add(clientQuiz);
 
                 count++;

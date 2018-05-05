@@ -119,13 +119,21 @@ namespace QuizAppApi.Models
                     CreationDate = creationDate,
                     Category = categoryService.GetList().FirstOrDefault()
                 };
-
                 categories.Add(category);
+
+                List<CategoryQuestion> categories2 = new List<CategoryQuestion>();
+                CategoryQuestion category2 = new CategoryQuestion
+                {
+                    CreationDate = creationDate,
+                    Category = categoryService.GetList().FirstOrDefault()
+                };
+                categories2.Add(category2);
 
                 answers1.Add(new Answer
                 {
                     CreationDate = creationDate,
-                    Title = "Blue"
+                    Title = "Blue",
+                    IsCorrect = true
                 });
 
                 answers1.Add(new Answer
@@ -151,14 +159,14 @@ namespace QuizAppApi.Models
                     IsDeleted = false,
                     Title = "What is the color of the sky?",
                     Answers = answers1,
-                    CategoryList = categories,
-                    CorrectAnswerId = answers1[0].Id
+                    CategoryList = categories
                 });
 
                 answers2.Add(new Answer
                 {
                     CreationDate = creationDate,
-                    Title = "Stark"
+                    Title = "Stark",
+                    IsCorrect = true
                 });
 
                 answers2.Add(new Answer
@@ -185,8 +193,7 @@ namespace QuizAppApi.Models
                     IsDeleted = false,
                     Title = "In GoT series, John Snow 'formally' belongs to House ...?",
                     Answers = answers2,
-                    CategoryList = categories,
-                    CorrectAnswerId = answers2[0].Id
+                    CategoryList = categories2
                 });
 
                 questionService.Add(questions[0]);
@@ -238,7 +245,7 @@ namespace QuizAppApi.Models
                 Challenge challenge = new Challenge
                 {
                     CreationDate = creationDate,
-                    Color = colorService.GetList().FirstOrDefault(),
+                    Color = colorService.GetList()[3],
                     QuestionAmount = 10,
                     QuizType = quizTypeService.GetList().FirstOrDefault(),
                     Title = "Default Quiz",

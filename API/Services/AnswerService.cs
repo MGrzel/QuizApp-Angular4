@@ -21,15 +21,9 @@ namespace QuizAppApi.Services
             return _context.Answers.ToList();
         }
 
-        public List<CorrectAnswer> GetCorrectAnswersList()
+        public List<Answer> GetCorrectAnswersList()
         {
-            return _context.CorrectAnswers.ToList();
-        }
-
-        public void AddCorrectAnswer(CorrectAnswer correctAnswer)
-        {
-            _context.CorrectAnswers.Add(correctAnswer);
-            _context.SaveChanges();
+            return _context.Answers.Where(a => a.IsCorrect).ToList();
         }
 
         public void AddToSeed(Answer answer)
@@ -44,10 +38,12 @@ namespace QuizAppApi.Services
             {
                 return false;
             }
-            List<Guid> correctAnswers = _context.CorrectAnswers.Where(ca => ca.QuestionId == answer.QuestionId).Select(ca => ca.AnswerId).ToList();
-            bool isCorrect = correctAnswers.Contains(answer.Id);
+            Answer isCorrect = _context.Answers.Where(a => a.Id == answer.Id && a.IsCorrect).First();
 
-            return isCorrect;
+            if (isCorrect == null)
+                return false;
+            else
+                return true;
         }
 
         public List<Answer> GetListByQuestionId(Guid questionId)
@@ -57,17 +53,17 @@ namespace QuizAppApi.Services
 
         public Answer GetCorrectByQuestionId(Guid questionId)
         {
-            var answerId = _context.CorrectAnswers.Where(ca => ca.QuestionId == questionId && !ca.IsDeleted).Select(ca => ca.AnswerId).FirstOrDefault();
-
-            return _context.Answers.Where(a => a.Id == answerId && !a.IsDeleted).FirstOrDefault();
+            return _context.Answers.Where(a => a.QuestionId == questionId && !a.IsDeleted && a.IsCorrect).FirstOrDefault();
         }
 
         public bool CheckAnswer(Guid questionId, Guid answerId)
         {
-            List<Guid> correctAnswers = _context.CorrectAnswers.Where(ca => ca.QuestionId == questionId).Select(ca => ca.AnswerId).ToList();
-            bool isCorrect = correctAnswers.Contains(answerId);
+            Answer isCorrect = _context.Answers.Where(ca => ca.QuestionId == questionId && !ca.IsDeleted && ca.IsCorrect && ca.Id == answerId).FirstOrDefault();
 
-            return isCorrect;
+            if (isCorrect == null)
+                return false;
+            else
+                return true;
         }
 
         public bool Validate(Answer answer)

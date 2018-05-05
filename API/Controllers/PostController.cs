@@ -77,7 +77,6 @@ namespace QuizAppApi.Controllers
         public object CreateSession([FromBody]JObject session)
         {
             Session quiz = session.ToObject<Session>();
-            quiz = _sessionService.CheckQuizAnswers(quiz);
             _sessionService.SaveSession(quiz);
             return quiz;
         }

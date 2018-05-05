@@ -16,11 +16,19 @@ using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Diagnostics;
 using QuizAppApi.Services;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 
 namespace QuizAppApi
 {
     public class Startup
     {
+        private const string SecretKey = "iNivDmHLpUA223sqsfhqGbMRdRj1PVkH"; // todo: get this from somewhere secure
+        private readonly SymmetricSecurityKey _signingKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(SecretKey));
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -32,6 +40,7 @@ namespace QuizAppApi
         public void ConfigureServices(IServiceCollection services)
         {
             // Add framework services.
+            services.AddAutoMapper();
             services.AddMvc()
             .AddJsonOptions(
                 options => options.SerializerSettings.ReferenceLoopHandling =
@@ -52,6 +61,29 @@ namespace QuizAppApi
                 })
                 .AddEntityFrameworkStores<QuizAppDb>()
                 .AddDefaultTokenProviders();
+
+            var tokenValidationParameters = new TokenValidationParameters
+            {
+                ValidateActor = false,
+                ValidateAudience = false,
+                ValidateIssuerSigningKey = true,
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Jwt:Key"])),
+                ValidIssuer = Configuration["Jwt:Issuer"],
+                ValidAudience = Configuration["Jwt:Audience"],
+                ValidateLifetime = true,
+                ClockSkew = TimeSpan.Zero
+            };
+
+            services.AddAuthentication(options =>
+            {
+                options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+            .AddJwtBearer(options =>
+            {
+                options.TokenValidationParameters = tokenValidationParameters;
+            });
+
+
 
             services.AddScoped<IAnswerService, AnswerService>();
             services.AddScoped<ICategoryService, CategoryService>();
@@ -74,8 +106,6 @@ namespace QuizAppApi
 
 
             services.AddCors();
-
-
                 
 
         }
@@ -86,8 +116,7 @@ namespace QuizAppApi
             loggerFactory.AddConsole();
 
             var context = serviceProvider.GetRequiredService<QuizAppDb>();
-            context.Database.Migrate();
-            SeedData.Initialize(serviceProvider);
+            context.Database.EnsureCreated();
 
             if (env.IsDevelopment())
             {
@@ -97,12 +126,16 @@ namespace QuizAppApi
             // Shows UseCors with CorsPolicyBuilder.
             app.UseCors("angular");
 
+            
+
 
 
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
 
             app.UseMvc();
+
+            SeedData.Initialize(serviceProvider);
         }
     }
 }

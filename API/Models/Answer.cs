@@ -18,5 +18,6 @@ namespace QuizAppApi.Models
         public DateTime? CreationDate { get; set; }
         public DateTime? DeletionDate { get; set; }
         public bool IsDeleted { get; set; }
+        public bool IsCorrect { get; set; }
     }
 }

@@ -110,11 +110,13 @@ namespace QuizAppApi.Services
             _context.SaveChanges();
         }
 
-        public void Update(Category category)
+        public void Update(Category newCategory)
         {
             var date = DateTime.Now;
 
+            Category category = GetById(newCategory.Id);
             category.CreationDate = date;
+            category.Title = newCategory.Title;
 
             _context.Categories.Update(category);
             _context.SaveChanges();
