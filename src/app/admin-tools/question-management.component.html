@@ -15,7 +15,9 @@
                     <div [@elementInOut]="">
                         <div class="row question">
                             <div class="col-12 my-2">
-                                <label for="newQuestion"><b>Insert question title</b></label>
+                                <label for="newQuestion">
+                                    <b>Insert question title</b>
+                                </label>
                                 <input class="form-control" id="newQuestion" [(ngModel)]="newQuestion.title" placeholder="Question's title" ngbTooltip="Enter the title for a question!"
                                     triggers="focusin:focusout" placement="bottom">
                             </div>
@@ -27,7 +29,7 @@
                                     <div class="col-sm-5 answer m-3" *ngFor="let answer of newQuestion.answers; let i = index;" ngbTooltip="Enter the title for an answer!"
                                         triggers="focusin:focusout">
                                         <div class="input-group">
-                                            <span class="input-group-addon" id="numerator" [ngClass]="{'selected': answer?.id === newQuestion.correctAnswer?.id }" (click)="changeCorrectAnswer(newQuestion, answer)"
+                                            <span class="input-group-addon" id="numerator" [ngClass]="{'selected': answer?.isCorrect && answer.title != null }" (click)="changeCorrectAnswer(newQuestion, answer)"
                                                 ngbTooltip="Choose a correct answer!" triggers="mouseenter:mouseleave" placement="bottom">#{{ i + 1 }}</span>
                                             <input class="form-control" name="title" [(ngModel)]="newQuestion.answers[i].title" placeholder="Answer's title">
                                         </div>
@@ -39,8 +41,8 @@
                         <div class="row my-3">
                             <div class="col-10 my-2">
                                 <select class="form-control" id="category" [(ngModel)]="selectedCategory">
-                                    <option  *ngFor="let category of categoryList" [ngValue]="category">
-                                        #{{ category.id }} {{ category.title }}
+                                    <option *ngFor="let category of categoryList; index as i" [ngValue]="category">
+                                        #{{ i + 1 }} {{ category.title }}
                                     </option>
                                 </select>
                             </div>
@@ -52,7 +54,11 @@
 
                         <div class="row my-3">
                             <div class="col-auto" *ngFor="let category of newQuestion.categoryList" [@elementInOut]="">
-                                <h5><span class="badge badge-secondary">{{ category.title }} <i class="fa fa-times" aria-hidden="true" (click)="deleteCategory(newQuestion, category)"></i></span></h5>
+                                <h5>
+                                    <span class="badge badge-secondary">{{ category.category.title }}
+                                        <i class="fa fa-times" aria-hidden="true" (click)="deleteCategory(newQuestion, category.category)"></i>
+                                    </span>
+                                </h5>
                             </div>
                         </div>
 
@@ -72,10 +78,12 @@
                         <div *ngIf="selectedQuestion">
                             <div class="row">
                                 <div class="col-12 my-2">
-                                    <label for="chooseQuestion"><b>Choose question for edit</b></label>
+                                    <label for="chooseQuestion">
+                                        <b>Choose question for edit</b>
+                                    </label>
                                     <select class="form-control" id="chooseQuestion" [(ngModel)]="selectedQuestion">
-                                        <option  *ngFor="let question of questionList" [ngValue]="question">
-                                            #{{ question.id }} {{ question.title }}
+                                        <option *ngFor="let question of questionList; index as i" [ngValue]="question">
+                                            #{{ i + 1 }} {{ question.title }}
                                         </option>
                                     </select>
                                 </div>
@@ -99,26 +107,29 @@
                                     <h2>Answers:</h2>
                                 </div>
 
-                                <div class="col-sm-8">
-                                    <div class="row">
-                                        <div class="col-sm-6 answer my-1" *ngFor="let answer of selectedQuestion.answers; let i = index;" ngbTooltip="Enter the title for an answer!"
-                                            triggers="focusin:focusout">
-                                            <div class="input-group">
-                                                <span class="input-group-addon" id="numerator" [ngClass]="{'selected': answer.id === selectedQuestion.correctAnswer.id }"
-                                                    (click)="changeCorrectAnswer(selectedQuestion, answer)" ngbTooltip="Choose a correct answer!"
-                                                    triggers="mouseenter:mouseleave" placement="bottom">#{{ i + 1 }}</span>
-                                                <input class="form-control" name="title" [(ngModel)]="selectedQuestion.answers[i].title" placeholder="Answer's title">
+                                <div *ngIf="selectedQuestion.answers">
+                                    <div class="col-sm-8">
+                                        <div class="row">
+                                            <div class="col-sm-6 answer my-1" *ngFor="let answer of selectedQuestion.answers; let i = index;" ngbTooltip="Enter the title for an answer!"
+                                                triggers="focusin:focusout">
+                                                <div class="input-group">
+                                                    <span class="input-group-addon" id="numerator" [ngClass]="{'selected': answer.isCorrect }" (click)="changeCorrectAnswer(selectedQuestion, answer)"
+                                                        ngbTooltip="Choose a correct answer!" triggers="mouseenter:mouseleave"
+                                                        placement="bottom">#{{ i + 1 }}</span>
+                                                    <input class="form-control" name="title" [(ngModel)]="selectedQuestion.answers[i].title" placeholder="Answer's title">
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
 
+
                             <div class="row my-3">
                                 <div class="col-10 my-2">
                                     <select class="form-control" id="category" [(ngModel)]="selectedCategory">
-                                        <option  *ngFor="let category of categoryList" [ngValue]="category">
-                                            #{{ category.id }} {{ category.title }}
+                                        <option *ngFor="let category of categoryList; index as i" [ngValue]="category">
+                                            #{{ i + 1 }} {{ category.title }}
                                         </option>
                                     </select>
                                 </div>
@@ -129,15 +140,20 @@
 
                             <div class="row my-3">
                                 <div class="col-auto" *ngFor="let category of selectedQuestion.categoryList" [@elementInOut]="">
-                                    <h5><span class="badge badge-secondary">{{ category.title }} <i class="fa fa-times" aria-hidden="true" (click)="deleteCategory(selectedQuestion, category)" ngbTooltip="Add a category!" triggers="mouseenter:mouseleave"></i></span></h5>
+                                    <h5>
+                                        <span class="badge badge-secondary">{{ category.category.title }}
+                                            <i class="fa fa-times" aria-hidden="true" (click)="deleteCategory(selectedQuestion, category.category)" ngbTooltip="Delete a category!"
+                                                triggers="mouseenter:mouseleave"></i>
+                                        </span>
+                                    </h5>
                                 </div>
                             </div>
 
                             <div class="row mx-3">
 
                                 <button class="col-12 btn btn-orangered" (click)="updateQuestion()">
-                                        UPDATE
-                                    </button>
+                                    UPDATE
+                                </button>
 
                             </div>
                         </div>
@@ -150,10 +166,12 @@
                     <div [@elementInOut]="">
                         <div class="row">
                             <div class="col-12 my-2">
-                                <label for="chooseQuestion"><b>Choose question to delete</b></label>
+                                <label for="chooseQuestion">
+                                    <b>Choose question to delete</b>
+                                </label>
                                 <select class="form-control" id="chooseQuestion" [(ngModel)]="selectedQuestion">
-                                    <option  *ngFor="let question of questionList" [ngValue]="question">
-                                        #{{ question.id }} {{ question.title }}
+                                    <option *ngFor="let question of questionList; index as i" [ngValue]="question">
+                                        #{{ i + 1 }} {{ question.title }}
                                     </option>
                                 </select>
                             </div>
@@ -177,12 +195,14 @@
                     <div [@elementInOut]="">
                         <div class="row">
                             <div class="col-12 my-2">
-                                <label for="chooseQuestion"><b>Choose question to restore</b></label>
+                                <label for="chooseQuestion">
+                                    <b>Choose question to restore</b>
+                                </label>
                                 <select class="form-control" id="chooseQuestion" [(ngModel)]="questionToRestore">
-                                            <option  *ngFor="let question of deletedQuestionList" [ngValue]="question">
-                                                #{{ question.id }} {{ question.title }}
-                                            </option>
-                                        </select>
+                                    <option *ngFor="let question of deletedQuestionList; index as i" [ngValue]="question">
+                                        #{{ i + 1 }} {{ question.title }}
+                                    </option>
+                                </select>
                             </div>
                         </div>
 
@@ -191,8 +211,8 @@
                         <div class="row mx-3 mt-5">
 
                             <button class="col-12 btn btn-orangered" (click)="restoreQuestion()">
-                                        RESTORE
-                                    </button>
+                                RESTORE
+                            </button>
 
                         </div>
                     </div>

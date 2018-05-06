@@ -1,3 +1,4 @@
+import { CategoryQuestion } from './../models/categoryquestion';
 import { Category } from './../models/category';
 import { Answer } from './../models/answer';
 import { Question } from './../models/question';
@@ -41,12 +42,11 @@ export class QuestionManagementComponent implements OnInit {
     initializeNewQuestion(): void {
 
         this.newQuestion.answers = new Array<Answer>();
-        this.newQuestion.categoryList = new Array<Category>();
+        this.newQuestion.categoryList = new Array<CategoryQuestion>();
         this.newQuestion.title = '';
 
         for (let i = 0; i < 4; i++) {
             const answer = new Answer;
-            answer.id = i;
             this.newQuestion.answers.push(answer);
         }
     }
@@ -59,10 +59,22 @@ export class QuestionManagementComponent implements OnInit {
         this.alert.error = null;
     }
 
+    changeCorrectAnswer(question: Question, answer: Answer) {
+        if(answer.title == null) {
+            return;
+        }
+        for(let i = 0; i < question.answers.length; i++) {
+            question.answers[i].isCorrect = false;
+            if(question.answers[i].title === answer.title) {
+                question.answers[i].isCorrect = true;
+            }
+        }
+    }
+
     checkCategoryExistance(question: Question, category: Category): boolean {
         if (question.categoryList.length >= 0) {
             for (let i = 0; i < question.categoryList.length; i++) {
-                if (question.categoryList[i].title === category.title) {
+                if (question.categoryList[i].category.title === category.title) {
                     return false;
                 }
             }
@@ -71,23 +83,38 @@ export class QuestionManagementComponent implements OnInit {
         return true;
     }
 
-    changeCorrectAnswer(question: Question, answer: Answer): void {
-        question.correctAnswer = answer;
-    }
-
     addCategory(question: Question, category: Category): void {
+        const cat = new CategoryQuestion();
+        cat.category = category;
+
         if (this.checkCategoryExistance(question, category)) {
-            question.categoryList.push(category);
+            question.categoryList.push(cat);
         }
         // TODO: error
     }
 
     deleteCategory(question: Question, category: Category): void {
-        const index = question.categoryList.indexOf(category);
+        const cat = new CategoryQuestion();
+        cat.question = question;
+        cat.questionId = question.id;
+        cat.category = category;
+        cat.categoryId = category.id;
+
+        const index = this.findIndexOfCategory(question.categoryList, category);
         if (index > -1) {
             question.categoryList.splice(index, 1);
         }
         // TODO: error
+    }
+
+    findIndexOfCategory(categories: CategoryQuestion[], category: Category) {
+        for(let i = 0; i < categories.length; i++) {
+            if(categories[i].category.id === category.id) {
+                return i;
+            }
+        }
+
+        return -1;
     }
 
     updateQuestion(): void {

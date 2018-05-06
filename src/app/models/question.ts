@@ -1,13 +1,17 @@
 import { Answer } from './answer';
 import { Category } from './category';
+import { CategoryQuestion } from './categoryquestion';
+import { environment } from '../../environments/environment.prod';
 
 export class Question {
-    id: number;
+    constructor() {
+        this.id = environment.emptyGuid;
+    }
+    id: string;
     title: string;
     answers: Answer[];
     creationDate: Date;
     deletionDate: Date;
     isDeleted: boolean;
-    categoryList: Category[];
-    correctAnswer: Answer;
+    categoryList: CategoryQuestion[];
 }

@@ -19,7 +19,7 @@
             <div class="card card-body">
                 <h4 class="card-title">Questions</h4>
                 <div class="row no-gutters card-text">
-                    <div (click)="moveToQuestion(i)" [ngClass]="{'question-selector-correct': quiz.isCorrect,'question-selector-wrong': !quiz.isCorrect && quiz.selectedAnswer != null }" class="question-selector"
+                    <div (click)="moveToQuestion(i)" [ngClass]="{'question-selector-correct': quiz.selectedAnswer?.isCorrect,'question-selector-wrong': !quiz.selectedAnswer?.isCorrect }" class="question-selector"
                         *ngFor="let quiz of clientQuiz; let i = index" ngbTooltip="{{ quiz.order }}">
                         <span>{{ quiz.order }}</span>
                     </div>
@@ -40,7 +40,7 @@
         </div>
 
         <div class="row justify-content-around">
-            <div [ngClass]="{'correct-answer': clientQuiz[currentAnswer].isCorrect && clientQuiz[currentAnswer]?.selectedAnswer?.id === answer.id,'wrong-answer': !clientQuiz[currentAnswer].isCorrect && clientQuiz[currentAnswer]?.selectedAnswer?.id === answer.id  }"
+            <div [ngClass]="{'correct-answer': answer.isCorrect && quizSession.clientQuiz[currentAnswer].selectedAnswer?.id == answer.id,'wrong-answer': !answer.isCorrect && quizSession.clientQuiz[currentAnswer].selectedAnswer?.id == answer.id  }"
                 class="col-sm-5 m-sm-3 mx-5 my-3 answer btn btn-outline-{{ color }}" *ngFor="let answer of clientQuiz[currentAnswer].question.answers">
                 <span class="row">
                     <div class="col">

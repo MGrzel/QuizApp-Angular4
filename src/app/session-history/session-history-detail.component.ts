@@ -25,7 +25,7 @@ export class SessionHistoryDetailComponent implements OnInit {
     color: string;
     questionAnimationState = 'in';
     pageAnimationState = 'in';
-    id: number;
+    id: string;
 
     constructor(
         private quizDataGetService: QuizDataGetService,
@@ -74,13 +74,13 @@ export class SessionHistoryDetailComponent implements OnInit {
                 this.quizSession = quiz;
                 this.color = this.quizSession.challenge.color.title;
                 this.clientQuiz = this.quizSession.clientQuiz;
-            });
+            })
     }
 
     ngOnInit(): void {
 
         this.route.params.subscribe(params => {
-            this.id = +params['id'];
+            this.id = params['id'];
         });
 
         this.getSessionById()

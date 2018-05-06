@@ -1,0 +1,37 @@
+<div [@pageInOut]="'in'">
+    <div class="container">
+        <ngb-alert *ngIf="alert?.success" (close)="clearSucces()" type="success">
+            <strong>Success!</strong> {{ alert?.success }}
+        </ngb-alert>
+
+        <ngb-alert *ngIf="alert?.error" (close)="clearError()" type="danger">
+            <strong>Error!</strong> {{ alert?.error }}
+        </ngb-alert>
+
+        <form (ngSubmit)="login()">
+            <div class="row login">
+                <div class="col-12 my-2">
+                    <label for="login">
+                        <b>Insert login:</b>
+                    </label>
+                    <input class="form-control" id="login" [(ngModel)]="user.username" name="username" placeholder="Username" triggers="focusin:focusout" placement="bottom">
+                </div>
+            </div>
+
+            <div class="row login">
+                <div class="col-12 my-2">
+                    <label for="password">
+                        <b>Insert password:</b>
+                    </label>
+                    <input type="password" class="form-control" id="password" [(ngModel)]="user.password" name="password" placeholder="Password" triggers="focusin:focusout"
+                        placement="bottom">
+                </div>
+            </div>
+
+            <div class="row justify-content-center">
+                <button type="submit" class="btn btn-darkblue col-4" (click)="login()">LOG IN</button>
+            </div>
+        </form>
+
+    </div>
+</div>

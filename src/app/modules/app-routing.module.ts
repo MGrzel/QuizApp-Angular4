@@ -1,3 +1,4 @@
+import { AccountComponent } from './../account/account.component';
 import { CategoryManagementComponent } from './../admin-tools/category-management.component';
 import { StandardTypeQuizComponent } from './../quiz/standard-type-quiz.component';
 import { MillionairesTypeQuizComponent } from './../quiz/millionaires-type-quiz.component';
@@ -12,6 +13,8 @@ import { NotFoundComponent } from '../http-error/not-found.component';
 
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { LoginComponent } from '../account/login.component';
+import { RegisterComponent } from '../account/register.component';
 
 const routes: Routes = [
     {
@@ -67,6 +70,18 @@ const routes: Routes = [
         component: HttpErrorComponent
     },
     {
+        path: 'account',
+        component: AccountComponent
+    },
+    {
+        path: 'account/register',
+        component: RegisterComponent
+    },
+    {
+        path: 'account/login',
+        component: LoginComponent
+    },
+    {
         path: '**',
         component: NotFoundComponent
     }
@@ -77,4 +92,4 @@ const routes: Routes = [
     exports: [RouterModule]
 })
 
-export class AppRoutingModule {}
+export class AppRoutingModule { }

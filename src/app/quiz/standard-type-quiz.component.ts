@@ -24,12 +24,12 @@ export class StandardTypeQuizComponent implements OnInit {
     quizSession: Session;
     clientQuiz: ClientQuiz[];
     currentAnswer = 0;
-    animatedAnswer: number;
-    unselectedAnswer: number;
+    animatedAnswer: string;
+    unselectedAnswer: string;
     color: string;
     questionAnimationState = 'in';
     pageAnimationState = 'in';
-    id: number;
+    id: string;
 
     constructor(
         private quizDataGetService: QuizDataGetService,
@@ -71,11 +71,11 @@ export class StandardTypeQuizComponent implements OnInit {
     selectAnswer(answer: Answer): void {
         this.animatedAnswer = answer.id;
         if (this.clientQuiz[this.currentAnswer].selectedAnswer === answer) {
-            this.animatedAnswer = 0;
+            this.animatedAnswer = '';
             this.unselectedAnswer = answer.id;
             this.clientQuiz[this.currentAnswer].selectedAnswer = null;
         } else {
-            this.unselectedAnswer = 0;
+            this.unselectedAnswer = '';
             this.clientQuiz[this.currentAnswer].selectedAnswer = answer;
         }
     }
@@ -106,7 +106,7 @@ export class StandardTypeQuizComponent implements OnInit {
 
     ngOnInit(): void {
         this.route.params.subscribe(params => {
-            this.id = +params['id'];
+            this.id = params['id'];
         });
         this.getQuiz()
             .catch(() => this.router.navigate([`/404`]));

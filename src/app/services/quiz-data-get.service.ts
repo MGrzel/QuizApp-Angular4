@@ -1,3 +1,4 @@
+import { environment } from './../../environments/environment';
 import { QuizType } from './../models/quiztype';
 import { Color } from './../models/color';
 import { Session } from './../models/session';
@@ -15,108 +16,133 @@ import 'rxjs/add/operator/map';
 
 @Injectable()
 export class QuizDataGetService {
-    private headers = new Headers({'Content-Type': 'application/json'});
-
     constructor(
         private http: Http,
         router: Router
     ) { }
 
-    port: number = 61337;
+    port = environment.apiPort;
+
 
     getChallengeList(): Promise<Challenge[]> {
-        return this.http.get(`http://localhost:${this.port}/quizapp/get/challenges/`)
+        const token = sessionStorage.getItem('token');
+        const header = new Headers({'Authorization': `Bearer ${token}`});
+        return this.http.get(`http://localhost:${this.port}/quizapp/get/challenges/`, { headers: header })
             .toPromise()
             .then(response => response.json() as Challenge[])
             .catch(this.handleError);
     }
 
     getDeletedChallengeList(): Promise<Challenge[]> {
-        return this.http.get(`http://localhost:${this.port}/quizapp/get/deleted/challenges/`)
+        const token = sessionStorage.getItem('token');
+        const header = new Headers({'Authorization': `Bearer ${token}`});
+        return this.http.get(`http://localhost:${this.port}/quizapp/get/deleted/challenges/`, { headers: header })
             .toPromise()
             .then(response => response.json() as Challenge[])
             .catch(this.handleError);
     }
 
-    getQuizById(id: number): Promise<Session> {
-        return this.http.get(`http://localhost:${this.port}/quizapp/get/quiz/${ id }`)
+    getQuizById(id: string): Promise<Session> {
+        const token = sessionStorage.getItem('token');
+        const header = new Headers({'Authorization': `Bearer ${token}`});
+        return this.http.get(`http://localhost:${this.port}/quizapp/get/quiz/${id}`, { headers: header })
             .toPromise()
             .then(response => response.json() as Session)
             .catch(this.handleError);
     }
 
     getCategoryList(): Promise<Category[]> {
-        return this.http.get(`http://localhost:${this.port}/quizapp/get/categories`)
+        const token = sessionStorage.getItem('token');
+        const header = new Headers({'Authorization': `Bearer ${token}`});
+        return this.http.get(`http://localhost:${this.port}/quizapp/get/categories`, { headers: header })
             .toPromise()
             .then(response => response.json() as Category[])
             .catch(this.handleError);
     }
 
     getDeletedCategoryList(): Promise<Category[]> {
-        return this.http.get(`http://localhost:${this.port}/quizapp/get/deleted/categories`)
+        const token = sessionStorage.getItem('token');
+        const header = new Headers({'Authorization': `Bearer ${token}`});
+        return this.http.get(`http://localhost:${this.port}/quizapp/get/deleted/categories`, { headers: header })
             .toPromise()
             .then(response => response.json() as Category[])
             .catch(this.handleError);
     }
 
-    checkSingleAnswer(questionId: number, answerId: number): Promise<boolean> {
-        return this.http.get(`http://localhost:${this.port}/quizapp/get/correctanswer/${ questionId }/${ answerId }`)
-        .toPromise()
-        .then(response => response.json() as boolean)
-        .catch(this.handleError);
+    checkSingleAnswer(questionId: string, answerId: string): Promise<boolean> {
+        const token = sessionStorage.getItem('token');
+        const header = new Headers({'Authorization': `Bearer ${token}`});
+        return this.http.get(`http://localhost:${this.port}/quizapp/get/correctanswer/${questionId}/${answerId}`, { headers: header })
+            .toPromise()
+            .then(response => response.json() as boolean)
+            .catch(this.handleError);
     }
 
-    getSessionById(id: number): Promise<Session> {
+    getSessionById(id: string): Promise<Session> {
+        const token = sessionStorage.getItem('token');
+        const header = new Headers({'Authorization': `Bearer ${token}`});
         return this.http
-            .get(`http://localhost:${this.port}/quizapp/get/sessions/${ id }`)
+            .get(`http://localhost:${this.port}/quizapp/get/sessions/${id}`, { headers: header })
             .toPromise()
             .then(response => response.json() as Session)
             .catch(this.handleError);
     }
 
     getSessionList(): Promise<Session[]> {
+        const token = sessionStorage.getItem('token');
+        const header = new Headers({'Authorization': `Bearer ${token}`});
         return this.http
-            .get(`http://localhost:${this.port}/quizapp/get/sessions`)
+            .get(`http://localhost:${this.port}/quizapp/get/sessions`, { headers: header })
             .toPromise()
             .then(response => response.json() as Session[])
             .catch(this.handleError);
     }
 
     getQuestionList(): Promise<Question[]> {
+        const token = sessionStorage.getItem('token');
+        const header = new Headers({'Authorization': `Bearer ${token}`});
         return this.http
-            .get(`http://localhost:${this.port}/quizapp/get/questions`)
+            .get(`http://localhost:${this.port}/quizapp/get/questions`, { headers: header })
             .toPromise()
             .then(response => response.json() as Question[])
             .catch(this.handleError);
     }
 
     getDeletedQuestionList(): Promise<Question[]> {
+        const token = sessionStorage.getItem('token');
+        const header = new Headers({'Authorization': `Bearer ${token}`});
         return this.http
-            .get(`http://localhost:${this.port}/quizapp/get/deleted/questions`)
+            .get(`http://localhost:${this.port}/quizapp/get/deleted/questions`, { headers: header })
             .toPromise()
             .then(response => response.json() as Question[])
             .catch(this.handleError);
     }
 
     getQuizTypeList(): Promise<QuizType[]> {
+        const token = sessionStorage.getItem('token');
+        const header = new Headers({'Authorization': `Bearer ${token}`});
         return this.http
-            .get(`http://localhost:${this.port}/quizapp/get/quiztypes`)
+            .get(`http://localhost:${this.port}/quizapp/get/quiztypes`, { headers: header })
             .toPromise()
             .then(response => response.json() as QuizType[])
             .catch(this.handleError);
     }
 
     getColorList(): Promise<Color[]> {
+        const token = sessionStorage.getItem('token');
+        const header = new Headers({'Authorization': `Bearer ${token}`});
         return this.http
-            .get(`http://localhost:${this.port}/quizapp/get/colors`)
+            .get(`http://localhost:${this.port}/quizapp/get/colors`, { headers: header })
             .toPromise()
             .then(response => response.json() as Color[])
             .catch(this.handleError);
     }
 
     getQuestionListAsAdmin(): Promise<Question[]> {
+        const token = sessionStorage.getItem('token');
+        const header = new Headers({'Authorization': `Bearer ${token}`});
         return this.http
-            .get(`http://localhost:${this.port}/quizapp/get/admin/questions`)
+            .get(`http://localhost:${this.port}/quizapp/get/admin/questions`, { headers: header })
             .toPromise()
             .then(response => response.json() as Question[])
             .catch(this.handleError);

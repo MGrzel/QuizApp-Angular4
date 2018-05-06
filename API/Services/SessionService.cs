@@ -5,6 +5,9 @@ using System;
 using Microsoft.AspNetCore;
 using QuizAppApi.Models;
 using QuizAppApi.Services;
+using Microsoft.AspNetCore.Http;
+using System.Security.Claims;
+using System.IdentityModel.Tokens.Jwt;
 
 namespace QuizAppApi.Services
 {
@@ -14,13 +17,17 @@ namespace QuizAppApi.Services
         private readonly IAnswerService _answerService;
         private readonly IChallengeService _challengeService;
         private readonly IQuestionService _questionService;
+        private readonly IHttpContextAccessor _httpContext;
+        private readonly IAccountService _accountService;
 
-        public SessionService(QuizAppDb context, IAnswerService answerService, IChallengeService challengeService, IQuestionService questionService)
+        public SessionService(QuizAppDb context, IAnswerService answerService, IChallengeService challengeService, IQuestionService questionService, IHttpContextAccessor httpContext, IAccountService accountService)
         {
             _context = context;
             _answerService = answerService;
             _challengeService = challengeService;
             _questionService = questionService;
+            _httpContext = httpContext;
+            _accountService = accountService;
         }
         ///Returns a session specified by the id
         public Session GetById(Guid? sessionId)
@@ -52,8 +59,11 @@ namespace QuizAppApi.Services
         ///Returns a list of all session
         public List<Session> GetList()
         {
+            string codedToken = _httpContext.HttpContext.Request.Headers["Authorization"];
+            codedToken = codedToken.Replace("Bearer ", "");
+            User user = _accountService.GetUserFromJwtToken(codedToken).Result;
             return _context.Sessions
-                    .Where(s => !s.IsDeleted)
+                    .Where(s => !s.IsDeleted && s.User == user)
                     .Include(s => s.Challenge.Color)
                     .Include(s => s.Challenge.QuizType)
                     .Include(s => s.ClientQuiz)
@@ -64,6 +74,11 @@ namespace QuizAppApi.Services
         public void SaveSession(Session quizSession)
         {
             var creationDate = DateTime.Now;
+
+            string codedToken = _httpContext.HttpContext.Request.Headers["Authorization"];
+            codedToken = codedToken.Replace("Bearer ", "");
+
+            quizSession.User = _accountService.GetUserFromJwtToken(codedToken).Result;
 
             quizSession.CreationDate = creationDate;
 

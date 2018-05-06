@@ -37,8 +37,8 @@
                                 <div class="col-12 my-2">
                                     <label for="chooseQuestion"><b>Choose category to edit</b></label>
                                     <select class="form-control" id="chooseQuestion" [(ngModel)]="selectedCategory">
-                                        <option  *ngFor="let category of categoryList" [ngValue]="category">
-                                            #{{ category.id }} {{ category.title }}
+                                        <option  *ngFor="let category of categoryList; index as i" [ngValue]="category">
+                                            #{{ i + 1 }} {{ category.title }}
                                         </option>
                                     </select>
                                 </div>
@@ -79,8 +79,8 @@
                                 <div class="col-12 my-2">
                                     <label for="chooseQuestion"><b>Choose category to delete</b></label>
                                     <select class="form-control" id="chooseQuestion" [(ngModel)]="selectedCategory">
-                                        <option  *ngFor="let category of categoryList" [ngValue]="category">
-                                            #{{ category.id }} {{ category.title }}
+                                        <option  *ngFor="let category of categoryList; index as i" [ngValue]="category">
+                                            #{{ i + 1 }} {{ category.title }}
                                         </option>
                                     </select>
                                 </div>
@@ -108,8 +108,8 @@
                                 <div class="col-12 my-2">
                                     <label for="chooseQuestion"><b>Choose category to restore</b></label>
                                     <select class="form-control" id="chooseQuestion" [(ngModel)]="categoryToRestore">
-                                        <option  *ngFor="let category of deletedCategoryList" [ngValue]="category">
-                                            #{{ category.id }} {{ category.title }}
+                                        <option  *ngFor="let category of deletedCategoryList; index as i" [ngValue]="category">
+                                            #{{ i + 1 }} {{ category.title }}
                                         </option>
                                     </select>
                                 </div>

@@ -14,7 +14,7 @@ using Microsoft.AspNetCore.Authorization;
 namespace QuizAppApi.Controllers
 {
     [Route("quizapp/[controller]")]
-
+    [Authorize("Bearer")]
     public class GetController : Controller
     {
         private readonly IAnswerService _answerService;
@@ -38,7 +38,6 @@ namespace QuizAppApi.Controllers
 
         // GET api/quizapp/get/categories/id?
         [HttpGet("categories/{id?}")]
-        [Authorize]
         public object GetCategories(Guid? id)
         {
             if (id.HasValue)
@@ -64,6 +63,7 @@ namespace QuizAppApi.Controllers
 
         // GET api/quizapp/get/challenges/id?
         [HttpGet("challenges/{id?}")]
+        [AllowAnonymous]
         public object GetChallenges(Guid? id)
         {
             if (id.HasValue)

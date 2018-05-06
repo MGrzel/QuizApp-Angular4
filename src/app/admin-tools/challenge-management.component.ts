@@ -1,3 +1,5 @@
+import { ChallengeCategory } from './../models/challengecategory';
+import { CategoryQuestion } from './../models/categoryquestion';
 import { QuizType } from './../models/quiztype';
 import { Category } from './../models/category';
 import { Answer } from './../models/answer';
@@ -42,8 +44,7 @@ export class ChallengeManagementComponent implements OnInit {
     ) { }
 
     initializeNewChallenge() {
-        this.newChallenge.categoryList = new Array<Category>();
-        this.newChallenge.id = 0;
+        this.newChallenge.categoryList = new Array<ChallengeCategory>();
         this.newChallenge.title = '';
     }
 
@@ -56,9 +57,12 @@ export class ChallengeManagementComponent implements OnInit {
     }
 
     checkCategoryExistance(challenge: Challenge, category: Category): boolean {
+        if (challenge.categoryList == null) {
+            return false;
+        }
         if (challenge.categoryList.length >= 0) {
             for (let i = 0; i < challenge.categoryList.length; i++) {
-                if (challenge.categoryList[i].title === category.title) {
+                if (challenge.categoryList[i].category.title === category.title) {
                     return false;
                 }
             }
@@ -68,13 +72,22 @@ export class ChallengeManagementComponent implements OnInit {
     }
 
     addCategory(challenge: Challenge, category: Category): void {
+        const cat = new ChallengeCategory();
+        cat.category = category;
+
         if (this.checkCategoryExistance(challenge, category)) {
-            challenge.categoryList.push(category);
+            challenge.categoryList.push(cat);
         }
     }
 
     deleteCategory(challenge: Challenge, category: Category): void {
-        const index = challenge.categoryList.indexOf(category);
+        const cat = new ChallengeCategory();
+        cat.challenge = challenge;
+        cat.challengeId = challenge.id;
+        cat.category = category;
+        cat.categoryId = category.id;
+
+        const index = challenge.categoryList.indexOf(cat);
         if (index > -1) {
             challenge.categoryList.splice(index, 1);
         }
@@ -147,7 +160,7 @@ export class ChallengeManagementComponent implements OnInit {
             });
     }
 
-    getColorById(id: number): Color {
+    getColorById(id: string): Color {
         for (let i = 0; i < this.colorList.length; i++) {
             if (id === this.colorList[i].id) {
                 return this.colorList[i];
@@ -155,7 +168,7 @@ export class ChallengeManagementComponent implements OnInit {
         }
     }
 
-    getQuizTypeById(id: number): QuizType {
+    getQuizTypeById(id: string): QuizType {
         for (let i = 0; i < this.quizTypeList.length; i++) {
             if (id === this.quizTypeList[i].id) {
                 return this.quizTypeList[i];

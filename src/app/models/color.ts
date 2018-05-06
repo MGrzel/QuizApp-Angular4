@@ -1,5 +1,10 @@
+import { environment } from "../../environments/environment";
+
 export class Color {
-    id: number;
+    constructor() {
+        this.id = environment.emptyGuid;
+    }
+    id: string;
     title: string;
     value: string;
     creationDate: Date;

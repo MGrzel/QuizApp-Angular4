@@ -65,7 +65,8 @@ namespace QuizAppApi
             var tokenValidationParameters = new TokenValidationParameters
             {
                 ValidateActor = false,
-                ValidateAudience = false,
+                ValidateAudience = true,
+                ValidateIssuer = true,
                 ValidateIssuerSigningKey = true,
                 IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Jwt:Key"])),
                 ValidIssuer = Configuration["Jwt:Issuer"],
@@ -74,13 +75,23 @@ namespace QuizAppApi
                 ClockSkew = TimeSpan.Zero
             };
 
+            services.AddAuthorization(auth =>
+            {
+                auth.AddPolicy("Bearer", new AuthorizationPolicyBuilder()
+                    .AddAuthenticationSchemes(JwtBearerDefaults.AuthenticationScheme‌​)
+                    .RequireAuthenticatedUser().Build());
+            });
+
+
             services.AddAuthentication(options =>
             {
-                options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
             })
             .AddJwtBearer(options =>
             {
                 options.TokenValidationParameters = tokenValidationParameters;
+                options.SaveToken = true;
             });
 
 
@@ -92,6 +103,8 @@ namespace QuizAppApi
             services.AddScoped<IColorService, ColorService>();
             services.AddScoped<IChallengeService, ChallengeService>();
             services.AddScoped<ISessionService, SessionService>();
+            services.AddScoped<IAccountService, AccountService>();
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
             services.AddCors(options =>
     {

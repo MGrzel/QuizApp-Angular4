@@ -1,11 +1,11 @@
 <div class="container" [@pageInOut]="pageAnimationState">
     <div class="row challenge-list justify-content-around">
-        <div class="col-sm-12 challenge btn btn-outline-{{ challenge?.color?.title }}" *ngFor="let challenge of challengeList" data-toggle="modal"
+        <div class="col-sm-12 challenge btn btn-outline-{{ challenge?.color?.title }}" *ngFor="let challenge of challengeList; index as i" data-toggle="modal"
             data-target="#quizLobby" (click)="open(challenge)">
             <span class="row">
 
                 <div class="col-sm-1">
-                    {{ challenge?.id }}
+                    {{ i + 1 }}
                 </div>
 
                 <div class="col-sm-6">

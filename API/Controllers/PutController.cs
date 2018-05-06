@@ -9,12 +9,12 @@ using System.Collections.Generic;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Cors;
 using Newtonsoft.Json.Linq;
-
+using Microsoft.AspNetCore.Authorization;
 
 namespace QuizAppApi.Controllers
 {
     [Route("quizapp/[controller]")]
-
+    [Authorize("Bearer")]
     public class PutController : Controller
     {
         private readonly IQuestionService _questionService;

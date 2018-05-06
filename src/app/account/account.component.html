@@ -1,0 +1,13 @@
+<div [@pageInOut]="'in'">
+    <div class="container">
+        <div *ngIf="!isLogged" class="row justify-content-center">
+                <button type="button" class="btn btn-darkblue col-4" routerLink="/account/login">LOGIN</button>
+        </div>
+        <div *ngIf="!isLogged" class="row justify-content-center">
+                <button type="button" class="btn btn-darkblue col-4" routerLink="/account/register">REGISTER</button>
+        </div>
+        <div *ngIf="isLogged" class="row justify-content-center">
+                <button type="button" class="btn btn-darkblue col-4" (click)="logout()">LOG OUT</button>
+        </div>
+    </div>
+</div>

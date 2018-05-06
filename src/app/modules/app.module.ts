@@ -1,3 +1,5 @@
+import { AccountComponent } from './../account/account.component';
+import { LoginComponent } from './../account/login.component';
 import { AppRoutingModule } from './app-routing.module';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
@@ -23,6 +25,8 @@ import { ChallengeManagementComponent } from './../admin-tools/challenge-managem
 import { CategoryManagementComponent } from './../admin-tools/category-management.component';
 import { AdminToolsComponent } from './../admin-tools/admin-tools.component';
 import { SessionHistoryListComponent } from './../session-history/session-history-list.component';
+import { UserService } from '../services/user.service';
+import { RegisterComponent } from '../account/register.component';
 
 
 @NgModule({
@@ -38,7 +42,10 @@ import { SessionHistoryListComponent } from './../session-history/session-histor
     CategoryManagementComponent,
     ChallengeManagementComponent,
     HttpErrorComponent,
-    MillionairesTypeQuizComponent
+    MillionairesTypeQuizComponent,
+    LoginComponent,
+    RegisterComponent,
+    AccountComponent
   ],
   imports: [
     BrowserModule,
@@ -48,7 +55,7 @@ import { SessionHistoryListComponent } from './../session-history/session-histor
     AppRoutingModule,
     BrowserAnimationsModule,
   ],
-  providers: [QuizDataGetService, QuizDataManagementService],
+  providers: [QuizDataGetService, QuizDataManagementService, UserService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

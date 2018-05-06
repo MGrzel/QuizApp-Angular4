@@ -1,3 +1,4 @@
+import { environment } from './../../environments/environment';
 import { Category } from './../models/category';
 import { Session } from './../models/session';
 import { ClientQuiz } from './../models/clientquiz';
@@ -12,70 +13,96 @@ import 'rxjs/add/operator/map';
 
 @Injectable()
 export class QuizDataManagementService {
-    private headers = new Headers({'Content-Type': 'application/json'});
 
     constructor(
         private http: Http
     ) { }
 
-    port: number = 61337;
+    port = environment.apiPort;
 
     updateQuestion(question: Question): Promise<Question> {
+        const token = sessionStorage.getItem('token');
+        const header = new Headers({'Authorization': `Bearer ${token}`});
+        header.append('Content-Type', 'application/json');
         return this.http
-            .put(`http://localhost:${this.port}/quizapp/put/questions/${ question.id }`, JSON.stringify(question), { headers: this.headers })
+            .put
+            (`http://localhost:${this.port}/quizapp/put/questions/${ question.id }`, JSON.stringify(question), { headers: header })
             .toPromise()
             .then(response => response.json() as Question)
             .catch(this.handleError);
     }
 
     updateCategory(category: Category): Promise<Category> {
+        const token = sessionStorage.getItem('token');
+        const header = new Headers({'Authorization': `Bearer ${token}`});
+        header.append('Content-Type', 'application/json');
         return this.http
-            .put(`http://localhost:${this.port}/quizapp/put/categories/${ category.id }`, JSON.stringify(category), { headers: this.headers })
+            .put
+            (`http://localhost:${this.port}/quizapp/put/categories/${ category.id }`, JSON.stringify(category), { headers: header })
             .toPromise()
             .then(response => response.json() as Category)
             .catch(this.handleError);
     }
 
     updateChallenge(challenge: Challenge): Promise<Challenge> {
+        const token = sessionStorage.getItem('token');
+        const header = new Headers({'Authorization': `Bearer ${token}`});
+        header.append('Content-Type', 'application/json');
         return this.http
-            .put(`http://localhost:${this.port}/quizapp/put/challenges/${ challenge.id }`, JSON.stringify(challenge), { headers: this.headers })
+            .put
+            (`http://localhost:${this.port}/quizapp/put/challenges/${ challenge.id }`, JSON.stringify(challenge), { headers: header })
             .toPromise()
             .then(response => response.json() as Challenge)
             .catch(this.handleError);
     }
 
     addQuestion(question: Question): Promise<Question> {
+        const token = sessionStorage.getItem('token');
+        const header = new Headers({'Authorization': `Bearer ${token}`});
+        header.append('Content-Type', 'application/json');
         return this.http
-            .post(`http://localhost:${this.port}/quizapp/post/questions`, JSON.stringify(question), { headers: this.headers })
+            .post(`http://localhost:${this.port}/quizapp/post/questions`, JSON.stringify(question), { headers: header })
             .toPromise()
             .then(response => response.json() as Question)
             .catch(this.handleError);
     }
 
     addCategory(category: Category): Promise<Category> {
+        const token = sessionStorage.getItem('token');
+        const header = new Headers({'Authorization': `Bearer ${token}`});
+        header.append('Content-Type', 'application/json');
         return this.http
-            .post(`http://localhost:${this.port}/quizapp/post/categories`, JSON.stringify(category), { headers: this.headers })
+            .post(`http://localhost:${this.port}/quizapp/post/categories`, JSON.stringify(category), { headers: header })
             .toPromise()
             .then(response => response.json() as Category)
             .catch(this.handleError);
     }
 
     addChallenge(challenge: Challenge): Promise<Challenge> {
+        const token = sessionStorage.getItem('token');
+        const header = new Headers({'Authorization': `Bearer ${token}`});
+        header.append('Content-Type', 'application/json');
         return this.http
-            .post(`http://localhost:${this.port}/quizapp/post/challenges`, JSON.stringify(challenge), { headers: this.headers })
+            .post(`http://localhost:${this.port}/quizapp/post/challenges`, JSON.stringify(challenge), { headers: header })
             .toPromise()
             .then(response => response.json() as Challenge)
             .catch(this.handleError);
     }
 
     submitQuiz(quiz: Session): Promise<Session> {
-        return this.http.post(`http://localhost:${this.port}/quizapp/post/sessions`, JSON.stringify(quiz), { headers: this.headers })
+        const token = sessionStorage.getItem('token');
+        const header = new Headers({'Authorization': `Bearer ${token}`});
+        header.append('Content-Type', 'application/json');
+        return this.http.post(`http://localhost:${this.port}/quizapp/post/sessions`, JSON.stringify(quiz), { headers: header })
         .toPromise()
         .then(response => response.json() as Session)
         .catch(this.handleError);
     }
 
     deleteQuestion(question: Question): Promise<Question> {
+        const token = sessionStorage.getItem('token');
+        const header = new Headers({'Authorization': `Bearer ${token}`});
+        header.append('Content-Type', 'application/json');
         return this.http
             .delete(`http://localhost:${this.port}/quizapp/delete/questions/${ question.id }`)
             .toPromise()
@@ -83,6 +110,9 @@ export class QuizDataManagementService {
     }
 
     deleteCategory(category: Category): Promise<Category> {
+        const token = sessionStorage.getItem('token');
+        const header = new Headers({'Authorization': `Bearer ${token}`});
+        header.append('Content-Type', 'application/json');
         return this.http
             .delete(`http://localhost:${this.port}/quizapp/delete/categories/${ category.id }`)
             .toPromise()
@@ -90,6 +120,9 @@ export class QuizDataManagementService {
     }
 
     deleteChallenge(challenge: Challenge): Promise<Challenge> {
+        const token = sessionStorage.getItem('token');
+        const header = new Headers({'Authorization': `Bearer ${token}`});
+        header.append('Content-Type', 'application/json');
         return this.http
             .delete(`http://localhost:${this.port}/quizapp/delete/challenges/${ challenge.id }`)
             .toPromise()
@@ -98,22 +131,34 @@ export class QuizDataManagementService {
 
 
     restoreQuestion(question: Question): Promise<Question> {
+        const token = sessionStorage.getItem('token');
+        const header = new Headers({'Authorization': `Bearer ${token}`});
+        header.append('Content-Type', 'application/json');
         return this.http
-            .patch(`http://localhost:${this.port}/quizapp/patch/questions/${ question.id }`, JSON.stringify(question), { headers: this.headers })
+            .patch
+            (`http://localhost:${this.port}/quizapp/patch/questions/${ question.id }`, JSON.stringify(question), { headers: header })
             .toPromise()
             .catch(this.handleError);
     }
 
     restoreCategory(category: Category): Promise<Category> {
+        const token = sessionStorage.getItem('token');
+        const header = new Headers({'Authorization': `Bearer ${token}`});
+        header.append('Content-Type', 'application/json');
         return this.http
-            .patch(`http://localhost:${this.port}/quizapp/patch/categories/${ category.id }`, JSON.stringify(category), { headers: this.headers })
+            .patch
+            (`http://localhost:${this.port}/quizapp/patch/categories/${ category.id }`, JSON.stringify(category), { headers: header })
             .toPromise()
             .catch(this.handleError);
     }
 
     restoreChallenge(challenge: Challenge): Promise<Challenge> {
+        const token = sessionStorage.getItem('token');
+        const header = new Headers({'Authorization': `Bearer ${token}`});
+        header.append('Content-Type', 'application/json');
         return this.http
-            .patch(`http://localhost:${this.port}/quizapp/patch/challenges/${ challenge.id }`, JSON.stringify(challenge), { headers: this.headers })
+            .patch
+            (`http://localhost:${this.port}/quizapp/patch/challenges/${challenge.id}`, JSON.stringify(challenge), { headers: header })
             .toPromise()
             .catch(this.handleError);
     }

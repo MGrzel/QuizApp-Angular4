@@ -18,5 +18,8 @@ namespace QuizAppApi.Models
         public DateTime? CreationDate { get; set; }
         public DateTime? DeletionDate { get; set; }
         public bool IsDeleted { get; set; }
+        [ForeignKey("UserId")]
+        public User User { get; set; }
+        public string UserId { get; set; }
     }
 }

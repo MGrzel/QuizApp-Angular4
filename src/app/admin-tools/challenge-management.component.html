@@ -25,8 +25,8 @@
                                 <div class="col-12 my-2">
                                     <label for="chooseCategory"><b>Choose challenge type</b></label>
                                     <select class="form-control" id="chooseCategory" [(ngModel)]="newChallenge.quizType">
-                                                <option  *ngFor="let quiz of quizTypeList" [ngValue]="quiz">
-                                                    #{{ quiz.id }} {{ quiz.title }}
+                                                <option  *ngFor="let quiz of quizTypeList; index as i" [ngValue]="quiz">
+                                                    #{{ i + 1 }} {{ quiz.title }}
                                                 </option>
                                             </select>
                                 </div>
@@ -38,8 +38,8 @@
                                 <div class="col-12 my-2">
                                     <label for="chooseCategory"><b>Choose challenge color</b></label>
                                     <select class="form-control" id="chooseCategory" [(ngModel)]="newChallenge.color">
-                                                        <option  *ngFor="let color of colorList" [ngValue]="color">
-                                                            #{{ color.id }} {{ color.title }}
+                                                        <option  *ngFor="let color of colorList; index as i" [ngValue]="color">
+                                                            #{{ i + 1 }} {{ color.title }}
                                                         </option>
                                                     </select>
                                 </div>
@@ -67,8 +67,8 @@
                             <div class="row my-3">
                                 <div class="col-10 my-2">
                                     <select class="form-control" id="category" [(ngModel)]="selectedCategory">
-                                                        <option  *ngFor="let category of categoryList" [ngValue]="category">
-                                                            #{{ category.id }} {{ category.title }}
+                                                        <option  *ngFor="let category of categoryList; index as i" [ngValue]="category">
+                                                            #{{ i + 1 }} {{ category.title }}
                                                         </option>
                                                     </select>
                                 </div>
@@ -80,7 +80,7 @@
 
                             <div class="row my-3">
                                 <div class="col-auto" *ngFor="let category of newChallenge.categoryList" [@elementInOut]="">
-                                    <h5><span class="badge badge-secondary">{{ category.title }} <i class="fa fa-times" aria-hidden="true" (click)="deleteCategory(newChallenge, category)"></i></span></h5>
+                                    <h5><span class="badge badge-secondary">{{ category.category.title }} <i class="fa fa-times" aria-hidden="true" (click)="deleteCategory(newChallenge, category)"></i></span></h5>
                                 </div>
                             </div>
                         </div>
@@ -102,8 +102,8 @@
                                 <div class="col-12 my-2">
                                     <label for="chooseCategory"><b>Choose challenge for edit</b></label>
                                     <select class="form-control" id="chooseCategory" [(ngModel)]="selectedChallenge">
-                                                <option  *ngFor="let challenge of challengeList" [ngValue]="challenge">
-                                                    #{{ challenge.id }} {{ challenge.title }}
+                                                <option  *ngFor="let challenge of challengeList; index as i" [ngValue]="challenge">
+                                                    #{{ i + 1 }} {{ challenge.title }}
                                                 </option>
                                             </select>
                                 </div>
@@ -115,8 +115,8 @@
                                 <div class="col-12 my-2">
                                     <label for="chooseCategory"><b>Choose challenge type</b></label>
                                     <select class="form-control" id="chooseCategory" [(ngModel)]="selectedChallenge.quizType">
-                                                <option  *ngFor="let quiz of quizTypeList" [ngValue]="quiz">
-                                                    #{{ quiz.id }} {{ quiz.title }}
+                                                <option  *ngFor="let quiz of quizTypeList; index as i" [ngValue]="quiz">
+                                                    #{{ i + 1 }} {{ quiz.title }}
                                                 </option>
                                             </select>
                                 </div>
@@ -128,8 +128,8 @@
                                 <div class="col-12 my-2">
                                     <label for="chooseCategory"><b>Choose challenge color</b></label>
                                     <select class="form-control" id="chooseCategory" [(ngModel)]="selectedChallenge.color">
-                                                <option  *ngFor="let color of colorList" [ngValue]="color">
-                                                    #{{ color.id }} {{ color.title }}
+                                                <option  *ngFor="let color of colorList; index as i" [ngValue]="color">
+                                                    #{{ i + 1 }} {{ color.title }}
                                                 </option>
                                                 <span class="badge badge-secondary"></span>
                                             </select>
@@ -169,8 +169,8 @@
                             <div class="row my-3">
                                 <div class="col-10 my-2">
                                     <select class="form-control" id="category" [(ngModel)]="selectedCategory">
-                                                    <option  *ngFor="let category of categoryList" [ngValue]="category">
-                                                        #{{ category.id }} {{ category.title }}
+                                                    <option  *ngFor="let category of categoryList; index as i" [ngValue]="category">
+                                                        #{{ i + 1 }} {{ category.title }}
                                                     </option>
                                                 </select>
                                 </div>
@@ -181,7 +181,7 @@
 
                             <div class="row my-3">
                                 <div class="col-auto" *ngFor="let category of selectedChallenge.categoryList" [@elementInOut]="">
-                                    <h5><span class="badge badge-secondary">{{ category.title }} <i class="fa fa-times" aria-hidden="true" (click)="deleteCategory(selectedChallenge, category)" ngbTooltip="Add a category!" triggers="mouseenter:mouseleave"></i></span></h5>
+                                    <h5><span class="badge badge-secondary">{{ category.category.title }} <i class="fa fa-times" aria-hidden="true" (click)="deleteCategory(selectedChallenge, category)" ngbTooltip="Delete a category!" triggers="mouseenter:mouseleave"></i></span></h5>
                                 </div>
                             </div>
 
@@ -203,8 +203,8 @@
                                 <div class="col-12 my-2">
                                     <label for="chooseQuestion"><b>Choose challenge to delete</b></label>
                                     <select class="form-control" id="chooseQuestion" [(ngModel)]="selectedChallenge">
-                                                <option  *ngFor="let challenge of challengeList" [ngValue]="challenge">
-                                                    #{{ challenge.id }} {{ challenge.title }}
+                                                <option  *ngFor="let challenge of challengeList; index as i" [ngValue]="challenge">
+                                                    #{{ i + 1 }} {{ challenge.title }}
                                                 </option>
                                             </select>
                                 </div>
@@ -231,8 +231,8 @@
                             <div class="col-12 my-2">
                                 <label for="chooseQuestion"><b>Choose challenge to restore</b></label>
                                 <select class="form-control" id="chooseQuestion" [(ngModel)]="challengeToRestore">
-                                                <option  *ngFor="let challenge of deletedChallengeList" [ngValue]="challenge">
-                                                    #{{ challenge.id }} {{ challenge.title }}
+                                                <option  *ngFor="let challenge of deletedChallengeList; index as i" [ngValue]="challenge">
+                                                    #{{ i + 1 }} {{ challenge.title }}
                                                 </option>
                                             </select>
                             </div>

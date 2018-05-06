@@ -24,12 +24,12 @@ export class MillionairesTypeQuizComponent implements OnInit {
     quizSession: Session;
     clientQuiz: ClientQuiz[];
     currentAnswer = 0;
-    animatedAnswer: number;
-    unselectedAnswer: number;
+    animatedAnswer: string;
+    unselectedAnswer: string;
     color: string;
     questionAnimationState = 'in';
     pageAnimationState = 'in';
-    id: number;
+    id: string;
     wrongAnswer: boolean;
     noAnswer: boolean;
     highlightedAnswer: number;
@@ -92,11 +92,11 @@ export class MillionairesTypeQuizComponent implements OnInit {
     selectAnswer(answer: Answer): void {
         this.animatedAnswer = answer.id;
         if (this.clientQuiz[this.currentAnswer].selectedAnswer === answer) {
-            this.animatedAnswer = 0;
+            this.animatedAnswer = '';
             this.unselectedAnswer = answer.id;
             this.clientQuiz[this.currentAnswer].selectedAnswer = null;
         } else {
-            this.unselectedAnswer = 0;
+            this.unselectedAnswer = '';
             this.clientQuiz[this.currentAnswer].selectedAnswer = answer;
         }
     }
@@ -124,8 +124,6 @@ export class MillionairesTypeQuizComponent implements OnInit {
             this.quizDataGetService.checkSingleAnswer(clientQuiz.question.id, clientQuiz.selectedAnswer.id)
                 .then(result => {
                     setTimeout(() => {
-                        clientQuiz.isCorrect = result;
-
                         if (result) {
                             this.wrongAnswer = false;
                             this.noAnswer = false;
@@ -176,7 +174,7 @@ export class MillionairesTypeQuizComponent implements OnInit {
 
     ngOnInit(): void {
         this.route.params.subscribe(params => {
-            this.id = +params['id'];
+            this.id = params['id'];
         });
         this.getQuiz()
             .catch(() => this.router.navigate([`/404`]));
