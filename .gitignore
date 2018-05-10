@@ -61,4 +61,4 @@
 **/bld/
 **/[Bb]in/
 **/[Oo]bj/
-**/!wwwroot
+!**/wwwroot
