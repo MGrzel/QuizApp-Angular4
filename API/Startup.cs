@@ -95,7 +95,6 @@ namespace QuizAppApi
             });
 
 
-
             services.AddScoped<IAnswerService, AnswerService>();
             services.AddScoped<ICategoryService, CategoryService>();
             services.AddScoped<IQuestionService, QuestionService>();
@@ -107,20 +106,17 @@ namespace QuizAppApi
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
             services.AddCors(options =>
-    {
-        options.AddPolicy("angular",
-            builder => builder
-            // .WithOrigins("http://localhost:4200")
-            .AllowAnyOrigin()
-            .AllowAnyHeader()
-            .AllowAnyMethod()
-            .AllowCredentials());
-    });
-
+            {
+                options.AddPolicy("angular",
+                    builder => builder
+                    // .WithOrigins("http://localhost:4200")
+                    .AllowAnyOrigin()
+                    .AllowAnyHeader()
+                    .AllowAnyMethod()
+                    .AllowCredentials());
+            });
 
             services.AddCors();
-                
-
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -138,10 +134,6 @@ namespace QuizAppApi
 
             // Shows UseCors with CorsPolicyBuilder.
             app.UseCors("angular");
-
-            
-
-
 
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();

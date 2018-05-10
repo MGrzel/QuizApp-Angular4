@@ -17,7 +17,7 @@ namespace QuizAppApi.Services
         }
 
         ///Returns a category specified by the id
-        public Category GetById(Guid? categoryId)
+        public Category GetById(Guid categoryId)
         {
             return _context.Categories.Where(c => categoryId == c.Id && !c.IsDeleted).FirstOrDefault();
         }

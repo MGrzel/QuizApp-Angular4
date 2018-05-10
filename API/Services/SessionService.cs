@@ -71,14 +71,14 @@ namespace QuizAppApi.Services
                     .ToList();
         }
 
-        public void SaveSession(Session quizSession)
+        public async void SaveSession(Session quizSession)
         {
             var creationDate = DateTime.Now;
 
             string codedToken = _httpContext.HttpContext.Request.Headers["Authorization"];
             codedToken = codedToken.Replace("Bearer ", "");
 
-            quizSession.User = _accountService.GetUserFromJwtToken(codedToken).Result;
+            quizSession.User = await _accountService.GetUserFromJwtToken(codedToken);
 
             quizSession.CreationDate = creationDate;
 
@@ -97,9 +97,9 @@ namespace QuizAppApi.Services
                 }
             }
 
-            _context.Sessions.Add(quizSession);
+            await _context.Sessions.AddAsync(quizSession);
 
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
     }
 }

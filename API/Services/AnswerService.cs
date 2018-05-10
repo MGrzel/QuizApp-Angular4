@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System;
 using Microsoft.AspNetCore;
 using QuizAppApi.Models;
+using System.Threading.Tasks;
 
 namespace QuizAppApi.Services
 {
@@ -16,9 +17,9 @@ namespace QuizAppApi.Services
             _context = context;
         }
 
-        public List<Answer> GetList()
+        public async Task<List<Answer>> GetList()
         {
-            return _context.Answers.ToList();
+            return await _context.Answers.ToListAsync();
         }
 
         public List<Answer> GetCorrectAnswersList()

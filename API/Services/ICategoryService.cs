@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using QuizAppApi.Models;
 
@@ -11,7 +11,7 @@ namespace QuizAppApi.Services
         void AddQuestionCategory(CategoryQuestion category);
         bool CheckIfExists(Category category);
         void Delete(Guid id);
-        Category GetById(Guid? categoryId);
+        Category GetById(Guid categoryId);
         Category GetByName(string title);
         List<Category> GetCategoriesByChallengeId(Guid challengeId);
         List<Category> GetCategoriesByQuestionId(Guid questionId);
