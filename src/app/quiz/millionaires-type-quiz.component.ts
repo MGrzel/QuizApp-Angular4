@@ -9,8 +9,6 @@ import { Component, HostBinding, OnInit } from '@angular/core';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { NgClass, Location } from '@angular/common';
 
-import 'rxjs/add/operator/switchMap';
-
 @Component({
     selector: 'millionaires-type-quiz',
     templateUrl: './millionaires-type-quiz.component.html',

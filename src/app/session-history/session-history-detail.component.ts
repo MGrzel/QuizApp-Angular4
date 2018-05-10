@@ -7,8 +7,6 @@ import { Component, HostBinding, OnInit, OnChanges } from '@angular/core';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { NgClass, Location } from '@angular/common';
 
-import 'rxjs/add/operator/switchMap';
-
 @Component({
     selector: 'session-history-detail',
     templateUrl: './session-history-detail.component.html',

@@ -11,8 +11,6 @@ import { Router } from '@angular/router';
 import { Injectable } from '@angular/core';
 import { Http, Headers } from '@angular/http';
 
-import 'rxjs/add/operator/toPromise';
-import 'rxjs/add/operator/map';
 
 @Injectable()
 export class QuizDataGetService {

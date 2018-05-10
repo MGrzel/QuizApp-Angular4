@@ -4,9 +4,6 @@ import { Router } from '@angular/router';
 import { Injectable } from '@angular/core';
 import { Http, Headers } from '@angular/http';
 
-import 'rxjs/add/operator/toPromise';
-import 'rxjs/add/operator/map';
-import { Observable } from 'rxjs/Observable';
 import { RegistrationUser } from '../models/registrationUser';
 
 @Injectable()
