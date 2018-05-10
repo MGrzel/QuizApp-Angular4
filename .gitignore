@@ -36,6 +36,7 @@
 
 # e2e
 **/e2e/*.js
+**/e2e/*.ts
 **/e2e/*.map
 
 # System Files
