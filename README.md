@@ -3,7 +3,9 @@
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 1.3.0.
 
 ## How to use
-When in project root, go to `API` folder, open command line, type `dotnet restore` and then `dotnet run`. This will run the `API` server. Then go to project root, open command line and type `ng serve` or `npm start` to run the app server. `API` server listens on port `:5000`, while app server listens on port `:4200`. 
+When in project root, go to `API` folder, open command line, type `dotnet restore` and then `dotnet run`. This will run the `API` server. Then go to project root, open command line and type `ng serve` or `npm start` to run the app server. `API` server listens on port `:61337`, while app server listens on port `:4200`.
+
+If `API` port changed, change it in `Angular's services`;
 
 ## Development server
 
