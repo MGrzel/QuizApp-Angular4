@@ -8,6 +8,7 @@ using QuizAppApi.Services;
 using Microsoft.AspNetCore.Http;
 using System.Security.Claims;
 using System.IdentityModel.Tokens.Jwt;
+using System.Threading.Tasks;
 
 namespace QuizAppApi.Services
 {
@@ -30,52 +31,61 @@ namespace QuizAppApi.Services
             _accountService = accountService;
         }
         ///Returns a session specified by the id
-        public Session GetById(Guid? sessionId)
+        public async Task<Session> GetById(Guid? sessionId)
         {
-            var session = _context.Sessions
+            Session session = await _context.Sessions
                     .Where(s => s.Id == sessionId && !s.IsDeleted)
                     .Include(s => s.Challenge.Color)
                     .Include(s => s.Challenge.QuizType)
                     .Include(s => s.ClientQuiz)
                         .ThenInclude(c => c.Question)
                             .ThenInclude(q => q.Answers)
-                    .FirstOrDefault();
+                    .FirstOrDefaultAsync();
 
-            session.ClientQuiz = _context.ClientQuizes
+            session.ClientQuiz = await _context.ClientQuizes
                 .Where(s => s.SessionId == sessionId && !s.IsDeleted)
                 .OrderBy(cq => cq.Order)
                 .Include(c => c.Question)
-                    .ThenInclude(q => q.Answers).ToList();
+                    .ThenInclude(q => q.Answers).ToListAsync();
 
             return session;
         }
 
         ///Returns an active session specified by the id
-        public Session GetActive()
+        public async Task<Session> GetActive()
         {
-            return _context.Sessions.Where(s => s.IsActive == true && !s.IsDeleted).FirstOrDefault();
+            return await _context.Sessions
+                .Where(s => s.IsActive == true && !s.IsDeleted)
+                .FirstOrDefaultAsync();
         }
 
         ///Returns a list of all session
-        public List<Session> GetList()
+        public async Task<List<Session>> GetList()
         {
-            string codedToken = _httpContext.HttpContext.Request.Headers["Authorization"];
+            string codedToken = _httpContext.HttpContext
+                .Request
+                .Headers["Authorization"];
+
             codedToken = codedToken.Replace("Bearer ", "");
-            User user = _accountService.GetUserFromJwtToken(codedToken).Result;
-            return _context.Sessions
+            User user = await _accountService.GetUserFromJwtToken(codedToken);
+
+            return await _context.Sessions
                     .Where(s => !s.IsDeleted && s.User == user)
                     .Include(s => s.Challenge.Color)
                     .Include(s => s.Challenge.QuizType)
                     .Include(s => s.ClientQuiz)
                     .OrderByDescending(s => s.CreationDate)
-                    .ToList();
+                    .ToListAsync();
         }
 
-        public async void SaveSession(Session quizSession)
+        public async Task SaveSession(Session quizSession)
         {
             var creationDate = DateTime.Now;
 
-            string codedToken = _httpContext.HttpContext.Request.Headers["Authorization"];
+            string codedToken = _httpContext.HttpContext
+                .Request
+                .Headers["Authorization"];
+
             codedToken = codedToken.Replace("Bearer ", "");
 
             quizSession.User = await _accountService.GetUserFromJwtToken(codedToken);
@@ -83,21 +93,21 @@ namespace QuizAppApi.Services
             quizSession.CreationDate = creationDate;
 
             quizSession.ChallengeId = Guid.Empty;
-            quizSession.Challenge = _challengeService.GetById(quizSession.Challenge.Id);
+            quizSession.Challenge = await _challengeService.GetById(quizSession.Challenge.Id);
             foreach(ClientQuiz quiz in quizSession.ClientQuiz)
             {
                 quiz.Id = Guid.Empty;
                 quiz.CreationDate = creationDate;
                 quiz.QuestionId = Guid.Empty;
-                quiz.Question = _questionService.GetById(quiz.Question.Id);
+                quiz.Question = await _questionService.GetById(quiz.Question.Id);
                 quiz.SelectedAnswerId = null;
                 if(quiz.SelectedAnswer != null)
                 {
-                    quiz.SelectedAnswer = _answerService.GetList().Where(a => a.Id == quiz.SelectedAnswer.Id).FirstOrDefault();
+                    quiz.SelectedAnswer = (await _answerService.GetList()).Where(a => a.Id == quiz.SelectedAnswer.Id).FirstOrDefault();
                 }
             }
 
-            await _context.Sessions.AddAsync(quizSession);
+            _context.Sessions.Add(quizSession);
 
             await _context.SaveChangesAsync();
         }

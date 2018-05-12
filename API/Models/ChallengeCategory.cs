@@ -5,18 +5,13 @@ using System;
 
 namespace QuizAppApi.Models
 {
-    public class ChallengeCategory
+    public class ChallengeCategory : BaseEntity
     {
         [ForeignKey("ChallengeId")]
         public Challenge Challenge { get; set; }
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public Guid ChallengeId { get; set; }
         [ForeignKey("CategoryId")]
         public Category Category { get; set; }
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public Guid CategoryId { get; set; }
-        public DateTime? CreationDate { get; set; }
-        public DateTime? DeletionDate { get; set; }
-        public bool IsDeleted { get; set; }
     }
 }

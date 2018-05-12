@@ -1,21 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using QuizAppApi.Models;
 
 namespace QuizAppApi.Services
 {
     public interface IChallengeService
     {
-        void Add(Challenge challenge);
-        void AddToSeed(Challenge challenge);
-        bool CheckIfExists(Challenge challenge);
-        void Delete(Guid id);
-        Challenge GetById(Guid? challengeId);
-        Challenge GetByName(string title);
-        List<Challenge> GetDeletedList();
-        List<Challenge> GetList();
-        void Restore(Challenge challenge);
-        void Update(Challenge challenge);
-        bool Validate(Challenge challenge);
+        Task Add(Challenge challenge);
+        Task<bool> CheckIfExists(Challenge challenge);
+        Task Delete(Guid id);
+        Task<Challenge> GetById(Guid? challengeId);
+        Task<Challenge> GetByName(string title);
+        Task<List<Challenge>> GetDeletedList();
+        Task<List<Challenge>> GetList();
+        Task Restore(Challenge challenge);
+        Task Update(Challenge newChallenge);
+        Task<bool> Validate(Challenge challenge);
     }
 }

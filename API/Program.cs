@@ -30,7 +30,13 @@ namespace BankApp
                     // delete all default configuration providers
                     config.Sources.Clear();
                     config.AddJsonFile("appsettings.json", optional: true);
-                    config.AddJsonFile("seed.json", false, true);
+                    config.AddJsonFile("SeedDataJson/SeedData.json", optional: false, reloadOnChange: true);
+                })
+                .ConfigureLogging((hostContext, logging) =>
+                {
+                    logging.AddConfiguration(hostContext.Configuration.GetSection("Logging"));
+                    logging.AddConsole();
+                    logging.AddDebug();
                 })
                 .Build();
     }

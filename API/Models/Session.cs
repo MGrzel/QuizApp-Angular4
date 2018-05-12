@@ -5,21 +5,15 @@ using System;
 
 namespace QuizAppApi.Models
 {
-    public class Session
+    public class Session : BaseEntity
     {
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public Guid Id { get; set; }
         public bool IsActive { get; set; }
         [ForeignKey("ChallengeId")]
         public Challenge Challenge { get; set; }
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public Guid ChallengeId { get; set; }
         public List<ClientQuiz> ClientQuiz { get; set; }
-        public DateTime? CreationDate { get; set; }
-        public DateTime? DeletionDate { get; set; }
-        public bool IsDeleted { get; set; }
         [ForeignKey("UserId")]
         public User User { get; set; }
-        public string UserId { get; set; }
+        public Guid UserId { get; set; }
     }
 }

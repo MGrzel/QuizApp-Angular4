@@ -1,24 +1,25 @@
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using QuizAppApi.Models;
 
 namespace QuizAppApi.Services
 {
     public interface IQuestionService
     {
-        void Add(Question question);
-        void AddToSeed(Question question);
-        bool CheckIfExists(Question question);
-        void Delete(Guid id);
-        Question GetById(Guid? questionId, bool admin = false);
-        Question GetByName(string title);
-        Answer GetCorrectAnswer(Guid questionId);
-        List<Question> GetDeletedList();
-        List<Question> GetList(bool admin = false);
-        List<Question> GetListByCategoryId(Guid[] categoryIds);
-        List<Question> GetListById(Guid[] questionIds);
-        void Restore(Question question);
-        void Update(Question question);
-        bool Validate(Question question);
+        Task Add(Question question);
+        Task<bool> CheckIfExists(Question question);
+        Task<bool> CheckIfHasCategory(List<CategoryQuestion> categories, CategoryQuestion category);
+        Task Delete(Guid id);
+        Task<Question> GetById(Guid? questionId, bool admin = false);
+        Task<Question> GetByName(string title);
+        Task<Answer> GetCorrectAnswer(Guid questionId);
+        Task<List<Question>> GetDeletedList();
+        Task<List<Question>> GetList(bool admin = false);
+        Task<List<Question>> GetListByCategoryId(List<Guid> categoryIds);
+        Task<List<Question>> GetListById(List<Guid> questionIds);
+        Task Restore(Question question);
+        Task Update(Question newQuestion);
+        Task<bool> Validate(Question question);
     }
 }

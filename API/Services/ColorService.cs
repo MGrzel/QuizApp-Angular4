@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System;
 using Microsoft.AspNetCore;
 using QuizAppApi.Models;
+using System.Threading.Tasks;
 
 namespace QuizAppApi.Services
 {
@@ -17,28 +18,34 @@ namespace QuizAppApi.Services
         }
 
         ///Returns a color specified by the id
-        public Color GetById(Guid? id)
+        public async Task<Color> GetById(Guid? id)
         {
-            return _context.Colors.Where(c => c.Id == id && !c.IsDeleted).FirstOrDefault();
+            return await _context.Colors
+                .Where(c => c.Id == id && !c.IsDeleted)
+                .FirstOrDefaultAsync();
         }
 
         ///Returns a color specified by the name
-        public Color GetByName(string colorName)
+        public async Task<Color> GetByName(string colorName)
         {
-            return _context.Colors.Where(c => c.Title == colorName && !c.IsDeleted).FirstOrDefault();
+            return await _context.Colors
+                .Where(c => c.Title == colorName && !c.IsDeleted)
+                .FirstOrDefaultAsync();
         }
 
         ///Returns a list of all colors
-        public List<Color> GetList()
+        public async Task<List<Color>> GetList()
         {
-            return _context.Colors.Where(c => !c.IsDeleted).ToList();
+            return await _context.Colors
+                .Where(c => !c.IsDeleted)
+                .ToListAsync();
         }
 
-        public void Add(Color color)
+        public async Task Add(Color color)
         {
             _context.Colors.Add(color);
 
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
     }
 }

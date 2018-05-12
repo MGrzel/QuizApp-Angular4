@@ -1,3 +1,4 @@
+import { UserService } from './user.service';
 import { environment } from './../../environments/environment';
 import { QuizType } from './../models/quiztype';
 import { Color } from './../models/color';
@@ -16,7 +17,8 @@ import { Http, Headers } from '@angular/http';
 export class QuizDataGetService {
     constructor(
         private http: Http,
-        router: Router
+        router: Router,
+        private userService: UserService
     ) { }
 
     port = environment.apiPort;
@@ -147,6 +149,7 @@ export class QuizDataGetService {
     }
 
     private handleError(error: any): Promise<any> {
+        this.userService.logout();
         console.error(error);
         return Promise.reject(error.message || error);
     }

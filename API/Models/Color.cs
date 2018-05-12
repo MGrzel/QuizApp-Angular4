@@ -5,14 +5,9 @@ using System;
 
 namespace QuizAppApi.Models
 {
-    public class Color
+    public class Color : BaseEntity
     {
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public Guid Id { get; set; }
         public string Value { get; set; }
         public string Title { get; set; }
-        public DateTime? CreationDate { get; set; }
-        public DateTime? DeletionDate { get; set; }
-        public bool IsDeleted { get; set; }
     }
 }

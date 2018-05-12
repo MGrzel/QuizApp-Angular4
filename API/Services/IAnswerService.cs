@@ -1,18 +1,18 @@
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using QuizAppApi.Models;
 
 namespace QuizAppApi.Services
 {
     public interface IAnswerService
     {
-        void AddToSeed(Answer answer);
-        bool CheckAnswer(Answer answer);
-        bool CheckAnswer(Guid questionId, Guid answerId);
-        List<Answer> GetCorrectAnswersList();
-        Answer GetCorrectByQuestionId(Guid questionId);
-        List<Answer> GetList();
-        List<Answer> GetListByQuestionId(Guid questionId);
-        bool Validate(Answer answer);
+        Task<bool> CheckAnswer(Answer answer);
+        Task<bool> CheckAnswer(Guid answerId);
+        Task<List<Answer>> GetCorrectAnswersList();
+        Task<Answer> GetCorrectByQuestionId(Guid questionId);
+        Task<List<Answer>> GetList();
+        Task<List<Answer>> GetListByQuestionId(Guid questionId);
+        Task<bool> Validate(Answer answer);
     }
 }

@@ -50,7 +50,7 @@ namespace QuizAppApi
             services.AddDbContext<QuizAppDb>
                 (options => options.UseSqlServer(Configuration.GetConnectionString("QuizAppDb")));
 
-            services.AddIdentity<User, IdentityRole>
+            services.AddIdentity<User, IdentityRole<Guid>>
                 (options =>
                 {
                     options.Password.RequireLowercase = false;
@@ -140,7 +140,7 @@ namespace QuizAppApi
 
             app.UseMvc();
 
-            SeedData.Initialize(serviceProvider);
+            SeedData.Initialize(context, loggerFactory);
         }
     }
 }

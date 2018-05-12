@@ -23,15 +23,13 @@ namespace QuizAppApi.Controllers
     {
         private readonly QuizAppDb _context;
         private readonly AnswerService _answerService;
-        private readonly IMapper _mapper;
         private readonly UserManager<User> _userManager;
         private readonly IConfiguration _configuration;
 
-        public AccountController(QuizAppDb context, IMapper mapper, UserManager<User> userManager, IConfiguration configuration)
+        public AccountController(QuizAppDb context, UserManager<User> userManager, IConfiguration configuration)
         {
             _context = context;
             _answerService = new AnswerService(_context);
-            _mapper = mapper;
             _userManager = userManager;
             _configuration = configuration;
         }

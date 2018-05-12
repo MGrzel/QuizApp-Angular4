@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System;
 using Microsoft.AspNetCore;
 using QuizAppApi.Models;
+using System.Threading.Tasks;
 
 namespace QuizAppApi.Services
 {
@@ -15,21 +16,25 @@ namespace QuizAppApi.Services
         {
             _context = context;
         }
-        public List<QuizType> GetList()
+        public async Task<List<QuizType>> GetList()
         {
-            return _context.QuizTypes.Where(qt => !qt.IsDeleted).ToList();
+            return await _context.QuizTypes
+                .Where(qt => !qt.IsDeleted)
+                .ToListAsync();
         }
 
-        public QuizType GetById(Guid id)
+        public async Task<QuizType> GetById(Guid id)
         {
-            return _context.QuizTypes.Where(qt => qt.Id == id).FirstOrDefault();
+            return await _context.QuizTypes
+                .Where(qt => qt.Id == id)
+                .FirstOrDefaultAsync();
         }
 
-        public void Add(QuizType quizType)
+        public async Task Add(QuizType quizType)
         {
             _context.QuizTypes.Add(quizType);
 
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
     }
 }

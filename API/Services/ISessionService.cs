@@ -1,14 +1,15 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using QuizAppApi.Models;
 
 namespace QuizAppApi.Services
 {
     public interface ISessionService
     {
-        Session GetActive();
-        Session GetById(Guid? sessionId);
-        List<Session> GetList();
-        void SaveSession(Session quizSession);
+        Task<Session> GetActive();
+        Task<Session> GetById(Guid? sessionId);
+        Task<List<Session>> GetList();
+        Task SaveSession(Session quizSession);
     }
 }

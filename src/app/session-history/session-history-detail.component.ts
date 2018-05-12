@@ -72,7 +72,7 @@ export class SessionHistoryDetailComponent implements OnInit {
                 this.quizSession = quiz;
                 this.color = this.quizSession.challenge.color.title;
                 this.clientQuiz = this.quizSession.clientQuiz;
-            })
+            });
     }
 
     ngOnInit(): void {

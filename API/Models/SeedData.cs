@@ -1,5 +1,7 @@
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using QuizAppApi.Services;
 using System;
 using System.Collections.Generic;
@@ -12,247 +14,133 @@ namespace QuizAppApi.Models
 {
     public static class SeedData
     {
-        public static void Initialize(IServiceProvider serviceProvider)
+        public static void Initialize(QuizAppDb context, ILoggerFactory loggerFactory)
         {
-            IQuestionService questionService;
-            IChallengeService challengeService;
-            ICategoryService categoryService;
-            IColorService colorService;
-            IQuizTypeService quizTypeService;
-            IAnswerService answerService;
-
-            questionService = serviceProvider.GetRequiredService<IQuestionService>();
-            challengeService = serviceProvider.GetRequiredService<IChallengeService>();
-            colorService = serviceProvider.GetRequiredService<IColorService>();
-            categoryService = serviceProvider.GetRequiredService<ICategoryService>();
-            quizTypeService = serviceProvider.GetRequiredService<IQuizTypeService>();
-            answerService = serviceProvider.GetRequiredService<IAnswerService>();
+            QuizAppDb _context = context;
 
             DateTime creationDate = DateTime.Now;
 
-            if (quizTypeService.GetList().Count() == 0)
+            string pathToJson = "SeedDataJson/SeedData.json".ToApplicationPath();
+
+            ILogger logger = loggerFactory.CreateLogger("SeedaDataLogger");
+
+            if (!_context.QuizTypes.Any())
             {
-                QuizType standard = new QuizType
+                using (StreamReader file = File.OpenText(pathToJson))
                 {
-                    CreationDate = creationDate,
-                    Description = "In standard quiz you have access to all of the questions immediately. Submiting the quiz means checking all the answers and ending the session.",
-                    Title = "standard",
-                    IsDeleted = false
-                };
+                    JsonSerializer serializer = new JsonSerializer();
 
-                QuizType millionaires = new QuizType
-                {
-                    CreationDate = creationDate,
-                    Description = "In millionaires quiz you go answer by answer to the last question. You check your answer every step and the wrong one disqualifies you.",
-                    Title = "millionaires",
-                    IsDeleted = false
-                };
+                    JObject jObject = (JObject)serializer.Deserialize(file, typeof(JObject));
 
-                quizTypeService.Add(standard);
-                quizTypeService.Add(millionaires);
-            }
+                    List<QuizType> quizTypes = jObject["QuizTypes"].ToObject<List<QuizType>>();
 
-            if (colorService.GetList().Count() == 0)
-            {
-                string path = "Colors.json".ToApplicationPath();
+                    foreach (QuizType quizType in quizTypes)
+                    {
+                        quizType.CreationDate = creationDate;
+                    }
 
-                GeoJson<Color> geoJson = JsonConvert.DeserializeObject<GeoJson<Color>>(File.ReadAllText(path));
-
-                foreach (var colorJson in geoJson.Features)
-                {
-                    Color color = colorJson.Properties;
-                    color.CreationDate = creationDate;
-                    colorService.Add(color);
+                    _context.QuizTypes.AddRange(quizTypes);
+                    _context.SaveChanges();
                 }
             }
 
-            if (categoryService.GetList().Count() == 0)
+            if (!_context.Categories.Any())
             {
-                string path = "Categories.json".ToApplicationPath();
-
-                GeoJson<Category> geoJson = JsonConvert.DeserializeObject<GeoJson<Category>>(File.ReadAllText(path));
-
-                foreach (var categoryJson in geoJson.Features)
+                using (StreamReader file = File.OpenText(pathToJson))
                 {
-                    Category category = categoryJson.Properties;
-                    category.CreationDate = creationDate;
-                    categoryService.Add(category);
+                    JsonSerializer serializer = new JsonSerializer();
+
+                    JObject jObject = (JObject)serializer.Deserialize(file, typeof(JObject));
+
+                    List<Category> categories = jObject["Categories"].ToObject<List<Category>>();
+
+                    foreach (Category category in categories)
+                    {
+                        category.CreationDate = creationDate;
+                    }
+
+                    _context.Categories.AddRange(categories);
+                    _context.SaveChanges();
                 }
             }
 
-            //if (categoryService.GetQuestionCategoriesList().Count() == 0)
-            //{
-            //    string path = "CategoryQuestions.json".ToApplicationPath();
-
-            //    GeoJson<CategoryQuestion> geoJson = JsonConvert.DeserializeObject<GeoJson<CategoryQuestion>>(File.ReadAllText(path));
-
-            //    foreach (var categoryJson in geoJson.Features)
-            //    {
-            //        CategoryQuestion category = categoryJson.Properties;
-            //        category.CreationDate = creationDate;
-            //        categoryService.AddQuestionCategory(category);
-            //    }
-            //}
-
-            //if (categoryService.GetChallengeCategoriesList().Count() == 0)
-            //{
-            //    string path = "ChallengeCategories.json".ToApplicationPath();
-
-            //    GeoJson<ChallengeCategory> geoJson = JsonConvert.DeserializeObject<GeoJson<ChallengeCategory>>(File.ReadAllText(path));
-
-            //    foreach (var categoryJson in geoJson.Features)
-            //    {
-            //        ChallengeCategory category = categoryJson.Properties;
-            //        category.CreationDate = creationDate;
-            //        categoryService.AddChallengeCategory(category);
-            //    }
-            //}
-
-            if (questionService.GetList().Count() == 0)
+            if (!_context.Colors.Any())
             {
-                List<Question> questions = new List<Question>();
-                List<Answer> answers1 = new List<Answer>();
-                List<Answer> answers2 = new List<Answer>();
-                List<CategoryQuestion> categories = new List<CategoryQuestion>();
-                CategoryQuestion category = new CategoryQuestion
+                using (StreamReader file = File.OpenText(pathToJson))
                 {
-                    CreationDate = creationDate,
-                    Category = categoryService.GetList().FirstOrDefault()
-                };
-                categories.Add(category);
+                    JsonSerializer serializer = new JsonSerializer();
 
-                List<CategoryQuestion> categories2 = new List<CategoryQuestion>();
-                CategoryQuestion category2 = new CategoryQuestion
-                {
-                    CreationDate = creationDate,
-                    Category = categoryService.GetList().FirstOrDefault()
-                };
-                categories2.Add(category2);
+                    JObject jObject = (JObject)serializer.Deserialize(file, typeof(JObject));
 
-                answers1.Add(new Answer
-                {
-                    CreationDate = creationDate,
-                    Title = "Blue",
-                    IsCorrect = true
-                });
+                    List<Color> colors = jObject["Colors"].ToObject<List<Color>>();
 
-                answers1.Add(new Answer
-                {
-                    CreationDate = creationDate,
-                    Title = "Green"
-                });
+                    foreach (Color color in colors)
+                    {
+                        color.CreationDate = creationDate;
+                    }
 
-                answers1.Add(new Answer
-                {
-                    CreationDate = creationDate,
-                    Title = "Red"
-                });
-
-                answers1.Add(new Answer
-                {
-                    CreationDate = creationDate,
-                    Title = "Yellow"
-                });
-
-                questions.Add(new Question {
-                    CreationDate = creationDate,
-                    IsDeleted = false,
-                    Title = "What is the color of the sky?",
-                    Answers = answers1,
-                    CategoryList = categories
-                });
-
-                answers2.Add(new Answer
-                {
-                    CreationDate = creationDate,
-                    Title = "Stark",
-                    IsCorrect = true
-                });
-
-                answers2.Add(new Answer
-                {
-                    CreationDate = creationDate,
-                    Title = "Martell"
-                });
-
-                answers2.Add(new Answer
-                {
-                    CreationDate = creationDate,
-                    Title = "Lannister"
-                });
-
-                answers2.Add(new Answer
-                {
-                    CreationDate = creationDate,
-                    Title = "Tyrell"
-                });
-
-                questions.Add(new Question
-                {
-                    CreationDate = creationDate,
-                    IsDeleted = false,
-                    Title = "In GoT series, John Snow 'formally' belongs to House ...?",
-                    Answers = answers2,
-                    CategoryList = categories2
-                });
-
-                questionService.Add(questions[0]);
-                questionService.Add(questions[1]);
+                    _context.Colors.AddRange(colors);
+                    _context.SaveChanges();
+                }
             }
 
-            //if (answerService.GetList().Count() == 0)
-            //{
-            //    string path = "Answers.json".ToApplicationPath();
-
-            //    GeoJson<Answer> geoJson = JsonConvert.DeserializeObject<GeoJson<Answer>>(File.ReadAllText(path));
-
-            //    foreach (var answerJson in geoJson.Features)
-            //    {
-            //        Answer answer = answerJson.Properties;
-            //        answer.CreationDate = creationDate;
-            //        answerService.AddToSeed(answer);
-            //    }
-            //}
-
-            //if (answerService.GetCorrectAnswersList().Count() == 0)
-            //{
-            //    string path = "CorrectAnswers.json".ToApplicationPath();
-
-            //    GeoJson<CorrectAnswer> geoJson = JsonConvert.DeserializeObject<GeoJson<CorrectAnswer>>(File.ReadAllText(path));
-
-            //    foreach (var answerJson in geoJson.Features)
-            //    {
-            //        CorrectAnswer answer = answerJson.Properties;
-            //        answer.CreationDate = creationDate;
-            //        answerService.AddCorrectAnswer(answer);
-            //    }
-            //}
-
-            if(challengeService.GetList().Count() == 0)
+            if (!_context.Questions.Any())
             {
-                List<Question> questions = new List<Question>();
-                List<Answer> answers1 = new List<Answer>();
-                List<Answer> answers2 = new List<Answer>();
-                List<ChallengeCategory> categories = new List<ChallengeCategory>();
-                ChallengeCategory category = new ChallengeCategory
+                using (StreamReader file = File.OpenText(pathToJson))
                 {
-                    CreationDate = creationDate,
-                    Category = categoryService.GetList().FirstOrDefault()
-                };
+                    JsonSerializer serializer = new JsonSerializer();
 
-                categories.Add(category);
+                    JObject jObject = (JObject)serializer.Deserialize(file, typeof(JObject));
 
-                Challenge challenge = new Challenge
+                    List<Question> questions = jObject["Questions"].ToObject<List<Question>>();
+
+                    foreach (Question question in questions)
+                    {
+                        question.CreationDate = creationDate;
+                        question.CategoryList = new List<CategoryQuestion>
+                        {
+                            new CategoryQuestion
+                            {
+                                CreationDate = creationDate,
+                                Category = _context.Categories.FirstOrDefault()
+                            }
+                        };
+                    }
+
+                    _context.Questions.AddRange(questions);
+                    _context.SaveChanges();
+                }
+            }
+
+
+            if (!_context.Challenges.Any())
+            {
+                using (StreamReader file = File.OpenText(pathToJson))
                 {
-                    CreationDate = creationDate,
-                    Color = colorService.GetList()[3],
-                    QuestionAmount = 10,
-                    QuizType = quizTypeService.GetList().FirstOrDefault(),
-                    Title = "Default Quiz",
-                    CategoryList = categories
-                };
+                    JsonSerializer serializer = new JsonSerializer();
 
-                challengeService.Add(challenge);
+                    JObject jObject = (JObject)serializer.Deserialize(file, typeof(JObject));
+
+                    List<Challenge> challenges = jObject["Challenges"].ToObject<List<Challenge>>();
+
+                    foreach (Challenge challenge in challenges)
+                    {
+                        challenge.CreationDate = creationDate;
+                        challenge.CategoryList = new List<ChallengeCategory>
+                        {
+                            new ChallengeCategory
+                            {
+                                CreationDate = creationDate,
+                                Category = _context.Categories.FirstOrDefault()
+                            }
+                        };
+                        challenge.Color = _context.Colors.Take(3).Last();
+                        challenge.QuizType = _context.QuizTypes.FirstOrDefault();
+                    }
+
+                    _context.Challenges.AddRange(challenges);
+                    _context.SaveChanges();
+                }
             }
         }
 

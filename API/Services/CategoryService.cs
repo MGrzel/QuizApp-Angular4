@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System;
 using Microsoft.AspNetCore;
 using QuizAppApi.Models;
+using System.Threading.Tasks;
 
 namespace QuizAppApi.Services
 {
@@ -17,67 +18,94 @@ namespace QuizAppApi.Services
         }
 
         ///Returns a category specified by the id
-        public Category GetById(Guid categoryId)
+        public async Task<Category> GetById(Guid? categoryId)
         {
-            return _context.Categories.Where(c => categoryId == c.Id && !c.IsDeleted).FirstOrDefault();
+            return await _context.Categories
+                .Where(c => categoryId == c.Id && !c.IsDeleted)
+                .FirstOrDefaultAsync();
         }
 
         ///Returns a list of categories specified by the challenge id
-        public List<Category> GetCategoriesByChallengeId(Guid challengeId)
+        public async Task<List<Category>> GetCategoriesByChallengeId(Guid challengeId)
         {
-            var categoryIds = _context.ChallengeCategories.Where(cc => cc.ChallengeId == challengeId && !cc.IsDeleted).Select(cc => cc.CategoryId).ToList();
-            return _context.Categories.Where(c => categoryIds.Contains(c.Id) && !c.IsDeleted).ToList();
+            var categoryIds = await _context.ChallengeCategories
+                .Where(cc => cc.ChallengeId == challengeId && !cc.IsDeleted)
+                .Select(cc => cc.CategoryId)
+                .ToListAsync();
+
+            return await _context.Categories
+                .Where(c => categoryIds.Contains(c.Id) && !c.IsDeleted)
+                .ToListAsync();
         }
 
         ///Returns a list of categories specified by the array of the challenge ids
-        public List<Category> GetCategoriesByQuestionId(Guid questionId)
+        public async Task<List<Category>> GetCategoriesByQuestionId(Guid questionId)
         {
-            var categoryIds = _context.CategoryQuestions.Where(cc => cc.QuestionId == questionId && !cc.IsDeleted).Select(cc => cc.CategoryId).ToList();
-            return _context.Categories.Where(c => categoryIds.Contains(c.Id) && !c.IsDeleted).ToList();
+            var categoryIds = await _context.CategoryQuestions
+                .Where(cc => cc.QuestionId == questionId && !cc.IsDeleted)
+                .Select(cc => cc.CategoryId)
+                .ToListAsync();
+
+            return await _context.Categories
+                .Where(c => categoryIds.Contains(c.Id) && !c.IsDeleted)
+                .ToListAsync();
         }
 
-        public Category GetByName(string title)
+        public async Task<Category> GetByName(string title)
         {
-            return _context.Categories.Where(c => c.Title.Trim().ToLower() == title.Trim().ToLower() && !c.IsDeleted).FirstOrDefault();
+            return await _context.Categories
+                .Where(c => c.Title.Trim().ToLower() == title.Trim().ToLower() && !c.IsDeleted)
+                .FirstOrDefaultAsync();
         }
 
         ///Returns a list of all categories
-        public List<Category> GetList()
+        public async Task<List<Category>> GetList()
         {
-            return _context.Categories.Where(c => !c.IsDeleted).ToList();
+            return await _context.Categories
+                .Where(c => !c.IsDeleted)
+                .ToListAsync();
         }
 
         ///Returns a list of all categories
-        public List<Category> GetDeletedList()
+        public async Task<List<Category>> GetDeletedList()
         {
-            return _context.Categories.Where(c => c.IsDeleted).ToList();
+            return await _context.Categories
+                .Where(c => c.IsDeleted)
+                .ToListAsync();
         }
 
         ///Returns a list of categories specified by the array of the ids
-        public List<Category> GetListById(Guid[] categoryIds)
+        public async Task<List<Category>> GetListById(List<Guid> categoryIds)
         {
-            return _context.Categories.Where(c => categoryIds.Contains(c.Id) && !c.IsDeleted).ToList();
+            return await _context.Categories
+                .Where(c => categoryIds.Contains(c.Id) && !c.IsDeleted)
+                .ToListAsync();
         }
 
-        public List<CategoryQuestion> GetQuestionCategoriesList()
+        public async Task<List<CategoryQuestion>> GetQuestionCategoriesList()
         {
-            return _context.CategoryQuestions.ToList();
+            return await _context.CategoryQuestions.ToListAsync();
         }
 
-        public List<ChallengeCategory> GetChallengeCategoriesList()
+        public async Task<List<ChallengeCategory>> GetChallengeCategoriesList()
         {
-            return _context.ChallengeCategories.ToList();
+            return await _context.ChallengeCategories.ToListAsync();
         }
 
         ///Returns a list of categories specified by the array of the challenge ids
-        public List<Category> GetListByChallengeId(Guid challengeId)
+        public async Task<List<Category>> GetListByChallengeId(Guid challengeId)
         {
-            var categoryIds = _context.ChallengeCategories.Where(cc => cc.ChallengeId == challengeId && !cc.IsDeleted).Select(cc => cc.CategoryId).ToList();
-            return _context.Categories.Where(c => categoryIds.Contains(c.Id) && !c.IsDeleted).ToList();
+            var categoryIds = await _context.ChallengeCategories
+                .Where(cc => cc.ChallengeId == challengeId && !cc.IsDeleted)
+                .Select(cc => cc.CategoryId).ToListAsync();
+
+            return await _context.Categories
+                .Where(c => categoryIds.Contains(c.Id) && !c.IsDeleted)
+                .ToListAsync();
         }
 
 
-        public void Add(Category category)
+        public async Task Add(Category category)
         {
             var date = DateTime.Now;
 
@@ -85,10 +113,10 @@ namespace QuizAppApi.Services
 
             _context.Categories.Add(category);
 
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
 
-        public void AddQuestionCategory(CategoryQuestion category)
+        public async Task AddQuestionCategory(CategoryQuestion category)
         {
             var date = DateTime.Now;
 
@@ -96,10 +124,10 @@ namespace QuizAppApi.Services
 
             _context.CategoryQuestions.Add(category);
 
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
 
-        public void AddChallengeCategory(ChallengeCategory category)
+        public async Task AddChallengeCategory(ChallengeCategory category)
         {
             var date = DateTime.Now;
 
@@ -107,50 +135,45 @@ namespace QuizAppApi.Services
 
             _context.ChallengeCategories.Add(category);
 
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
 
-        public void Update(Category newCategory)
+        public async Task Update(Category newCategory)
         {
             var date = DateTime.Now;
 
-            Category category = GetById(newCategory.Id);
+            Category category = await GetById(newCategory.Id);
             category.CreationDate = date;
             category.Title = newCategory.Title;
 
             _context.Categories.Update(category);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
 
-        public void Delete(Guid id)
+        public async Task Delete(Guid id)
         {
-            var category = GetById(id);
+            Category category = await GetById(id);
             var date = DateTime.Now;
 
             category.IsDeleted = true;
             category.DeletionDate = date;
 
             _context.Categories.Update(category);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
 
-        public void Restore(Category category)
+        public async Task Restore(Category category)
         {
             category.IsDeleted = false;
             category.DeletionDate = null;
 
             _context.Categories.Update(category);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
 
-        public bool CheckIfExists(Category category)
+        public async Task<bool> CheckIfExists(Category category)
         {
-            if (GetByName(category.Title) != null)
-            {
-                return true;
-            }
-
-            if (GetById(category.Id) != null)
+            if (await GetById(category.Id) != null)
             {
                 return true;
             }
@@ -158,19 +181,19 @@ namespace QuizAppApi.Services
             return false;
         }
 
-        public bool Validate(Category category)
+        public Task<bool> Validate(Category category)
         {
             if (category == null)
             {
-                return false;
+                return Task.FromResult(false);
             }
 
             if (category.Title.Trim() == "" || category.Title == null)
             {
-                return false;
+                return Task.FromResult(false);
             }
 
-            return true;
+            return Task.FromResult(true);
         }
     }
 }

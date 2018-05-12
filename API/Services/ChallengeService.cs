@@ -5,6 +5,7 @@ using System;
 using Microsoft.AspNetCore;
 using QuizAppApi.Models;
 using QuizAppApi.Services;
+using System.Threading.Tasks;
 
 namespace QuizAppApi.Services
 {
@@ -20,65 +21,80 @@ namespace QuizAppApi.Services
         }
 
         ///Returns a challenge specified by the id
-        public Challenge GetById(Guid? challengeId)
+        public async Task<Challenge> GetById(Guid? challengeId)
         {
-            var challenge = _context.Challenges.Where(c => c.Id == challengeId && !c.IsDeleted).Include("Color").Include("QuizType").Include(c => c.CategoryList).ThenInclude(c => c.Category).FirstOrDefault();
-
-            return challenge;
+            return await _context.Challenges
+                .Where(c => c.Id == challengeId && !c.IsDeleted)
+                .Include("Color").Include("QuizType")
+                .Include(c => c.CategoryList)
+                    .ThenInclude(c => c.Category)
+                .FirstOrDefaultAsync();
         }
 
-        public Challenge GetByName(string title)
+        public async Task<Challenge> GetByName(string title)
         {
-            return _context.Challenges.Where(c => c.Title.Trim().ToLower() == title.Trim().ToLower() && !c.IsDeleted).FirstOrDefault();
-        }
-
-        ///Returns a list of all challenges
-        public List<Challenge> GetList()
-        {
-            var challenges = _context.Challenges.Where(c => !c.IsDeleted).Include("Color").Include("QuizType").Include(c => c.CategoryList).ThenInclude(c => c.Category).ToList();
-
-            return challenges;
+            return await _context.Challenges
+                .Where(c => c.Title.Trim().ToLower() == title.Trim().ToLower() && !c.IsDeleted)
+                .FirstOrDefaultAsync();
         }
 
         ///Returns a list of all challenges
-        public List<Challenge> GetDeletedList()
+        public async Task<List<Challenge>> GetList()
         {
-            return _context.Challenges.Where(c => c.IsDeleted).Include("Color").Include("QuizType").ToList();
+            return await _context.Challenges
+                .Where(c => !c.IsDeleted).Include("Color").Include("QuizType")
+                .Include(c => c.CategoryList)
+                    .ThenInclude(c => c.Category)
+                .ToListAsync();
         }
 
-        public void AddToSeed(Challenge challenge)
+        ///Returns a list of all challenges
+        public async Task<List<Challenge>> GetDeletedList()
         {
-            _context.Challenges.Add(challenge);
-
-            _context.SaveChanges();
+            return await _context.Challenges
+                .Where(c => c.IsDeleted).Include("Color")
+                .Include("QuizType")
+                .ToListAsync();
         }
 
-        public void Add(Challenge challenge)
+        public async Task Add(Challenge challenge)
         {
             var date = DateTime.Now;
-            challenge.QuizType = _context.QuizTypes.Where(qt => qt.Id == challenge.QuizType.Id).First();
-            challenge.Color = _context.Colors.Where(c => c.Id == challenge.Color.Id).First();
+            challenge.QuizType = await _context.QuizTypes
+                .Where(qt => qt.Id == challenge.QuizType.Id)
+                .FirstOrDefaultAsync();
+
+            challenge.Color = await _context.Colors
+                .Where(c => c.Id == challenge.Color.Id)
+                .FirstOrDefaultAsync();
+
             challenge.CreationDate = date;
 
             foreach (ChallengeCategory cat in challenge.CategoryList)
             {
                 cat.CategoryId = Guid.Empty;
                 cat.ChallengeId = Guid.Empty;
-                cat.Category = _categoryService.GetById(cat.Category.Id);
+                cat.Category = await _categoryService.GetById(cat.Category.Id);
             }
 
             _context.Challenges.Add(challenge);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
 
-        public void Update(Challenge newChallenge)
+        public async Task Update(Challenge newChallenge)
         {
             var date = DateTime.Now;
 
-            Challenge challenge = GetById(newChallenge.Id);
+            Challenge challenge = await GetById(newChallenge.Id);
 
-            challenge.QuizType = _context.QuizTypes.Where(qt => qt.Id == newChallenge.QuizType.Id).First();
-            challenge.Color = _context.Colors.Where(c => c.Id == newChallenge.Color.Id).First();
+            challenge.QuizType = await _context.QuizTypes
+                .Where(qt => qt.Id == newChallenge.QuizType.Id)
+                .FirstOrDefaultAsync();
+
+            challenge.Color = await _context.Colors
+                .Where(c => c.Id == newChallenge.Color.Id)
+                .FirstOrDefaultAsync();
+
             challenge.CreationDate = date;
             challenge.QuestionAmount = newChallenge.QuestionAmount;
             challenge.Title = newChallenge.Title;
@@ -87,50 +103,50 @@ namespace QuizAppApi.Services
             challenge.CategoryList = null;
 
             _context.Challenges.Update(challenge);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
 
             foreach (ChallengeCategory category in newCategories)
             {
                 _context.ChallengeCategories.Add(new ChallengeCategory
                 {
                     CreationDate = date,
-                    Category = _categoryService.GetById(category.Category.Id),
+                    Category = await _categoryService.GetById(category.Category.Id),
                     Challenge = challenge
                 });
 
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
             }
         }
 
-        public void Delete(Guid id)
+        public async Task Delete(Guid id)
         {
-            var challenge = GetById(id);
+            Challenge challenge = await GetById(id);
             var date = DateTime.Now;
 
             challenge.IsDeleted = true;
             challenge.DeletionDate = date;
 
             _context.Challenges.Update(challenge);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
 
-        public void Restore(Challenge challenge)
+        public async Task Restore(Challenge challenge)
         {
             challenge.IsDeleted = false;
             challenge.DeletionDate = null;
 
             _context.Challenges.Update(challenge);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
 
-        public bool CheckIfExists(Challenge challenge)
+        public async Task<bool> CheckIfExists(Challenge challenge)
         {
-            if (GetByName(challenge.Title) != null)
+            if (await GetByName(challenge.Title) != null)
             {
                 return true;
             }
 
-            if (GetById(challenge.Id) != null)
+            if (await GetById(challenge.Id) != null)
             {
                 return true;
             }
@@ -138,19 +154,19 @@ namespace QuizAppApi.Services
             return false;
         }
 
-        public bool Validate(Challenge challenge)
+        public async Task<bool> Validate(Challenge challenge)
         {
             if (challenge == null)
             {
-                return false;
+                return await Task.FromResult(false);
             }
 
             if (challenge.Title.Trim() == "" || challenge.Title == null)
             {
-                return false;
+                return await Task.FromResult(false);
             }
 
-            return true;
+            return await Task.FromResult(true);
         }
     }
 }

@@ -1,3 +1,4 @@
+import { UserService } from './user.service';
 import { environment } from './../../environments/environment';
 import { Category } from './../models/category';
 import { Session } from './../models/session';
@@ -12,7 +13,8 @@ import { Http, Headers } from '@angular/http';
 export class QuizDataManagementService {
 
     constructor(
-        private http: Http
+        private http: Http,
+        private userService: UserService
     ) { }
 
     port = environment.apiPort;
@@ -90,7 +92,8 @@ export class QuizDataManagementService {
         const token = sessionStorage.getItem('token');
         const header = new Headers({'Authorization': `Bearer ${token}`});
         header.append('Content-Type', 'application/json');
-        return this.http.post(`http://localhost:${this.port}/quizapp/post/sessions`, JSON.stringify(quiz), { headers: header })
+        return this.http
+        .post(`http://localhost:${this.port}/quizapp/post/sessions`, JSON.stringify(quiz), { headers: header })
         .toPromise()
         .then(response => response.json() as Session)
         .catch(this.handleError);
@@ -101,7 +104,7 @@ export class QuizDataManagementService {
         const header = new Headers({'Authorization': `Bearer ${token}`});
         header.append('Content-Type', 'application/json');
         return this.http
-            .delete(`http://localhost:${this.port}/quizapp/delete/questions/${ question.id }`)
+            .delete(`http://localhost:${this.port}/quizapp/delete/questions/${ question.id }`, { headers: header })
             .toPromise()
             .catch(this.handleError);
     }
@@ -111,7 +114,7 @@ export class QuizDataManagementService {
         const header = new Headers({'Authorization': `Bearer ${token}`});
         header.append('Content-Type', 'application/json');
         return this.http
-            .delete(`http://localhost:${this.port}/quizapp/delete/categories/${ category.id }`)
+            .delete(`http://localhost:${this.port}/quizapp/delete/categories/${ category.id }`, { headers: header })
             .toPromise()
             .catch(this.handleError);
     }
@@ -121,7 +124,7 @@ export class QuizDataManagementService {
         const header = new Headers({'Authorization': `Bearer ${token}`});
         header.append('Content-Type', 'application/json');
         return this.http
-            .delete(`http://localhost:${this.port}/quizapp/delete/challenges/${ challenge.id }`)
+            .delete(`http://localhost:${this.port}/quizapp/delete/challenges/${ challenge.id }`, { headers: header })
             .toPromise()
             .catch(this.handleError);
     }
@@ -161,6 +164,7 @@ export class QuizDataManagementService {
     }
 
     private handleError(error: any): Promise<any> {
+        this.userService.logout();
         console.error(error);
         return Promise.reject(error.message || error);
     }

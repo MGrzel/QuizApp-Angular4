@@ -2,10 +2,12 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System.Data;
 using QuizAppApi.Models;
+using System;
+using Microsoft.AspNetCore.Identity;
 
 namespace QuizAppApi.Models
 {
-    public class QuizAppDb : IdentityDbContext<User>
+    public class QuizAppDb : IdentityDbContext<User, IdentityRole<Guid>, Guid>
     {
         public QuizAppDb(DbContextOptions<QuizAppDb> options) : base(options)
         { }

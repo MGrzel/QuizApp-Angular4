@@ -5,6 +5,7 @@ using System;
 using Microsoft.AspNetCore;
 using QuizAppApi.Models;
 using QuizAppApi.Services;
+using System.Threading.Tasks;
 
 namespace QuizAppApi.Services
 {
@@ -22,58 +23,86 @@ namespace QuizAppApi.Services
         }
 
         ///Returns a question specified by the id
-        public Question GetById(Guid? questionId, bool admin = false)
+        public async Task<Question> GetById(Guid? questionId, bool admin = false)
         {
-            var question = _context.Questions.Where(q => q.Id == questionId && !q.IsDeleted).Include(q => q.Answers).Include(q => q.CategoryList).ThenInclude(cq => cq.Category).Include(q => q.CategoryList).ThenInclude(cq => cq.Question).FirstOrDefault();
-
-            return question;
+            return await _context.Questions
+                .Where(q => q.Id == questionId && !q.IsDeleted)
+                .Include(q => q.Answers)
+                .Include(q => q.CategoryList)
+                    .ThenInclude(cq => cq.Category)
+                .Include(q => q.CategoryList)
+                    .ThenInclude(cq => cq.Question)
+                .FirstOrDefaultAsync();
         }
 
-        public Question GetByName(string title)
+        public async Task<Question> GetByName(string title)
         {
-            return _context.Questions.Where(c => c.Title.Trim().ToLower() == title.Trim().ToLower() && !c.IsDeleted).FirstOrDefault();
+            return await _context.Questions
+                .Where(c => c.Title.Trim().ToLower() == title.Trim().ToLower() && !c.IsDeleted)
+                .FirstOrDefaultAsync();
         }
 
         ///Returns a list of all questions
-        public List<Question> GetList(bool admin = false)
+        public async Task<List<Question>> GetList(bool admin = false)
         {
-            var questions = _context.Questions.Where(q => !q.IsDeleted).Include(q => q.Answers).Include(q => q.CategoryList).ThenInclude(cq => cq.Category).Include(q => q.CategoryList).ThenInclude(cq => cq.Question).ToList();
-
-            return questions;
+            return await _context.Questions
+                .Where(q => !q.IsDeleted)
+                .Include(q => q.Answers)
+                .Include(q => q.CategoryList)
+                    .ThenInclude(cq => cq.Category)
+                .Include(q => q.CategoryList)
+                    .ThenInclude(cq => cq.Question)
+                .ToListAsync();
         }
 
-        public Answer GetCorrectAnswer(Guid questionId)
+        public async Task<Answer> GetCorrectAnswer(Guid questionId)
         {
-            return _answerService.GetCorrectByQuestionId(questionId);
+            return await _answerService.GetCorrectByQuestionId(questionId);
         }
 
-        public List<Question> GetDeletedList()
+        public async Task<List<Question>> GetDeletedList()
         {
-            return _context.Questions.Where(q => q.IsDeleted).Include(q => q.Answers).ToList();
+            return await _context.Questions
+                .Where(q => q.IsDeleted)
+                .Include(q => q.Answers)
+                .ToListAsync();
         }
 
         ///Returns a list of questions specified by the array of the ids
-        public List<Question> GetListById(Guid[] questionIds)
+        public async Task<List<Question>> GetListById(List<Guid> questionIds)
         {
-            return _context.Questions.Where(q => questionIds.Contains(q.Id) && !q.IsDeleted).Include(q => q.Answers).ToList();
+            return await _context.Questions
+                .Where(q => questionIds.Contains(q.Id) && !q.IsDeleted)
+                .Include(q => q.Answers)
+                .ToListAsync();
         }
 
         ///Returns a list of questions specified by the array of the category ids
-        public List<Question> GetListByCategoryId(Guid[] categoryIds)
+        public async Task<List<Question>> GetListByCategoryId(List<Guid> categoryIds)
         {
-            var questionIds = _context.CategoryQuestions.Where(cc => categoryIds.Contains(cc.CategoryId) && !cc.IsDeleted).Select(cc => cc.QuestionId).ToList();
-            return _context.Questions.Where(q => questionIds.Contains(q.Id) && !q.IsDeleted).Include(q => q.Answers).Distinct().ToList();
+            var questionIds = await _context.CategoryQuestions
+                .Where(cc => categoryIds.Contains(cc.CategoryId) && !cc.IsDeleted)
+                .Select(cc => cc.QuestionId)
+                .ToListAsync();
+
+            return await _context.Questions
+                .Where(q => questionIds.Contains(q.Id) && !q.IsDeleted)
+                .Include(q => q.Answers).Distinct()
+                .ToListAsync();
         }
 
-        public void Update(Question newQuestion)
+        public async Task Update(Question newQuestion)
         {
             var date = DateTime.Now;
-            Question question = GetById(newQuestion.Id);
+            Question question = await GetById(newQuestion.Id);
 
             question.CreationDate = date;
             question.Title = newQuestion.Title;
 
-            Guid correctAnswerId = newQuestion.Answers.Where(a => a.IsCorrect).Select(a => a.Id).Single();
+            Guid correctAnswerId = newQuestion.Answers
+                .Where(a => a.IsCorrect)
+                .Select(a => a.Id)
+                .SingleOrDefault();
 
             foreach (Answer answer in question.Answers)
             {
@@ -92,39 +121,32 @@ namespace QuizAppApi.Services
             question.CategoryList = null;
 
             _context.Questions.Update(question);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
 
             foreach (CategoryQuestion cat in newCategories)
             {
                 _context.CategoryQuestions.Add(new CategoryQuestion
                 {
                     CreationDate = date,
-                    Category = _categoryService.GetById(cat.Category.Id),
+                    Category = await _categoryService.GetById(cat.Category.Id),
                     Question = question
                 });
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
             }
         }
 
-        public bool CheckIfHasCategory(List<CategoryQuestion> categories, CategoryQuestion category)
+        public async Task<bool> CheckIfHasCategory(List<CategoryQuestion> categories, CategoryQuestion category)
         {
             foreach (CategoryQuestion cat in categories)
             {
                 if (cat.Category.Id == category.Category.Id)
-                    return true;
+                    return await Task.FromResult(false);
             }
 
-            return false;
+            return await Task.FromResult(true);
         }
 
-        public void AddToSeed(Question newQuestion)
-        {
-            _context.Questions.Add(newQuestion);
-
-            _context.SaveChanges();
-        }
-
-        public void Add(Question question)
+        public async Task Add(Question question)
         {
             var date = DateTime.Now;
 
@@ -139,43 +161,43 @@ namespace QuizAppApi.Services
             {
                 cat.CategoryId = Guid.Empty;
                 cat.QuestionId = Guid.Empty;
-                cat.Category = _categoryService.GetById(cat.Category.Id);
+                cat.Category = await _categoryService.GetById(cat.Category.Id);
             }
 
             _context.Questions.Add(question);
 
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
 
-        public void Delete(Guid id)
+        public async Task Delete(Guid id)
         {
-            var question = GetById(id);
+            Question question = await GetById(id);
             var date = DateTime.Now;
 
             question.IsDeleted = true;
             question.DeletionDate = date;
 
             _context.Questions.Update(question);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
 
-        public void Restore(Question question)
+        public async Task Restore(Question question)
         {
             question.IsDeleted = false;
             question.DeletionDate = null;
 
             _context.Questions.Update(question);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
 
-        public bool CheckIfExists(Question question)
+        public async Task<bool> CheckIfExists(Question question)
         {
-            if (GetByName(question.Title) != null)
+            if (await GetByName(question.Title) != null)
             {
                 return true;
             }
 
-            if (GetById(question.Id) != null)
+            if (await GetById(question.Id) != null)
             {
                 return true;
             }
@@ -183,38 +205,38 @@ namespace QuizAppApi.Services
             return false;
         }
 
-        public bool Validate(Question question)
+        public async Task<bool> Validate(Question question)
         {
             if (question == null)
             {
-                return false;
+                return await Task.FromResult(false);
             }
 
             if (question.Answers == null)
             {
-                return false;
+                return await Task.FromResult(false);
             }
 
             foreach (var answer in question.Answers)
             {
-                if (!_answerService.Validate(answer))
+                if (! await _answerService.Validate(answer))
                 {
-                    return false;
+                    return await Task.FromResult(false);
                 }
             }
 
-            if (question.Answers.Where(a => a.IsCorrect).FirstOrDefault() == null)
+            if (!question.Answers.Where(a => a.IsCorrect).Any())
             {
-                return false;
+                return await Task.FromResult(false);
             }
 
             if (question.Title.Trim() == "" || question.Title == null)
             {
-                return false;
+                return await Task.FromResult(false);
             }
 
 
-            return true;
+            return await Task.FromResult(true);
         }
     }
 }
